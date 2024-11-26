@@ -1,3 +1,7 @@
 :host {
   display: block;
 }
+
+.recorder-box {
+  background-color: darkgray;
+}
