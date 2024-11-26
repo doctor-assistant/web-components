@@ -9,7 +9,7 @@ export class DaaiConsultationRecorder {
   render() {
     return (
       <Host>
-        <slot>DAAI CONSULTATION RECORDER</slot>
+        <slot></slot>
       </Host>
     );
   }
