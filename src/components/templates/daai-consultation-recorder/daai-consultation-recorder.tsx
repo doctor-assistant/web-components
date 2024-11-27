@@ -6,18 +6,19 @@ import { Component, Host, h } from '@stencil/core';
   shadow: true,
 })
 export class DaaiConsultationRecorder {
+  handleButtonClick = () => {
+    console.log('Botão Enviar clicado!');
+    alert('Gravação enviada com sucesso!');
+  };
   render() {
     return (
       <Host>
         <slot>
           <div class="bg-gray-200 p-6 rounded-md flex justify-center">
-          <daai-logo-icon></daai-logo-icon>
-          <daai-mic-icon></daai-mic-icon>
-          <daai-pause-icon></daai-pause-icon>
-          <daai-finish-recording-icon></daai-finish-recording-icon>
-          <daai-support-icon></daai-support-icon>
-          <daai-stethoscope-icon></daai-stethoscope-icon>
-          <p>aqui</p>
+          <daai-button-with-icon>
+            <daai-mic-icon slot="icon"></daai-mic-icon>
+          </daai-button-with-icon>
+          <daai-button></daai-button>
           </div>
         </slot>
       </Host>

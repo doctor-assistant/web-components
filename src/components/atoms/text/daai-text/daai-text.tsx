@@ -1,11 +1,11 @@
 import { Component, Host, h } from '@stencil/core';
 
 @Component({
-  tag: 'daai-button',
-  styleUrl: 'daai-button.css',
+  tag: 'daai-text',
+  styleUrl: 'daai-text.css',
   shadow: true,
 })
-export class DaaiButton {
+export class DaaiText {
   render() {
     return (
       <Host>

@@ -6,6 +6,20 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
+    interface DaaiButton {
+        "customClass": string;
+        "label": string;
+        "onClick": (event: MouseEvent) => void;
+    }
+    interface DaaiButtonWithIcon {
+        "backgroundColor": string;
+        "border": string;
+        "borderRadius": string;
+        "height": string;
+        "hoverBackgroundColor": string;
+        "textColor": string;
+        "width": string;
+    }
     interface DaaiConfigMicIcon {
         "color": string;
         "height": string;
@@ -45,6 +59,18 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLDaaiButtonElement extends Components.DaaiButton, HTMLStencilElement {
+    }
+    var HTMLDaaiButtonElement: {
+        prototype: HTMLDaaiButtonElement;
+        new (): HTMLDaaiButtonElement;
+    };
+    interface HTMLDaaiButtonWithIconElement extends Components.DaaiButtonWithIcon, HTMLStencilElement {
+    }
+    var HTMLDaaiButtonWithIconElement: {
+        prototype: HTMLDaaiButtonWithIconElement;
+        new (): HTMLDaaiButtonWithIconElement;
+    };
     interface HTMLDaaiConfigMicIconElement extends Components.DaaiConfigMicIcon, HTMLStencilElement {
     }
     var HTMLDaaiConfigMicIconElement: {
@@ -94,6 +120,8 @@ declare global {
         new (): HTMLDaaiSupportIconElement;
     };
     interface HTMLElementTagNameMap {
+        "daai-button": HTMLDaaiButtonElement;
+        "daai-button-with-icon": HTMLDaaiButtonWithIconElement;
         "daai-config-mic-icon": HTMLDaaiConfigMicIconElement;
         "daai-consultation-recorder": HTMLDaaiConsultationRecorderElement;
         "daai-finish-recording-icon": HTMLDaaiFinishRecordingIconElement;
@@ -105,6 +133,20 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface DaaiButton {
+        "customClass"?: string;
+        "label"?: string;
+        "onClick"?: (event: MouseEvent) => void;
+    }
+    interface DaaiButtonWithIcon {
+        "backgroundColor"?: string;
+        "border"?: string;
+        "borderRadius"?: string;
+        "height"?: string;
+        "hoverBackgroundColor"?: string;
+        "textColor"?: string;
+        "width"?: string;
+    }
     interface DaaiConfigMicIcon {
         "color"?: string;
         "height"?: string;
@@ -143,6 +185,8 @@ declare namespace LocalJSX {
         "width"?: string;
     }
     interface IntrinsicElements {
+        "daai-button": DaaiButton;
+        "daai-button-with-icon": DaaiButtonWithIcon;
         "daai-config-mic-icon": DaaiConfigMicIcon;
         "daai-consultation-recorder": DaaiConsultationRecorder;
         "daai-finish-recording-icon": DaaiFinishRecordingIcon;
@@ -157,6 +201,8 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "daai-button": LocalJSX.DaaiButton & JSXBase.HTMLAttributes<HTMLDaaiButtonElement>;
+            "daai-button-with-icon": LocalJSX.DaaiButtonWithIcon & JSXBase.HTMLAttributes<HTMLDaaiButtonWithIconElement>;
             "daai-config-mic-icon": LocalJSX.DaaiConfigMicIcon & JSXBase.HTMLAttributes<HTMLDaaiConfigMicIconElement>;
             "daai-consultation-recorder": LocalJSX.DaaiConsultationRecorder & JSXBase.HTMLAttributes<HTMLDaaiConsultationRecorderElement>;
             "daai-finish-recording-icon": LocalJSX.DaaiFinishRecordingIcon & JSXBase.HTMLAttributes<HTMLDaaiFinishRecordingIconElement>;
