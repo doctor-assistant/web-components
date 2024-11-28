@@ -1,3 +1,5 @@
+@import '../../theme.css';
+
 :host {
   display: block;
 }
@@ -7,11 +9,10 @@
 }
 
 daai-button {
-  --button-width: 50px;
-  --button-height: 50px;
-  --button-background-color: #b10058;
-  --button-text-color: #FFF;
-  --button-border-radius: 10px;
-  --button-hover-background-color: #477e86;
-  --button-border:none;
+  background-color: var(--secondary-color);
 }
+
+daai-button-with-icon {
+  background-color: var(--button-primary-bg);
+}
+

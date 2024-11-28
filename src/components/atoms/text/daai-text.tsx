@@ -1,4 +1,4 @@
-import { Component, Host, h } from '@stencil/core';
+import { Component, Host, Prop, h } from '@stencil/core';
 
 @Component({
   tag: 'daai-text',
@@ -6,10 +6,14 @@ import { Component, Host, h } from '@stencil/core';
   shadow: true,
 })
 export class DaaiText {
+  @Prop() text: string
+
   render() {
     return (
       <Host>
-        <slot></slot>
+        <div>
+          {this.text}
+        </div>
       </Host>
     );
   }

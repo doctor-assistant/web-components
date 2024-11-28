@@ -1,0 +1,27 @@
+:host {
+  --primary-color: #009cb1;
+  --secondary-color: #f43f5e;
+  --success-color:#28A18C;
+  --disable-color:#DFE4EA;
+
+  --text-primary-color: #009CB1;
+  --text-success-color: #28A18C;
+
+  --button-border-radius:60px;
+
+  --button-primary-bg: var(--primary-color);
+  --button-secondary-bg: var(--secondary-color);
+
+}
+
+button {
+  color: var(--color-primary);
+}
+
+h2 {
+  color: var(--color-primary);
+}
+
+h3 {
+  color: var(--color-primary);
+}

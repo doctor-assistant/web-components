@@ -1,19 +1,7 @@
-:host {
-  --button-width: 100px;
-  --button-height: 40px;
-  --button-background-color: #4cafa5;
-  --button-text-color: white;
-  --button-border-radius: 4px;
-  --button-border: none;
-}
-
 button {
-  width: var(--button-width);
-  height: var(--button-height);
-  background-color: var(--button-background-color);
-  color: var(--button-text-color);
-  border-radius: var(--button-border-radius);
-  border: var(--button-border);
+  width: 100px;
+  height: 60px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s ease;

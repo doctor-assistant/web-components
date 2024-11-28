@@ -57,6 +57,9 @@ export namespace Components {
         "height": string;
         "width": string;
     }
+    interface DaaiText {
+        "text": string;
+    }
 }
 declare global {
     interface HTMLDaaiButtonElement extends Components.DaaiButton, HTMLStencilElement {
@@ -119,6 +122,12 @@ declare global {
         prototype: HTMLDaaiSupportIconElement;
         new (): HTMLDaaiSupportIconElement;
     };
+    interface HTMLDaaiTextElement extends Components.DaaiText, HTMLStencilElement {
+    }
+    var HTMLDaaiTextElement: {
+        prototype: HTMLDaaiTextElement;
+        new (): HTMLDaaiTextElement;
+    };
     interface HTMLElementTagNameMap {
         "daai-button": HTMLDaaiButtonElement;
         "daai-button-with-icon": HTMLDaaiButtonWithIconElement;
@@ -130,6 +139,7 @@ declare global {
         "daai-pause-icon": HTMLDaaiPauseIconElement;
         "daai-stethoscope-icon": HTMLDaaiStethoscopeIconElement;
         "daai-support-icon": HTMLDaaiSupportIconElement;
+        "daai-text": HTMLDaaiTextElement;
     }
 }
 declare namespace LocalJSX {
@@ -184,6 +194,9 @@ declare namespace LocalJSX {
         "height"?: string;
         "width"?: string;
     }
+    interface DaaiText {
+        "text"?: string;
+    }
     interface IntrinsicElements {
         "daai-button": DaaiButton;
         "daai-button-with-icon": DaaiButtonWithIcon;
@@ -195,6 +208,7 @@ declare namespace LocalJSX {
         "daai-pause-icon": DaaiPauseIcon;
         "daai-stethoscope-icon": DaaiStethoscopeIcon;
         "daai-support-icon": DaaiSupportIcon;
+        "daai-text": DaaiText;
     }
 }
 export { LocalJSX as JSX };
@@ -211,6 +225,7 @@ declare module "@stencil/core" {
             "daai-pause-icon": LocalJSX.DaaiPauseIcon & JSXBase.HTMLAttributes<HTMLDaaiPauseIconElement>;
             "daai-stethoscope-icon": LocalJSX.DaaiStethoscopeIcon & JSXBase.HTMLAttributes<HTMLDaaiStethoscopeIconElement>;
             "daai-support-icon": LocalJSX.DaaiSupportIcon & JSXBase.HTMLAttributes<HTMLDaaiSupportIconElement>;
+            "daai-text": LocalJSX.DaaiText & JSXBase.HTMLAttributes<HTMLDaaiTextElement>;
         }
     }
 }

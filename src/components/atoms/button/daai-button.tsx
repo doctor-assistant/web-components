@@ -17,12 +17,6 @@ export class DaaiButton {
         class={`${this.customClass}`}
         onClick={this.onClick}
       >
-        <span class="button-content">
-          <slot name="icon"></slot>
-          <span class="button-label">
-            <slot></slot>
-          </span>
-        </span>
       </button>
     );
   }
