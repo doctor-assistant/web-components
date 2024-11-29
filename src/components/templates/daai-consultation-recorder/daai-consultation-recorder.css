@@ -3,15 +3,15 @@
 :host {
   display: block;
   --logo-url:url('');
-  --daai-primary-color: var(--primary-color);
-  --daai-secondary-color: var(--secondary-color);
-  --success-color: var(--success-color);
-/* --error-color
---background-color
---border-color
---button-radius
---border-radius
---font-family */
+  --recorder-primary-color: var(--primary-color);
+  --recorder-secondary-color: var(--secondary-color);
+  --recorder-success-color: var(--success-color);
+ --recorder-error-color:var(--error-color);
+  --recorder-background-color:var(--background-color);
+  --recorder-border-color:var(--border-color);
+  --recorder-button-radius:var(--button-roudend-sm);
+  --recorder-border-radius:var(--button-roudend-md);
+  --recorder-text-color:var(--text-default-color)
 }
 
 .recorder-box {
@@ -23,9 +23,12 @@ daai-button {
 }
 
 #start-recording {
-  background-color: var(--daai-primary-color);
+  background-color: var(--recorder-primary-color);
+  color:var(--recorder-text-color);
+  border-radius: var(--recorder-button-radius);
+  padding:10px;
 }
 
 #pause-recording {
-  background-color: var(--daai-secondary-color);
+  background-color: var(--recorder-secondary-color);
 }
