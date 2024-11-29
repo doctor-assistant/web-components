@@ -12,9 +12,7 @@ export class DaaiConsultationRecorder {
   render() {
     return (
       <Host>
-          <div class="p-4 flex justify-center">
-            <daai-mic></daai-mic>
-          </div>
+        <slot></slot>
       </Host>
     );
   }
