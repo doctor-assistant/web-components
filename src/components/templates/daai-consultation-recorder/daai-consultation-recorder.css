@@ -44,3 +44,7 @@ daai-mic {
   background-color: var(--recorder-primary-color);
   color: var(--recorder-text-color);
 }
+
+#daai-text{
+  color: var(--recorder-text-color);
+}

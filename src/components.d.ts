@@ -54,6 +54,7 @@ export namespace Components {
         "width": string;
     }
     interface DaaiText {
+        "tag": keyof HTMLElementTagNameMap;
         "text": string;
     }
 }
@@ -194,6 +195,7 @@ declare namespace LocalJSX {
         "width"?: string;
     }
     interface DaaiText {
+        "tag"?: keyof HTMLElementTagNameMap;
         "text"?: string;
     }
     interface IntrinsicElements {

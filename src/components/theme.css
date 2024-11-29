@@ -11,7 +11,8 @@
 
   --text-primary-color: #009CB1;
   --text-success-color: #28A18C;
-  --text-default-color:#ffff;
+  --text-button-color: #ffff;
+  --text-default-color:#475569;
 
   --button-roudend-sm:10px;
   --button-roudend-md:20px;
