@@ -31,6 +31,8 @@ export namespace Components {
         "height": string;
         "width": string;
     }
+    interface DaaiMic {
+    }
     interface DaaiMicIcon {
         "color": string;
         "height": string;
@@ -92,6 +94,12 @@ declare global {
         prototype: HTMLDaaiLogoIconElement;
         new (): HTMLDaaiLogoIconElement;
     };
+    interface HTMLDaaiMicElement extends Components.DaaiMic, HTMLStencilElement {
+    }
+    var HTMLDaaiMicElement: {
+        prototype: HTMLDaaiMicElement;
+        new (): HTMLDaaiMicElement;
+    };
     interface HTMLDaaiMicIconElement extends Components.DaaiMicIcon, HTMLStencilElement {
     }
     var HTMLDaaiMicIconElement: {
@@ -129,6 +137,7 @@ declare global {
         "daai-consultation-recorder": HTMLDaaiConsultationRecorderElement;
         "daai-finish-recording-icon": HTMLDaaiFinishRecordingIconElement;
         "daai-logo-icon": HTMLDaaiLogoIconElement;
+        "daai-mic": HTMLDaaiMicElement;
         "daai-mic-icon": HTMLDaaiMicIconElement;
         "daai-pause-icon": HTMLDaaiPauseIconElement;
         "daai-stethoscope-icon": HTMLDaaiStethoscopeIconElement;
@@ -162,6 +171,8 @@ declare namespace LocalJSX {
         "height"?: string;
         "width"?: string;
     }
+    interface DaaiMic {
+    }
     interface DaaiMicIcon {
         "color"?: string;
         "height"?: string;
@@ -192,6 +203,7 @@ declare namespace LocalJSX {
         "daai-consultation-recorder": DaaiConsultationRecorder;
         "daai-finish-recording-icon": DaaiFinishRecordingIcon;
         "daai-logo-icon": DaaiLogoIcon;
+        "daai-mic": DaaiMic;
         "daai-mic-icon": DaaiMicIcon;
         "daai-pause-icon": DaaiPauseIcon;
         "daai-stethoscope-icon": DaaiStethoscopeIcon;
@@ -209,6 +221,7 @@ declare module "@stencil/core" {
             "daai-consultation-recorder": LocalJSX.DaaiConsultationRecorder & JSXBase.HTMLAttributes<HTMLDaaiConsultationRecorderElement>;
             "daai-finish-recording-icon": LocalJSX.DaaiFinishRecordingIcon & JSXBase.HTMLAttributes<HTMLDaaiFinishRecordingIconElement>;
             "daai-logo-icon": LocalJSX.DaaiLogoIcon & JSXBase.HTMLAttributes<HTMLDaaiLogoIconElement>;
+            "daai-mic": LocalJSX.DaaiMic & JSXBase.HTMLAttributes<HTMLDaaiMicElement>;
             "daai-mic-icon": LocalJSX.DaaiMicIcon & JSXBase.HTMLAttributes<HTMLDaaiMicIconElement>;
             "daai-pause-icon": LocalJSX.DaaiPauseIcon & JSXBase.HTMLAttributes<HTMLDaaiPauseIconElement>;
             "daai-stethoscope-icon": LocalJSX.DaaiStethoscopeIcon & JSXBase.HTMLAttributes<HTMLDaaiStethoscopeIconElement>;

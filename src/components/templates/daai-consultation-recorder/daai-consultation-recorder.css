@@ -22,6 +22,12 @@ daai-button {
   background-color: var(--secondary-color);
 }
 
+daai-mic{
+  background-color: var(--recorder-primary-color);
+  border-radius: var(--recorder-button-radius);
+  padding:10px;
+}
+
 #start-recording {
   background-color: var(--recorder-primary-color);
   color:var(--recorder-text-color);
