@@ -3,22 +3,19 @@ import { Component, h } from '@stencil/core';
 @Component({
   tag: 'daai-mic',
   styleUrl: 'daai-mic.css',
-  shadow: true,
+  shadow: false,
 })
 export class DaaiMic {
   render() {
     return (
-        <div>
-        <daai-button-with-icon type="primary" id='start-recording'>
-              <span slot="icon"></span>
-              Iniciar Registro
-        </daai-button-with-icon>
-        <daai-button-with-icon type="primary" id='pause-recording'>
-              <span slot="icon">
-                <daai-pause-icon></daai-pause-icon>
-              </span>
-          </daai-button-with-icon>
-          </div>
+      <div class='flex items-center justify-center gap-4'>
+      <daai-button-with-icon id="start-recording">
+        <daai-mic-icon></daai-mic-icon>
+      </daai-button-with-icon>
+      <daai-button-with-icon id="pause-recording">
+        <daai-pause-icon></daai-pause-icon>
+      </daai-button-with-icon>
+    </div>
     );
   }
 }
