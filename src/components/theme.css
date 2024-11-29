@@ -7,11 +7,18 @@
   --text-primary-color: #009CB1;
   --text-success-color: #28A18C;
 
-  --button-border-radius:60px;
+  --button-roudend-sm:10px;
+  --button-roudend-md:20px;
+  --button-roundend-sm:60px;
+
+  --button-primary-width: 100px;
+  --button-secondary-width:50px;
+
+  --button-primary-height: 60px;
+  --button-secondary-height:40px;
 
   --button-primary-bg: var(--primary-color);
   --button-secondary-bg: var(--secondary-color);
-
 }
 
 button {

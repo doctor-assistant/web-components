@@ -2,6 +2,16 @@
 
 :host {
   display: block;
+  --logo-url:url('');
+  --daai-primary-color: var(--primary-color);
+  --daai-secondary-color: var(--secondary-color);
+  --success-color: var(--success-color);
+/* --error-color
+--background-color
+--border-color
+--button-radius
+--border-radius
+--font-family */
 }
 
 .recorder-box {
@@ -12,7 +22,10 @@ daai-button {
   background-color: var(--secondary-color);
 }
 
-daai-button-with-icon {
-  background-color: var(--button-primary-bg);
+#start-recording {
+  background-color: var(--daai-primary-color);
 }
 
+#pause-recording {
+  background-color: var(--daai-secondary-color);
+}

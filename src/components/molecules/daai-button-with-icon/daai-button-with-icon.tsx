@@ -1,4 +1,4 @@
-import { Component, h, Prop } from '@stencil/core';
+import { Component, Prop, h } from '@stencil/core';
 
 @Component({
   tag: 'daai-button-with-icon',
@@ -6,24 +6,17 @@ import { Component, h, Prop } from '@stencil/core';
   shadow: true,
 })
 export class DaaiButtonWithIcon {
-  @Prop() width: string = '150px';
-  @Prop() height: string = '50px';
-  @Prop() backgroundColor: string = '#b10058';
-  @Prop() textColor: string = '#FFF';
-  @Prop() borderRadius: string = '10px';
-  @Prop() hoverBackgroundColor: string = '#477e86';
-  @Prop() border: string = 'none';
+  @Prop() type: 'primary' | 'secondary' = 'primary';
+  @Prop() disabled: boolean = false;
 
   render() {
     return (
-      <daai-button>
-        <span class="button-content">
-          <slot name="icon"></slot>
-          <span class="button-label">
-            <slot></slot>
-          </span>
-        </span>
-      </daai-button>
+      <div class="button-with-icon">
+        <slot name="icon" />
+        <daai-button>
+          <slot />
+        </daai-button>
+      </div>
     );
   }
 }

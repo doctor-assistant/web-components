@@ -7,7 +7,6 @@ import { Component, Prop, h } from '@stencil/core';
 })
 export class DaaiButton {
   @Prop() customClass: string = '';
-  @Prop() label: string = 'Click Me';
   @Prop() onClick: (event: MouseEvent) => void = () => {};
 
   render() {
@@ -17,6 +16,7 @@ export class DaaiButton {
         class={`${this.customClass}`}
         onClick={this.onClick}
       >
+        <slot></slot>
       </button>
     );
   }

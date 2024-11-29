@@ -13,9 +13,15 @@ export class DaaiConsultationRecorder {
     return (
       <Host>
         <slot>
-          <div class="bg-gray-200 p-6 rounded-md flex justify-center">
-          <daai-button></daai-button>
-          <daai-button-with-icon></daai-button-with-icon>
+          <div class="p-4 flex justify-center">
+            <daai-button-with-icon type="primary" id='start-recording'>
+              <span slot="icon"></span>
+              Notificação
+            </daai-button-with-icon>
+
+            <daai-button-with-icon type="primary" id='pause-recording'>
+              <span slot="icon">🔔</span>
+            </daai-button-with-icon>
           </div>
         </slot>
       </Host>

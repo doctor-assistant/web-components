@@ -8,17 +8,11 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface DaaiButton {
         "customClass": string;
-        "label": string;
         "onClick": (event: MouseEvent) => void;
     }
     interface DaaiButtonWithIcon {
-        "backgroundColor": string;
-        "border": string;
-        "borderRadius": string;
-        "height": string;
-        "hoverBackgroundColor": string;
-        "textColor": string;
-        "width": string;
+        "disabled": boolean;
+        "type": 'primary' | 'secondary';
     }
     interface DaaiConfigMicIcon {
         "color": string;
@@ -145,17 +139,11 @@ declare global {
 declare namespace LocalJSX {
     interface DaaiButton {
         "customClass"?: string;
-        "label"?: string;
         "onClick"?: (event: MouseEvent) => void;
     }
     interface DaaiButtonWithIcon {
-        "backgroundColor"?: string;
-        "border"?: string;
-        "borderRadius"?: string;
-        "height"?: string;
-        "hoverBackgroundColor"?: string;
-        "textColor"?: string;
-        "width"?: string;
+        "disabled"?: boolean;
+        "type"?: 'primary' | 'secondary';
     }
     interface DaaiConfigMicIcon {
         "color"?: string;
