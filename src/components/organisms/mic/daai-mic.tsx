@@ -9,14 +9,17 @@ export class DaaiMic {
   render() {
     return (
       <slot>
-      <div class='flex items-center justify-center gap-4'>
-      <daai-text text="Microfone" tag="p" id='daai-text'></daai-text>
-      <daai-button-with-icon id="start-recording">
-        <daai-mic-icon></daai-mic-icon>
-      </daai-button-with-icon>
-      <daai-button-with-icon id="pause-recording">
-        <daai-pause-icon></daai-pause-icon>
-      </daai-button-with-icon>
+      <div class='flex items-center justify-center'>
+        <daai-logo-icon></daai-logo-icon>
+        <daai-mic-animation></daai-mic-animation>
+        <daai-recording-animation
+        status="recording"
+        animationRecordingColor="#F43F5E"
+        animationPausedColor="#009CB1"
+      ></daai-recording-animation>
+        <daai-button-with-icon id='start-recording'>
+          <daai-config-mic-icon></daai-config-mic-icon>
+        </daai-button-with-icon>
     </div>
     </slot>
     );

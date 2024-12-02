@@ -9,7 +9,9 @@ export class DaaiConsultationRecorder {
   render() {
     return (
       <Host>
-        <slot></slot>
+        <slot>
+          <daai-mic></daai-mic>
+        </slot>
       </Host>
     );
   }
