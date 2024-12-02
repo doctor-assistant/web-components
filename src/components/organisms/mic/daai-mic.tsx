@@ -10,8 +10,7 @@ export class DaaiMic {
   render() {
     console.log(state.status,'state.status')
     return (
-      <slot>
-      <div class='flex items-center justify-center bg-white gap-4 w-3/5'>
+      <div class='flex items-center justify-center bg-white gap-2'>
         <daai-logo-icon></daai-logo-icon>
         <div class='flex items-center justify-center'>
             {
@@ -31,11 +30,10 @@ export class DaaiMic {
             )
           }
         </div>
-        <daai-button-with-icon id='start-recording'>
+        <daai-button-with-icon id='config-mic'>
           <daai-config-mic-icon></daai-config-mic-icon>
         </daai-button-with-icon>
     </div>
-    </slot>
     );
   }
 }

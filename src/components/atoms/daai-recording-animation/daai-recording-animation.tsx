@@ -115,7 +115,6 @@ export class DaaiRecordingAnimation {
         ctx.lineWidth = lineWidth;
         ctx.setLineDash([3, 2]);
 
-        const h = defaultCanvHeight;
         const centerY = defaultCanvHeight / 2;
 
         ctx.beginPath();

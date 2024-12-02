@@ -11,11 +11,23 @@
   --recorder-border-color:var(--border-color);
   --recorder-button-radius:var(--button-roudend-sm);
   --recorder-border-radius:var(--button-roudend-md);
-  --recorder-text-color:var(--text-default-color)
+  --recorder-text-color:var(--text-default-color);
+  --recorder-border-button-color:var(--border-button-color)
+
 }
 
 daai-mic {
   background-color: var(--recorder-background-color);
+}
+
+#config-mic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: var(--recorder-button-radius);
+  border: 2px solid var(--recorder-border-button-color);
+  color: var(--recorder-text-color);
 }
 
 #pause-recording {
