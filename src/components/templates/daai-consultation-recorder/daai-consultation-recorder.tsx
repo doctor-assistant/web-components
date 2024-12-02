@@ -1,4 +1,5 @@
 import { Component, Host, h } from '@stencil/core';
+import state from '../../../Store/RecorderComponentStore';
 
 @Component({
   tag: 'daai-consultation-recorder',
@@ -17,6 +18,9 @@ export class DaaiConsultationRecorder {
           </daa-button-with-icon>
           </div>
         </slot>
+        {
+          state.openModalConfig && <daai-modal headerTitle='Escolha o seu Microfone'/>
+        }
       </Host>
     );
   }
