@@ -1,3 +1,50 @@
+@import '../../theme.css';
+
 :host {
   display: block;
+  --logo-url:url('');
+  --recorder-primary-color: var(--primary-color);
+  --recorder-secondary-color: var(--secondary-color);
+  --recorder-success-color: var(--success-color);
+ --recorder-error-color:var(--error-color);
+  --recorder-background-color:var(--background-color);
+  --recorder-border-color:var(--border-color);
+  --recorder-button-radius:var(--button-roudend-sm);
+  --recorder-border-radius:var(--button-roudend-md);
+  --recorder-text-color:var(--text-default-color)
+}
+
+daai-mic {
+  background-color: var(--recorder-background-color);
+  border-radius: var(--recorder-button-radius);
+  padding: 10px;
+  border: 3px solid var(--recorder-border-color);
+}
+
+#pause-recording {
+  display: flex;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--recorder-button-radius);
+  background-color: var(--recorder-secondary-color);
+  color: var(--recorder-text-color);
+}
+
+#start-recording {
+  display: flex;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--recorder-button-radius);
+  background-color: var(--recorder-primary-color);
+  color: var(--recorder-text-color);
+}
+
+#daai-text{
+  color: var(--recorder-text-color);
 }
