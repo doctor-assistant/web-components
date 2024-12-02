@@ -7,7 +7,6 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface DaaiButton {
-        "customClass": string;
         "onClick": (event: MouseEvent) => void;
     }
     interface DaaiButtonWithIcon {
@@ -148,7 +147,6 @@ declare global {
 }
 declare namespace LocalJSX {
     interface DaaiButton {
-        "customClass"?: string;
         "onClick"?: (event: MouseEvent) => void;
     }
     interface DaaiButtonWithIcon {
