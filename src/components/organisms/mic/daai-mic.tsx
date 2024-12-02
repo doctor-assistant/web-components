@@ -1,4 +1,5 @@
 import { Component, h } from '@stencil/core';
+import state from '../../../Store/RecorderComponentStore';
 
 @Component({
   tag: 'daai-mic',
@@ -7,16 +8,29 @@ import { Component, h } from '@stencil/core';
 })
 export class DaaiMic {
   render() {
+    console.log(state.status,'state.status')
     return (
       <slot>
-      <div class='flex items-center justify-center'>
+      <div class='flex items-center justify-center bg-white gap-4 w-3/5'>
         <daai-logo-icon></daai-logo-icon>
-        <daai-mic-animation></daai-mic-animation>
-        <daai-recording-animation
-        status="recording"
-        animationRecordingColor="#F43F5E"
-        animationPausedColor="#009CB1"
-      ></daai-recording-animation>
+        <div class='flex items-center justify-center'>
+            {
+            state.status === 'initial' ? (
+              <div class='mt-4'>
+                <daai-mic-animation id='animation-test'/>
+              </div>
+            ) : (
+              (state.status === 'recording' || state.status === 'paused') && (
+                <daai-recording-animation
+                  id='animation-recording'
+                  status="recording"
+                  animationRecordingColor="#F43F5E"
+                  animationPausedColor="#009CB1"
+                />
+              )
+            )
+          }
+        </div>
         <daai-button-with-icon id='start-recording'>
           <daai-config-mic-icon></daai-config-mic-icon>
         </daai-button-with-icon>

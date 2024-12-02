@@ -41,7 +41,7 @@ export class DaaiMicAnimation {
 
       const canvasCtx = canvasElement.getContext('2d');
       const WIDTH = 80;
-      const HEIGHT = 50;
+      const HEIGHT = 40;
 
       canvasElement.width = WIDTH;
       canvasElement.height = HEIGHT;

@@ -52,7 +52,7 @@ export class DaaiRecordingAnimation {
     }
 
     const ctx = canvasElement.getContext('2d');
-    const defaultCanvWidth = 150;
+    const defaultCanvWidth = 100;
     const defaultCanvHeight = 50;
     const lineWidth = 0.5;
     const frequLnum = 50;
