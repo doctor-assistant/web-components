@@ -14,7 +14,7 @@ export class DaaiMic {
       <daai-button-with-icon id="start-recording">
         <daai-mic-icon></daai-mic-icon>
       </daai-button-with-icon>
-      <daai-button-with-icon id="pause-recording">
+        <daai-button-with-icon id="pause-recording">
         <daai-pause-icon></daai-pause-icon>
       </daai-button-with-icon>
     </div>

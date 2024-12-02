@@ -1,4 +1,4 @@
-import { Component, Prop, h } from '@stencil/core';
+import { Component, Event, h } from '@stencil/core';
 
 @Component({
   tag: 'daai-button',
@@ -6,7 +6,7 @@ import { Component, Prop, h } from '@stencil/core';
   shadow: true,
 })
 export class DaaiButton {
-  @Prop() onClick: (event: MouseEvent) => void = () => {};
+  @Event() onClick: (event: MouseEvent) => void = () => {};
 
   render() {
     return (
