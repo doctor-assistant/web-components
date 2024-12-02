@@ -6,9 +6,6 @@ import { Component, Host, h } from '@stencil/core';
   shadow: true,
 })
 export class DaaiConsultationRecorder {
-  handleButtonClick = () => {
-    console.log('Botão Enviar clicado!');
-  };
   render() {
     return (
       <Host>
