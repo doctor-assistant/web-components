@@ -4,7 +4,7 @@ import { DaaiText } from '../daai-text';
 describe('daai-text', () => {
   it('deve renderizar texto com a tag padrão (p)', async () => {
     const { root } = await newSpecPage({
-      components: [DaaiText],
+        components: [DaaiText],
       html: `<daai-text text="Texto de exemplo"></daai-text>`,
     });
     const shadowElement = root.shadowRoot.querySelector('p');

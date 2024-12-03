@@ -7,7 +7,6 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface DaaiButton {
-        "onClick": (event: MouseEvent) => void;
     }
     interface DaaiButtonWithIcon {
         "disabled": boolean;
@@ -68,8 +67,23 @@ export namespace Components {
         "text": string;
     }
 }
+export interface DaaiButtonCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDaaiButtonElement;
+}
 declare global {
+    interface HTMLDaaiButtonElementEventMap {
+        "onClick": any;
+    }
     interface HTMLDaaiButtonElement extends Components.DaaiButton, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDaaiButtonElementEventMap>(type: K, listener: (this: HTMLDaaiButtonElement, ev: DaaiButtonCustomEvent<HTMLDaaiButtonElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDaaiButtonElementEventMap>(type: K, listener: (this: HTMLDaaiButtonElement, ev: DaaiButtonCustomEvent<HTMLDaaiButtonElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDaaiButtonElement: {
         prototype: HTMLDaaiButtonElement;
@@ -179,7 +193,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface DaaiButton {
-        "onClick"?: (event: MouseEvent) => void;
+        "onOnClick"?: (event: DaaiButtonCustomEvent<any>) => void;
     }
     interface DaaiButtonWithIcon {
         "disabled"?: boolean;
