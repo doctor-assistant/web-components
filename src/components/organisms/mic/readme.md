@@ -2,11 +2,12 @@
 
 <!-- Auto Generated Below -->
 
+
 ## Dependencies
 
 ### Used by
 
-- [daai-consultation-recorder](../../templates/daai-consultation-recorder)
+ - [daai-consultation-recorder](../../templates/daai-consultation-recorder)
 
 ### Depends on
 
@@ -18,7 +19,6 @@
 - [daai-config-mic-icon](../../atoms/icons)
 
 ### Graph
-
 ```mermaid
 graph TD;
   daai-mic --> daai-logo-icon
@@ -32,6 +32,6 @@ graph TD;
   style daai-mic fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
----
+----------------------------------------------
 
-_Built with [StencilJS](https://stenciljs.com/)_
+*Built with [StencilJS](https://stenciljs.com/)*
