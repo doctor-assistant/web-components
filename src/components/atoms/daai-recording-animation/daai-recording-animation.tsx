@@ -2,6 +2,7 @@ import { Component, Element, h, Prop, State, Watch } from '@stencil/core';
 
 @Component({
   tag: 'daai-recording-animation',
+  styleUrl: 'daai-recording-animation.css',
   shadow: true,
 })
 export class DaaiRecordingAnimation {

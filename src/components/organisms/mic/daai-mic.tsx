@@ -15,7 +15,6 @@ import state from '../../../Store/RecorderComponentStore';
     async requestMicrophonePermission() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
         state.microphonePermission = true;
 
         const devices = await navigator.mediaDevices.enumerateDevices();
@@ -60,9 +59,11 @@ import state from '../../../Store/RecorderComponentStore';
           />
         ) : null}
       </div>
-          <daai-button-with-icon id='config-mic' onClick={this.handleClick}>
-            <daai-config-mic-icon></daai-config-mic-icon>
-          </daai-button-with-icon>
+      {
+         state.microphonePermission === true && <daai-button-with-icon id='config-mic' onClick={this.handleClick}>
+          <daai-config-mic-icon></daai-config-mic-icon>
+        </daai-button-with-icon>
+        }
       </div>
       );
     }
