@@ -2,7 +2,6 @@ import { Component, Element, h, Prop, State, Watch } from '@stencil/core';
 
 @Component({
   tag: 'daai-recording-animation',
-  styleUrl: 'daai-recording-animation.css',
   shadow: true,
 })
 export class DaaiRecordingAnimation {
@@ -44,7 +43,7 @@ export class DaaiRecordingAnimation {
     this.dataArray = new Uint8Array(this.bufferLength);
   }
 
-  async startAnimationRecording() {
+  startAnimationRecording() {
     const canvasElement = this.canvasElement;
     if (!canvasElement) {
       console.error('Canvas não encontrado!');
@@ -52,6 +51,11 @@ export class DaaiRecordingAnimation {
     }
 
     const ctx = canvasElement.getContext('2d');
+    const computedStyles = getComputedStyle(this.el);
+
+    const animationRecordingColor = computedStyles.getPropertyValue('--animation-recording-color').trim();
+    const animationPausedColor = computedStyles.getPropertyValue('--animation-paused-color').trim();
+
     const defaultCanvWidth = 100;
     const defaultCanvHeight = 50;
     const lineWidth = 0.5;
@@ -71,11 +75,10 @@ export class DaaiRecordingAnimation {
 
         ctx.clearRect(0, 0, defaultCanvWidth, defaultCanvHeight);
 
-        const backgroundColor = '#FFF';
-        ctx.fillStyle = backgroundColor;
+        ctx.fillStyle = '#FFF';
         ctx.fillRect(0, 0, defaultCanvWidth, defaultCanvHeight);
 
-        ctx.strokeStyle = this.animationRecordingColor;
+        ctx.strokeStyle = animationRecordingColor;
         ctx.lineWidth = lineWidth;
 
         const h = defaultCanvHeight;
@@ -105,13 +108,10 @@ export class DaaiRecordingAnimation {
 
         ctx.clearRect(0, 0, defaultCanvWidth, defaultCanvHeight);
 
-        const backgroundColor = '#FFF';
-        ctx.fillStyle = backgroundColor;
+        ctx.fillStyle = '#FFF';
         ctx.fillRect(0, 0, defaultCanvWidth, defaultCanvHeight);
 
-        const dashLineColor = this.animationPausedColor;
-
-        ctx.strokeStyle = dashLineColor;
+        ctx.strokeStyle = animationPausedColor;
         ctx.lineWidth = lineWidth;
         ctx.setLineDash([3, 2]);
 
@@ -136,6 +136,7 @@ export class DaaiRecordingAnimation {
       draw();
     }
   }
+
 
   render() {
     return (

@@ -15,8 +15,8 @@ import state from '../../../Store/RecorderComponentStore';
     async requestMicrophonePermission() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
         state.microphonePermission = true;
-        console.log('Permissão concedida para o microfone');
 
         const devices = await navigator.mediaDevices.enumerateDevices();
         const microphones = devices
@@ -25,7 +25,6 @@ import state from '../../../Store/RecorderComponentStore';
 
         state.availableMicrophones = microphones;
 
-        console.log('Microfones disponíveis:',  state.availableMicrophones);
 
         stream.getTracks().forEach(track => track.stop());
       } catch (error) {
@@ -36,9 +35,7 @@ import state from '../../../Store/RecorderComponentStore';
     handleClick(){
       //@ts-ignore
       this.addEventListener('interface', (event) => {
-        console.log(event.detail); // Aqui você acessa o 'detail' do evento
         if (event.detail.configMic) {
-          // Lógica para lidar com a configuração do microfone
           console.log('Configuração de microfone ativada!');
         }
       });
@@ -46,9 +43,6 @@ import state from '../../../Store/RecorderComponentStore';
     }
 
     render() {
-      console.log(state.status,'state.status')
-      console.log(state.openModalConfig,'state.openModalConfig')
-
       return (
         <div class='flex items-center justify-center bg-white gap-2'>
           <daai-logo-icon></daai-logo-icon>
@@ -63,8 +57,6 @@ import state from '../../../Store/RecorderComponentStore';
           <daai-recording-animation
             id='animation-recording'
             status="recording"
-            animationRecordingColor="#F43F5E"
-            animationPausedColor="#009CB1"
           />
         ) : null}
       </div>

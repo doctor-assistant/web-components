@@ -11,11 +11,8 @@ export class DaaiConsultationRecorder {
     return (
       <Host>
         <slot>
-          <div class='w-96 bg-red-600 flex items-center justify-center p-2 rounded-md'>
+          <div class='w-96 bg-white flex items-center justify-center p-2 rounded-lg border-4 border-gray-100'>
           <daai-mic></daai-mic>
-          <daa-button-with-icon id='specialty'>
-            <daai-stethoscope-icon/>
-          </daa-button-with-icon>
           </div>
         </slot>
         {
