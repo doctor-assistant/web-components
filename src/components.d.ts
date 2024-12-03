@@ -41,6 +41,7 @@ export namespace Components {
     }
     interface DaaiModal {
         "headerTitle": string;
+        "items": any[];
     }
     interface DaaiPauseIcon {
         "color": string;
@@ -212,6 +213,7 @@ declare namespace LocalJSX {
     }
     interface DaaiModal {
         "headerTitle"?: string;
+        "items"?: any[];
     }
     interface DaaiPauseIcon {
         "color"?: string;

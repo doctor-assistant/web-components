@@ -5,7 +5,8 @@ const { state } = createStore({
   openModalConfig: false,
   openModalSpecialty: false,
   microphonePermission: false,
-  chosenMicrophone:''
+  availableMicrophones:[],
+  defaultMicrophone:''
 });
 
 export default state;

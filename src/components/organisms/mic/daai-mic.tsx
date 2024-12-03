@@ -12,19 +12,36 @@ import state from '../../../Store/RecorderComponentStore';
       await this.requestMicrophonePermission();
     }
 
-    // Função que solicita permissão para o microfone
     async requestMicrophonePermission() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        state.microphonePermission = true
+        state.microphonePermission = true;
         console.log('Permissão concedida para o microfone');
+
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const microphones = devices
+          .filter(device => device.kind === 'audioinput')
+          .map(device => device.label || 'Microfone sem nome');
+
+        state.availableMicrophones = microphones;
+
+        console.log('Microfones disponíveis:',  state.availableMicrophones);
+
+        stream.getTracks().forEach(track => track.stop());
       } catch (error) {
         console.error('Permissão do microfone negada ou erro ao acessar:', error);
-        alert('Permissão para acessar o microfone é necessária para continuar!');
       }
     }
 
     handleClick(){
+      //@ts-ignore
+      this.addEventListener('interface', (event) => {
+        console.log(event.detail); // Aqui você acessa o 'detail' do evento
+        if (event.detail.configMic) {
+          // Lógica para lidar com a configuração do microfone
+          console.log('Configuração de microfone ativada!');
+        }
+      });
       state.openModalConfig = true
     }
 

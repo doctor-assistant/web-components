@@ -19,7 +19,7 @@ export class DaaiConsultationRecorder {
           </div>
         </slot>
         {
-          state.openModalConfig && <daai-modal headerTitle='Escolha o seu Microfone'/>
+          state.openModalConfig && <daai-modal headerTitle='Escolha o seu Microfone' items={state.availableMicrophones}/>
         }
       </Host>
     );
