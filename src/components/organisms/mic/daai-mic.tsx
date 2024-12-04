@@ -34,11 +34,8 @@ import state from '../../../Store/RecorderComponentStore';
     handleClick(){
       //@ts-ignore
       this.addEventListener('interface', (event) => {
-        if (event.detail.configMic) {
-          console.log('Configuração de microfone ativada!');
-        }
+        state.openModalConfig = true
       });
-      state.openModalConfig = true
     }
 
     render() {
