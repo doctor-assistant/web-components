@@ -1,4 +1,5 @@
-import { Component, h } from '@stencil/core';
+import { Component, Event, EventEmitter, h } from '@stencil/core';
+import state from '../../../Store/RecorderComponentStore';
 
 @Component({
   tag: 'daai-mic',
@@ -6,19 +7,56 @@ import { Component, h } from '@stencil/core';
   shadow: false,
 })
 export class DaaiMic {
+  @Event() interfaceEvent: EventEmitter<{ microphoneSelect: boolean }>;
+
+  async componentDidLoad() {
+    await this.requestMicrophonePermission();
+  }
+
+  async requestMicrophonePermission() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      state.microphonePermission = true;
+
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const microphones = devices
+        .filter(device => device.kind === 'audioinput')
+        .map(device => device.label || 'Microfone sem nome');
+
+      state.availableMicrophones = microphones;
+
+      stream.getTracks().forEach(track => track.stop());
+    } catch (error) {
+      console.error('Permissão do microfone negada ou erro ao acessar:', error);
+    }
+  }
+
+  handleClick = () => {
+    this.interfaceEvent.emit({ microphoneSelect: true });
+    state.openModalConfig = true;
+  };
+
   render() {
     return (
-      <slot>
-      <div class='flex items-center justify-center gap-4'>
-      <daai-text text="Microfone" tag="p" id='daai-text'></daai-text>
-      <daai-button-with-icon id="start-recording">
-        <daai-mic-icon></daai-mic-icon>
-      </daai-button-with-icon>
-        <daai-button-with-icon id="pause-recording">
-        <daai-pause-icon></daai-pause-icon>
-      </daai-button-with-icon>
-    </div>
-    </slot>
+      <div class='flex items-center justify-center bg-white gap-2'>
+        <daai-logo-icon></daai-logo-icon>
+        <div class='flex items-center justify-center'>
+          {state.microphonePermission === false ? (
+            <daai-text text='Aguardando autorização do microfone' />
+          ) : state.status === 'initial' ? (
+            <div class='mt-4'>
+              <daai-mic-animation id='animation-test' />
+            </div>
+          ) : state.status === 'recording' || state.status === 'paused' ? (
+            <daai-recording-animation id='animation-recording' status="recording" />
+          ) : null}
+        </div>
+        {state.microphonePermission === true && (
+          <daai-button-with-icon id='config-mic' onClick={this.handleClick}>
+            <daai-config-mic-icon></daai-config-mic-icon>
+          </daai-button-with-icon>
+        )}
+      </div>
     );
   }
 }

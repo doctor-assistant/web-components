@@ -31,15 +31,26 @@ export namespace Components {
     }
     interface DaaiMic {
     }
+    interface DaaiMicAnimation {
+    }
     interface DaaiMicIcon {
         "color": string;
         "height": string;
         "width": string;
     }
+    interface DaaiModal {
+        "headerTitle": string;
+        "items": any[];
+    }
     interface DaaiPauseIcon {
         "color": string;
         "height": string;
         "width": string;
+    }
+    interface DaaiRecordingAnimation {
+        "animationPausedColor": string;
+        "animationRecordingColor": string;
+        "status": 'recording' | 'paused' | 'waiting' | 'finished' | 'micTest' | 'upload';
     }
     interface DaaiStethoscopeIcon {
         "color": string;
@@ -59,6 +70,10 @@ export namespace Components {
 export interface DaaiButtonCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDaaiButtonElement;
+}
+export interface DaaiMicCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDaaiMicElement;
 }
 declare global {
     interface HTMLDaaiButtonElementEventMap {
@@ -108,11 +123,28 @@ declare global {
         prototype: HTMLDaaiLogoIconElement;
         new (): HTMLDaaiLogoIconElement;
     };
+    interface HTMLDaaiMicElementEventMap {
+        "interfaceEvent": { microphoneSelect: boolean };
+    }
     interface HTMLDaaiMicElement extends Components.DaaiMic, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDaaiMicElementEventMap>(type: K, listener: (this: HTMLDaaiMicElement, ev: DaaiMicCustomEvent<HTMLDaaiMicElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDaaiMicElementEventMap>(type: K, listener: (this: HTMLDaaiMicElement, ev: DaaiMicCustomEvent<HTMLDaaiMicElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDaaiMicElement: {
         prototype: HTMLDaaiMicElement;
         new (): HTMLDaaiMicElement;
+    };
+    interface HTMLDaaiMicAnimationElement extends Components.DaaiMicAnimation, HTMLStencilElement {
+    }
+    var HTMLDaaiMicAnimationElement: {
+        prototype: HTMLDaaiMicAnimationElement;
+        new (): HTMLDaaiMicAnimationElement;
     };
     interface HTMLDaaiMicIconElement extends Components.DaaiMicIcon, HTMLStencilElement {
     }
@@ -120,11 +152,23 @@ declare global {
         prototype: HTMLDaaiMicIconElement;
         new (): HTMLDaaiMicIconElement;
     };
+    interface HTMLDaaiModalElement extends Components.DaaiModal, HTMLStencilElement {
+    }
+    var HTMLDaaiModalElement: {
+        prototype: HTMLDaaiModalElement;
+        new (): HTMLDaaiModalElement;
+    };
     interface HTMLDaaiPauseIconElement extends Components.DaaiPauseIcon, HTMLStencilElement {
     }
     var HTMLDaaiPauseIconElement: {
         prototype: HTMLDaaiPauseIconElement;
         new (): HTMLDaaiPauseIconElement;
+    };
+    interface HTMLDaaiRecordingAnimationElement extends Components.DaaiRecordingAnimation, HTMLStencilElement {
+    }
+    var HTMLDaaiRecordingAnimationElement: {
+        prototype: HTMLDaaiRecordingAnimationElement;
+        new (): HTMLDaaiRecordingAnimationElement;
     };
     interface HTMLDaaiStethoscopeIconElement extends Components.DaaiStethoscopeIcon, HTMLStencilElement {
     }
@@ -152,8 +196,11 @@ declare global {
         "daai-finish-recording-icon": HTMLDaaiFinishRecordingIconElement;
         "daai-logo-icon": HTMLDaaiLogoIconElement;
         "daai-mic": HTMLDaaiMicElement;
+        "daai-mic-animation": HTMLDaaiMicAnimationElement;
         "daai-mic-icon": HTMLDaaiMicIconElement;
+        "daai-modal": HTMLDaaiModalElement;
         "daai-pause-icon": HTMLDaaiPauseIconElement;
+        "daai-recording-animation": HTMLDaaiRecordingAnimationElement;
         "daai-stethoscope-icon": HTMLDaaiStethoscopeIconElement;
         "daai-support-icon": HTMLDaaiSupportIconElement;
         "daai-text": HTMLDaaiTextElement;
@@ -185,16 +232,28 @@ declare namespace LocalJSX {
         "width"?: string;
     }
     interface DaaiMic {
+        "onInterfaceEvent"?: (event: DaaiMicCustomEvent<{ microphoneSelect: boolean }>) => void;
+    }
+    interface DaaiMicAnimation {
     }
     interface DaaiMicIcon {
         "color"?: string;
         "height"?: string;
         "width"?: string;
     }
+    interface DaaiModal {
+        "headerTitle"?: string;
+        "items"?: any[];
+    }
     interface DaaiPauseIcon {
         "color"?: string;
         "height"?: string;
         "width"?: string;
+    }
+    interface DaaiRecordingAnimation {
+        "animationPausedColor"?: string;
+        "animationRecordingColor"?: string;
+        "status"?: 'recording' | 'paused' | 'waiting' | 'finished' | 'micTest' | 'upload';
     }
     interface DaaiStethoscopeIcon {
         "color"?: string;
@@ -218,8 +277,11 @@ declare namespace LocalJSX {
         "daai-finish-recording-icon": DaaiFinishRecordingIcon;
         "daai-logo-icon": DaaiLogoIcon;
         "daai-mic": DaaiMic;
+        "daai-mic-animation": DaaiMicAnimation;
         "daai-mic-icon": DaaiMicIcon;
+        "daai-modal": DaaiModal;
         "daai-pause-icon": DaaiPauseIcon;
+        "daai-recording-animation": DaaiRecordingAnimation;
         "daai-stethoscope-icon": DaaiStethoscopeIcon;
         "daai-support-icon": DaaiSupportIcon;
         "daai-text": DaaiText;
@@ -236,8 +298,11 @@ declare module "@stencil/core" {
             "daai-finish-recording-icon": LocalJSX.DaaiFinishRecordingIcon & JSXBase.HTMLAttributes<HTMLDaaiFinishRecordingIconElement>;
             "daai-logo-icon": LocalJSX.DaaiLogoIcon & JSXBase.HTMLAttributes<HTMLDaaiLogoIconElement>;
             "daai-mic": LocalJSX.DaaiMic & JSXBase.HTMLAttributes<HTMLDaaiMicElement>;
+            "daai-mic-animation": LocalJSX.DaaiMicAnimation & JSXBase.HTMLAttributes<HTMLDaaiMicAnimationElement>;
             "daai-mic-icon": LocalJSX.DaaiMicIcon & JSXBase.HTMLAttributes<HTMLDaaiMicIconElement>;
+            "daai-modal": LocalJSX.DaaiModal & JSXBase.HTMLAttributes<HTMLDaaiModalElement>;
             "daai-pause-icon": LocalJSX.DaaiPauseIcon & JSXBase.HTMLAttributes<HTMLDaaiPauseIconElement>;
+            "daai-recording-animation": LocalJSX.DaaiRecordingAnimation & JSXBase.HTMLAttributes<HTMLDaaiRecordingAnimationElement>;
             "daai-stethoscope-icon": LocalJSX.DaaiStethoscopeIcon & JSXBase.HTMLAttributes<HTMLDaaiStethoscopeIconElement>;
             "daai-support-icon": LocalJSX.DaaiSupportIcon & JSXBase.HTMLAttributes<HTMLDaaiSupportIconElement>;
             "daai-text": LocalJSX.DaaiText & JSXBase.HTMLAttributes<HTMLDaaiTextElement>;
