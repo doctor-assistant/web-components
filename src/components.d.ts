@@ -71,6 +71,10 @@ export interface DaaiButtonCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDaaiButtonElement;
 }
+export interface DaaiMicCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDaaiMicElement;
+}
 declare global {
     interface HTMLDaaiButtonElementEventMap {
         "onClick": any;
@@ -119,7 +123,18 @@ declare global {
         prototype: HTMLDaaiLogoIconElement;
         new (): HTMLDaaiLogoIconElement;
     };
+    interface HTMLDaaiMicElementEventMap {
+        "interfaceEvent": { microphoneSelect: boolean };
+    }
     interface HTMLDaaiMicElement extends Components.DaaiMic, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDaaiMicElementEventMap>(type: K, listener: (this: HTMLDaaiMicElement, ev: DaaiMicCustomEvent<HTMLDaaiMicElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDaaiMicElementEventMap>(type: K, listener: (this: HTMLDaaiMicElement, ev: DaaiMicCustomEvent<HTMLDaaiMicElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDaaiMicElement: {
         prototype: HTMLDaaiMicElement;
@@ -217,6 +232,7 @@ declare namespace LocalJSX {
         "width"?: string;
     }
     interface DaaiMic {
+        "onInterfaceEvent"?: (event: DaaiMicCustomEvent<{ microphoneSelect: boolean }>) => void;
     }
     interface DaaiMicAnimation {
     }

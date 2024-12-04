@@ -3,6 +3,13 @@
 <!-- Auto Generated Below -->
 
 
+## Events
+
+| Event            | Description | Type                                          |
+| ---------------- | ----------- | --------------------------------------------- |
+| `interfaceEvent` |             | `CustomEvent<{ microphoneSelect: boolean; }>` |
+
+
 ## Dependencies
 
 ### Used by
