@@ -75,8 +75,9 @@ daai-mic {
   color: var(--recorder-text-color);
 }
 
-#daai-text{
-  color: var(--recorder-text-color);
+daai-text{
+  color: var(--recorder-error-color);
+  font-weight: bold
 }
 
 #specialty{
