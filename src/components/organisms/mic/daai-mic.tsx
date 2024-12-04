@@ -33,9 +33,15 @@ import state from '../../../Store/RecorderComponentStore';
 
     handleClick(){
       //@ts-ignore
-      this.addEventListener('interface', (event) => {
-        state.openModalConfig = true
-      });
+      this.dispatchEvent(
+        new CustomEvent("interface", {
+          bubbles: true,
+          detail: {
+            microphoneSelect: true
+          },
+        }),
+      );
+      state.openModalConfig = true
     }
 
     render() {
