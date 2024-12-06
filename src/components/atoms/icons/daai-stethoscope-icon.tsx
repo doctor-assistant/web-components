@@ -6,8 +6,8 @@ import { Component, Prop, h } from '@stencil/core';
   shadow: true,
 })
 export class DaaiStethoscopeIcon {
-  @Prop() width: string = '32px';
-  @Prop() height: string = '32px';
+  @Prop() width: string = '26px';
+  @Prop() height: string = '26px';
   @Prop() color: string = '#5F6368';
 
   render() {

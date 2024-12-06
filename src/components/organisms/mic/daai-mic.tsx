@@ -38,7 +38,7 @@ export class DaaiMic {
 
   render() {
     return (
-      <div class='flex items-center justify-center bg-white gap-2'>
+      <div class='flex items-center justify-center bg-white'>
         <daai-logo-icon></daai-logo-icon>
         <div class='flex items-center justify-center'>
           {state.microphonePermission === false ? (
@@ -47,11 +47,11 @@ export class DaaiMic {
             <div class='mt-4'>
               <daai-mic-animation id='animation-test' />
             </div>
-          ) : state.status === 'recording' || state.status === 'paused' ? (
+          ) : state.status === 'recording' || state.status === 'paused'  || state.status === 'resume' ? (
             <daai-recording-animation id='animation-recording' status="recording" />
           ) : null}
         </div>
-        {state.microphonePermission === true && (
+        {state.microphonePermission === true &&  state.status === 'initial' && (
           <daai-button-with-icon id='config-mic' onClick={this.handleClick}>
             <daai-config-mic-icon></daai-config-mic-icon>
           </daai-button-with-icon>
