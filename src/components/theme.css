@@ -8,6 +8,7 @@
   --success-color:#28A18C;
   --error-color:#E11D48;
   --disable-color:#DFE4EA;
+  --support-color:#c9c9c9;
 
 
   --text-primary-color: #009CB1;
@@ -15,7 +16,7 @@
   --text-button-color: #ffff;
   --text-default-color:#475569;
 
-  --button-roudend-sm:10px;
+  --button-roudend-sm:6.25px;
   --button-roudend-md:20px;
   --button-roundend-sm:60px;
 

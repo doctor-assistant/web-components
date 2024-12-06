@@ -11,10 +11,17 @@ export class DaaiConsultationRecorder {
     return (
       <Host>
         <slot>
-          <div class='w-96 bg-white flex items-center justify-center p-2 rounded-lg border-4 border-gray-100'>
+        <div class="w-[330px] bg-white flex items-center justify-between rounded-lg border-4 border-gray-100 p-2">
           <daai-mic></daai-mic>
+          <div class="ml-auto flex gap-2 items-center">
+            {
+            state.status === 'recording' || state.status === 'paused' || state.status === 'resume' ?
+            <daai-clock/> : ''
+            }
+            <daai-consultation-actions></daai-consultation-actions>
           </div>
-        </slot>
+        </div>
+      </slot>
         {
           state.openModalConfig && <daai-modal headerTitle='Escolha o seu Microfone' items={state.availableMicrophones}/>
         }

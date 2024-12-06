@@ -6,7 +6,9 @@ const { state } = createStore({
   openModalSpecialty: false,
   microphonePermission: false,
   availableMicrophones:[],
-  defaultMicrophone:''
+  defaultMicrophone:'',
+  recordingTime:0
 });
 
+console.log('status atualizado:', state.status)
 export default state;
