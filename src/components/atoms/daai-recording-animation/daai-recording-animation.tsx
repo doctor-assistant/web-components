@@ -8,7 +8,7 @@ import { Component, Element, h, Prop, State, Watch } from '@stencil/core';
 export class DaaiRecordingAnimation {
   @Element() el: HTMLElement;
 
-  @Prop() status: 'recording' | 'paused' | 'waiting' | 'finished' | 'micTest' | 'upload' = 'waiting';
+  @Prop() status: string;
   @Prop() animationRecordingColor: string = '#F43F5E';
   @Prop() animationPausedColor: string = '#009CB1';
 
@@ -24,8 +24,8 @@ export class DaaiRecordingAnimation {
   }
 
   @Watch('status')
-  statusChanged() {
-    this.startAnimationRecording();
+  handleStatusChange(newValue: string, oldValue: string) {
+    console.log(`Status mudou de ${oldValue} para ${newValue}`);
   }
 
   async componentDidLoad() {
@@ -45,19 +45,14 @@ export class DaaiRecordingAnimation {
   }
 
   startAnimationRecording() {
-    const canvasElement = this.canvasElement;
-    if (!canvasElement) {
+    if (!this.canvasElement) {
       console.error('Canvas não encontrado!');
       return;
     }
 
-    const ctx = canvasElement.getContext('2d');
-    const computedStyles = getComputedStyle(this.el);
+    const ctx = this.canvasElement.getContext('2d');
 
-    const animationRecordingColor = computedStyles.getPropertyValue('--animation-recording-color').trim();
-    const animationPausedColor = computedStyles.getPropertyValue('--animation-paused-color').trim();
-
-    const defaultCanvWidth = 100;
+    const defaultCanvWidth = 120;
     const defaultCanvHeight = 50;
     const lineWidth = 0.5;
     const frequLnum = 50;
@@ -65,8 +60,8 @@ export class DaaiRecordingAnimation {
 
     const centerX = defaultCanvWidth / 2;
 
-    canvasElement.width = defaultCanvWidth;
-    canvasElement.height = defaultCanvHeight;
+    this.canvasElement.width = defaultCanvWidth;
+    this.canvasElement.height = defaultCanvHeight;
 
     const draw = () => {
       if (this.status === 'recording' || this.status === 'micTest' || this.status === 'upload') {
@@ -76,10 +71,11 @@ export class DaaiRecordingAnimation {
 
         ctx.clearRect(0, 0, defaultCanvWidth, defaultCanvHeight);
 
+        // Fundo branco
         ctx.fillStyle = '#FFF';
         ctx.fillRect(0, 0, defaultCanvWidth, defaultCanvHeight);
 
-        ctx.strokeStyle = animationRecordingColor;
+        ctx.strokeStyle = this.animationRecordingColor;
         ctx.lineWidth = lineWidth;
 
         const h = defaultCanvHeight;
@@ -105,39 +101,35 @@ export class DaaiRecordingAnimation {
           }
         }
       } else if (this.status === 'paused') {
-        requestAnimationFrame(draw);
 
         ctx.clearRect(0, 0, defaultCanvWidth, defaultCanvHeight);
 
         ctx.fillStyle = '#FFF';
         ctx.fillRect(0, 0, defaultCanvWidth, defaultCanvHeight);
 
-        ctx.strokeStyle = animationPausedColor;
-        ctx.lineWidth = lineWidth;
-        ctx.setLineDash([3, 2]);
-
         const centerY = defaultCanvHeight / 2;
+
+        ctx.strokeStyle = this.animationPausedColor;
+        ctx.lineWidth = lineWidth;
 
         ctx.beginPath();
         ctx.moveTo(0, centerY);
         ctx.lineTo(defaultCanvWidth, centerY);
         ctx.stroke();
-
-        ctx.setLineDash([]);
       } else {
-        canvasElement.width = 0;
-        canvasElement.height = 0;
+        ctx.clearRect(0, 0, defaultCanvWidth, defaultCanvHeight);
+        this.canvasElement.width = 0;
+        this.canvasElement.height = 0;
       }
     };
 
     if (this.status === 'waiting' || this.status === 'finished') {
-      canvasElement.classList.add('hidden');
+      this.canvasElement.classList.add('hidden');
     } else {
-      canvasElement.classList.remove('hidden');
+      this.canvasElement.classList.remove('hidden');
       draw();
     }
   }
-
 
   render() {
     return (
