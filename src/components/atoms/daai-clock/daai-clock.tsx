@@ -11,6 +11,7 @@ export class DaaiClock {
   intervalId: NodeJS.Timer | null = null;
 
   componentDidLoad() {
+    console.log(this.updateTimerStatus())
     this.updateTimerStatus();
   }
 
@@ -19,6 +20,7 @@ export class DaaiClock {
   }
 
   updateTimerStatus() {
+    console.log(state.status)
     if(state.status === 'recording'){
       this.startTimer()
     }

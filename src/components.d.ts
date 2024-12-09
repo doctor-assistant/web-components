@@ -20,8 +20,18 @@ export namespace Components {
         "width": string;
     }
     interface DaaiConsultationActions {
+        "apiKey": string;
+        "metadata": string;
+        "onError": any;
+        "onSuccess": any;
+        "specialty": string;
     }
     interface DaaiConsultationRecorder {
+        "apiKey": string;
+        "metadata": string;
+        "onError": any;
+        "onSuccess": any;
+        "specialty": string;
     }
     interface DaaiFinishRecordingIcon {
         "color": string;
@@ -54,7 +64,7 @@ export namespace Components {
     interface DaaiRecordingAnimation {
         "animationPausedColor": string;
         "animationRecordingColor": string;
-        "status": 'recording' | 'paused' | 'waiting' | 'finished' | 'micTest' | 'upload';
+        "status": string;
     }
     interface DaaiResumeRecordingIcon {
         "color": string;
@@ -252,8 +262,18 @@ declare namespace LocalJSX {
         "width"?: string;
     }
     interface DaaiConsultationActions {
+        "apiKey"?: string;
+        "metadata"?: string;
+        "onError"?: any;
+        "onSuccess"?: any;
+        "specialty"?: string;
     }
     interface DaaiConsultationRecorder {
+        "apiKey"?: string;
+        "metadata"?: string;
+        "onError"?: any;
+        "onSuccess"?: any;
+        "specialty"?: string;
     }
     interface DaaiFinishRecordingIcon {
         "color"?: string;
@@ -287,7 +307,7 @@ declare namespace LocalJSX {
     interface DaaiRecordingAnimation {
         "animationPausedColor"?: string;
         "animationRecordingColor"?: string;
-        "status"?: 'recording' | 'paused' | 'waiting' | 'finished' | 'micTest' | 'upload';
+        "status"?: string;
     }
     interface DaaiResumeRecordingIcon {
         "color"?: string;

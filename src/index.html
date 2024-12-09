@@ -8,6 +8,13 @@
     <script type="module" src="/build/web-components.esm.js"></script>
     <script nomodule src="/build/web-components.js"></script>
     <script>
+       function onSuccess(data) {
+        console.log('sucesso',data);
+      }
+      function onError(data) {
+        console.log('erro',data);
+      }
+
       document.addEventListener('DOMContentLoaded', () => {
         const daaiMicElement = document.querySelector('daai-consultation-recorder');
 
@@ -22,6 +29,9 @@
     </script>
   </head>
   <body>
-    <daai-consultation-recorder/>
+    <daai-consultation-recorder
+    apiKey=''
+  ></daai-consultation-recorder>
+
   </body>
 </html>

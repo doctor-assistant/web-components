@@ -1,4 +1,4 @@
-import { Component, Host, h } from '@stencil/core';
+import { Component, h, Host, Prop } from '@stencil/core';
 import state from '../../../Store/RecorderComponentStore';
 
 @Component({
@@ -7,24 +7,38 @@ import state from '../../../Store/RecorderComponentStore';
   shadow: true,
 })
 export class DaaiConsultationRecorder {
+  @Prop() apiKey: string;
+  @Prop() specialty: string;
+  @Prop() onSuccess: any;
+  @Prop() onError: any;
+  @Prop() metadata: string;
+
   render() {
+    console.log('apiKey:', this.apiKey);
+    console.log(state.chooseModality,'state.chooseModality')
     return (
       <Host>
         <slot>
-        <div class="w-[330px] bg-white flex items-center justify-between rounded-lg border-4 border-gray-100 p-2">
-          <daai-mic></daai-mic>
-          <div class="ml-auto flex gap-2 items-center">
+          <div class="w-[360px] bg-white flex items-center justify-between rounded-lg border-4 border-gray-100 p-2">
+            <daai-mic></daai-mic>
             {
-            state.status === 'recording' || state.status === 'paused' || state.status === 'resume' ?
-            <daai-clock/> : ''
+              state.status === 'choosen' ?
+              <daai-text text='Consulta' id='choosen-mode'/> : ''
             }
-            <daai-consultation-actions></daai-consultation-actions>
+            <div class="ml-auto flex gap-2 items-center">
+              {state.status === 'recording' || state.status === 'paused' || state.status === 'resume' ? (
+                <daai-clock />
+              ) : (
+                ''
+              )}
+              <daai-consultation-actions   apiKey={this.apiKey} specialty={this.specialty} metadata={this.metadata} onError={this.onError} onSuccess={this.onSuccess}
+              ></daai-consultation-actions>
+            </div>
           </div>
-        </div>
-      </slot>
-        {
-          state.openModalConfig && <daai-modal headerTitle='Escolha o seu Microfone' items={state.availableMicrophones}/>
-        }
+        </slot>
+        {state.openModalConfig && (
+          <daai-modal headerTitle="Escolha o seu Microfone" items={state.availableMicrophones} />
+        )}
       </Host>
     );
   }

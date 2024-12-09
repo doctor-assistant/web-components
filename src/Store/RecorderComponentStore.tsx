@@ -4,8 +4,10 @@ const { state } = createStore({
   status: 'initial',
   openModalConfig: false,
   openModalSpecialty: false,
+  chooseModality: false,
   microphonePermission: false,
   availableMicrophones:[],
+  chosenMicrophone:'',
   defaultMicrophone:'',
   recordingTime:0
 });

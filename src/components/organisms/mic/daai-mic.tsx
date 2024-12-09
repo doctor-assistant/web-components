@@ -42,13 +42,13 @@ export class DaaiMic {
         <daai-logo-icon></daai-logo-icon>
         <div class='flex items-center justify-center'>
           {state.microphonePermission === false ? (
-            <daai-text text='Aguardando autorização do microfone' />
+            <daai-text text='Aguardando autorização do microfone' id='error-msg'/>
           ) : state.status === 'initial' ? (
             <div class='mt-4'>
               <daai-mic-animation id='animation-test' />
             </div>
-          ) : state.status === 'recording' || state.status === 'paused'  || state.status === 'resume' ? (
-            <daai-recording-animation id='animation-recording' status="recording" />
+          ) : state.status === 'recording' || state.status === 'paused' || state.status === 'resume' ? (
+            <daai-recording-animation id="animation-recording" status={state.status} />
           ) : null}
         </div>
         {state.microphonePermission === true &&  state.status === 'initial' && (
