@@ -63,6 +63,7 @@ export class DaaiRecordingAnimation {
     const draw = () => {
       if (
         this.status === "recording" ||
+        this.status === "resume" ||
         this.status === "micTest" ||
         this.status === "upload"
       ) {

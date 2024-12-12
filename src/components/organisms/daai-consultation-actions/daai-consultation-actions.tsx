@@ -94,13 +94,7 @@ export class DaaiConsultationActions {
   resumeRecording() {
     if (this.mediaRecorder?.state === "paused") {
       this.mediaRecorder.resume();
-      state.status = "recording";
-    }
-    if (this.localStream) {
-      this.localStream
-        .getAudioTracks()
-        .forEach((track) => (track.enabled = true));
-      state.status = "recording";
+      state.status = "resume";
     }
   }
 

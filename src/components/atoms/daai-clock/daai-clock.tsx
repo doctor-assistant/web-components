@@ -19,7 +19,7 @@ export class DaaiClock {
 
     switch (currentStatus) {
       case "recording":
-        this.startTimer();
+        this.startTimer(true);
         break;
       case "paused":
         this.pauseTimer();
@@ -35,13 +35,22 @@ export class DaaiClock {
     }
   }
 
-  startTimer() {
+  startTimer(reset: boolean = false) {
+    if (reset) {
+      state.recordingTime = 0;
+      if (this.timerElement) {
+        this.timerElement.innerText = this.getFormattedRecordingTime(0);
+      }
+    }
+
     if (!this.intervalId) {
       this.intervalId = setInterval(() => {
         state.recordingTime++;
-        this.timerElement.innerText = this.getFormattedRecordingTime(
-          state.recordingTime
-        );
+        if (this.timerElement) {
+          this.timerElement.innerText = this.getFormattedRecordingTime(
+            state.recordingTime
+          );
+        }
       }, 1000);
     }
   }
@@ -54,7 +63,16 @@ export class DaaiClock {
   }
 
   resumeTimer() {
-    this.startTimer();
+    if (!this.intervalId) {
+      this.intervalId = setInterval(() => {
+        state.recordingTime++;
+        if (this.timerElement) {
+          this.timerElement.innerText = this.getFormattedRecordingTime(
+            state.recordingTime
+          );
+        }
+      }, 1000);
+    }
   }
 
   stopTimer() {
