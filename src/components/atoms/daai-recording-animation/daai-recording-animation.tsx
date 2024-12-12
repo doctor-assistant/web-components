@@ -24,10 +24,6 @@ export class DaaiRecordingAnimation {
   }
 
   @Watch("status")
-  handleStatusChange(newValue: string, oldValue: string) {
-    console.log(`Status mudou de ${oldValue} para ${newValue}`);
-  }
-
   async componentDidLoad() {
     await this.initializeAudio();
     await this.startAnimationRecording();

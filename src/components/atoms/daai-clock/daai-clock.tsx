@@ -14,7 +14,7 @@ export class DaaiClock {
   @State() canvasElement!: HTMLCanvasElement;
 
   @Watch("status")
-  handleStatusChange(newValue: string, oldValue: string) {
+  handleStatusChange(newValue: string, _oldValue: string) {
     const currentStatus = newValue || "recording";
 
     switch (currentStatus) {
