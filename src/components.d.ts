@@ -13,6 +13,7 @@ export namespace Components {
         "type": 'primary' | 'secondary';
     }
     interface DaaiClock {
+        "status": string;
     }
     interface DaaiConfigMicIcon {
         "color": string;
@@ -22,8 +23,8 @@ export namespace Components {
     interface DaaiConsultationActions {
         "apiKey": string;
         "metadata": string;
-        "onError": any;
-        "onSuccess": any;
+        "onError": (error: any) => void;
+        "onSuccess": (response: any) => void;
         "specialty": string;
     }
     interface DaaiConsultationRecorder {
@@ -255,6 +256,7 @@ declare namespace LocalJSX {
         "type"?: 'primary' | 'secondary';
     }
     interface DaaiClock {
+        "status"?: string;
     }
     interface DaaiConfigMicIcon {
         "color"?: string;
@@ -264,8 +266,8 @@ declare namespace LocalJSX {
     interface DaaiConsultationActions {
         "apiKey"?: string;
         "metadata"?: string;
-        "onError"?: any;
-        "onSuccess"?: any;
+        "onError"?: (error: any) => void;
+        "onSuccess"?: (response: any) => void;
         "specialty"?: string;
     }
     interface DaaiConsultationRecorder {

@@ -1,37 +1,37 @@
-import { Component, h, Host } from '@stencil/core';
-import state from '../../../Store/RecorderComponentStore';
+import { Component, h, Host, Prop, State, Watch } from "@stencil/core";
+import state from "../../../Store/RecorderComponentStore";
 
 @Component({
-  tag: 'daai-clock',
-  styleUrl: 'daai-clock.css',
+  tag: "daai-clock",
+  styleUrl: "daai-clock.css",
   shadow: true,
 })
 export class DaaiClock {
   timerElement: HTMLElement;
   intervalId: NodeJS.Timer | null = null;
 
-  componentDidLoad() {
-    console.log(this.updateTimerStatus())
-    this.updateTimerStatus();
-  }
+  @Prop() status: string = "recording";
+  @State() canvasElement!: HTMLCanvasElement;
 
-  componentDidUpdate() {
-    this.updateTimerStatus();
-  }
+  @Watch("status")
+  handleStatusChange(newValue: string, oldValue: string) {
+    const currentStatus = newValue || "recording";
 
-  updateTimerStatus() {
-    console.log(state.status)
-    if(state.status === 'recording'){
-      this.startTimer()
-    }
-    if(state.status === 'paused'){
-      this.pauseTimer()
-    }
-    if(state.status === 'resume'){
-      this.resumeTimer()
-    }
-    if(state.status === 'finished'){
-      this.stopTimer()
+    switch (currentStatus) {
+      case "recording":
+        this.startTimer();
+        break;
+      case "paused":
+        this.pauseTimer();
+        break;
+      case "resume":
+        this.resumeTimer();
+        break;
+      case "finished":
+        this.stopTimer();
+        break;
+      default:
+        break;
     }
   }
 
@@ -47,14 +47,13 @@ export class DaaiClock {
   }
 
   pauseTimer() {
-    console.log('pausou')
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
   }
 
- resumeTimer() {
+  resumeTimer() {
     this.startTimer();
   }
 
@@ -67,10 +66,17 @@ export class DaaiClock {
   }
 
   getFormattedRecordingTime(recordingTime: number): string {
-    const hours = String(Math.floor(recordingTime / 3600)).padStart(2, '0');
-    const minutes = String(Math.floor((recordingTime % 3600) / 60)).padStart(2, '0');
-    const seconds = String(recordingTime % 60).padStart(2, '0');
+    const hours = String(Math.floor(recordingTime / 3600)).padStart(2, "0");
+    const minutes = String(Math.floor((recordingTime % 3600) / 60)).padStart(
+      2,
+      "0"
+    );
+    const seconds = String(recordingTime % 60).padStart(2, "0");
     return `${hours}:${minutes}:${seconds}`;
+  }
+
+  componentDidLoad() {
+    this.handleStatusChange(this.status, "");
   }
 
   render() {

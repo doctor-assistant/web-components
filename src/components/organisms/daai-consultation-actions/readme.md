@@ -5,6 +5,17 @@
 <!-- Auto Generated Below -->
 
 
+## Properties
+
+| Property    | Attribute    | Description | Type     | Default     |
+| ----------- | ------------ | ----------- | -------- | ----------- |
+| `apiKey`    | `api-key`    |             | `string` | `undefined` |
+| `metadata`  | `metadata`   |             | `string` | `undefined` |
+| `onError`   | `on-error`   |             | `any`    | `undefined` |
+| `onSuccess` | `on-success` |             | `any`    | `undefined` |
+| `specialty` | `specialty`  |             | `string` | `undefined` |
+
+
 ## Dependencies
 
 ### Used by

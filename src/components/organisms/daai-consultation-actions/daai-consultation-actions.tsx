@@ -1,284 +1,240 @@
-import { Component, h, Prop, State } from '@stencil/core';
-import state from '../../../Store/RecorderComponentStore';
-
+import { Component, h, Prop, State } from "@stencil/core";
+import state from "../../../Store/RecorderComponentStore";
 
 @Component({
-  tag: 'daai-consultation-actions',
-  styleUrl: 'daai-consultation-actions.css',
+  tag: "daai-consultation-actions",
+  styleUrl: "daai-consultation-actions.css",
   shadow: false,
 })
 export class DaaiConsultationActions {
   @Prop() apiKey: string;
   @Prop() specialty: string;
-  @Prop() onSuccess: any;
-  @Prop() onError: any;
+  @Prop() onSuccess: (response: any) => void;
+  @Prop() onError: (error: any) => void;
   @Prop() metadata: string;
 
-  @State() mediaRecorder: MediaRecorder | null = null;
-  @State() error: string = '';
+  @State() error: string = "";
   @State() localStream: MediaStream | null = null;
-  @State() mode: string
-  @State() chunks: BlobPart[] = [];
-  @State() audioDownloadLink: string | null = null;
+  @State() mode: "local" | "telemedicine" | null = null;
+  @State() mediaRecorder: MediaRecorder | null = null;
 
-
-
- choosenMode(){
-  state.status = 'choosen'
- }
-
-  startRecordingLocal = async () => {
-    state.chooseModality = true
-    state.status = 'recording'
-
-
-   this.mode = 'local'
-    const constraints = {
-      audio: {
-        deviceId: state.chosenMicrophone
-          ? { exact: state.defaultMicrophone }
-          : undefined,
-      },
-    };
-
-   const stream = await navigator.mediaDevices.getUserMedia(constraints)
-   const audioContext = new (window.AudioContext)();
-   const source = audioContext.createMediaStreamSource(stream);
-   const analyser = audioContext.createAnalyser()
-   analyser.fftSize = 256
-  //  const bufferLength = analyser.frequencyBinCount;
-  //  const dataArray = new Uint8Array(bufferLength)
-
-   const gainNode = audioContext.createGain()
-   gainNode.gain.value = 0
-
-   source.connect(analyser);
-   analyser.connect(gainNode)
-   gainNode.connect(audioContext.destination)
-
- this.mediaRecorder = new MediaRecorder(stream)
-
- this.mediaRecorder.onstart = () => {
-
-};
-this.mediaRecorder.start();
+  async choosenMode() {
+    state.status = "choosen";
   }
 
-  startRecordingTelemedicine = async() => {
-    this.mode = 'telemedicine'
-    this.error = '';
+  async startRecordingLocal() {
+    state.chooseModality = true;
+    state.status = "recording";
+    this.mode = "local";
+
     try {
-      const screenStream = await navigator.mediaDevices.getDisplayMedia({ audio: true });
-      const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          deviceId: state.chosenMicrophone
+            ? { exact: state.defaultMicrophone }
+            : undefined,
+        },
+      });
 
-      const composedStream = new MediaStream();
-      // screenStream.getVideoTracks().forEach(track => composedStream.addTrack(track));
+      this.initializeMediaRecorder(stream);
+    } catch (error) {
+      this.error = "Erro ao acessar o microfone.";
+      console.error(error);
+    }
+  }
 
-      const context = new AudioContext();
-      const audioDestination = context.createMediaStreamDestination();
+  async startRecordingTelemedicine() {
+    this.mode = "telemedicine";
+    this.error = "";
 
-      state.status = 'recording'
-      if (screenStream.getAudioTracks().length > 0) {
-        const systemSource = context.createMediaStreamSource(screenStream);
-        const systemGain = context.createGain();
-        systemGain.gain.value = 1.0;
-        systemSource.connect(systemGain).connect(audioDestination);
-      }
-
-      if (micStream.getAudioTracks().length > 0) {
-        const micSource = context.createMediaStreamSource(micStream);
-        const micGain = context.createGain();
-        micGain.gain.value = 1.0;
-        micSource.connect(micGain).connect(audioDestination);
-      }
-
-      audioDestination.stream.getAudioTracks().forEach(track => composedStream.addTrack(track));
-      this.onCombinedStreamAvailable(composedStream);
-
-      console.log(composedStream,'composedStream')
-      state.status = 'recording'
-
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({
+        audio: true,
+      });
+      const micStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+      state.status = "recording";
+      const composedStream = this.mergeStreams(screenStream, micStream);
+      this.initializeMediaRecorder(composedStream);
     } catch (err) {
       console.error(err);
-      this.error = '';
+      this.error = "Erro ao acessar o áudio da telemedicina.";
     }
-  };
-
-  onCombinedStreamAvailable(stream: MediaStream) {
-    this.localStream = stream;
   }
 
-  pauseRecording(){
-    state.status = 'paused'
-  }
+  mergeStreams(screenStream: MediaStream, micStream: MediaStream): MediaStream {
+    const context = new AudioContext();
+    const audioDestination = context.createMediaStreamDestination();
 
-  resumeRecording(){
-    state.status = 'resume'
-  }
-
-  finishRecording = async () => {
-    console.log('Finalizou a gravação');
-    console.log('mediaRecorder', this.mediaRecorder);
-    console.log(this.mode, 'this.mode');
-
-    const handleRecordingStop = async (audioChunks: Blob[]) => {
-        try {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-            console.log(audioBlob, 'audioBlob');
-
-            const audioUrl = URL.createObjectURL(audioBlob);
-
-            await this.uploadAudio(audioBlob, this.apiKey, this.onSuccess, this.onError, this.specialty, 'dev', this.metadata);
-
-            const audioElement = document.createElement('audio');
-            audioElement.src = audioUrl;
-            audioElement.controls = true;
-            audioElement.autoplay = true;
-            document.body.appendChild(audioElement);
-        } catch (error) {
-            console.error('Erro ao salvar ou recuperar áudio:', error);
-        }
+    const addAudioTrack = (stream: MediaStream) => {
+      const source = context.createMediaStreamSource(stream);
+      const gainNode = context.createGain();
+      gainNode.gain.value = 1.0;
+      source.connect(gainNode).connect(audioDestination);
     };
 
-    if (this.mode === 'telemedicine' && this.localStream) {
-        console.log('Modo: Telemedicina');
+    if (screenStream.getAudioTracks().length) addAudioTrack(screenStream);
+    if (micStream.getAudioTracks().length) addAudioTrack(micStream);
 
-        this.mediaRecorder = new MediaRecorder(this.localStream);
-        const chunks: Blob[] = [];
+    return audioDestination.stream;
+  }
 
-        this.mediaRecorder.ondataavailable = (event) => chunks.push(event.data);
-        this.mediaRecorder.onstop = () => handleRecordingStop(chunks);
+  initializeMediaRecorder(stream: MediaStream) {
+    this.localStream = stream;
+    this.mediaRecorder = new MediaRecorder(stream);
 
-        this.mediaRecorder.start();
-    } else if (this.mode === 'local') {
-        console.log('Modo: Local');
+    const audioChunks: Blob[] = [];
+    this.mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) audioChunks.push(event.data);
+    };
 
-        const audioChunks: Blob[] = [];
-        this.mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-                audioChunks.push(event.data);
-            }
-        };
-        this.mediaRecorder.onstop = () => handleRecordingStop(audioChunks);
-    } else {
-        console.warn('Modo de gravação não reconhecido:', this.mode);
+    this.mediaRecorder.onstop = async () => {
+      const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+      await this.uploadAudio(audioBlob);
+    };
+
+    this.mediaRecorder.start();
+  }
+
+  pauseRecording() {
+    if (this.mediaRecorder?.state === "recording") {
+      this.mediaRecorder.pause();
+      state.status = "paused";
     }
+  }
 
-    this.mediaRecorder.stop();
-    state.status = 'finished';
-};
+  resumeRecording() {
+    if (this.mediaRecorder?.state === "paused") {
+      this.mediaRecorder.resume();
+      state.status = "recording";
+    }
+  }
 
+  finishRecording() {
+    if (this.mediaRecorder?.state === "recording") {
+      this.mediaRecorder.stop();
+      state.status = "finished";
+    }
+  }
 
-  async uploadAudio(audioBlob, apiKey, onSuccess, onError, specialty, modeApi, metadata) {
-    console.log(apiKey,'apikey')
-    console.log(metadata,'metadata')
-    const url = modeApi === 'dev'
-    ? 'https://apim.doctorassistant.ai/api/sandbox/consultations'
-    : 'https://apim.doctorassistant.ai/api/production/consultations';
+  async uploadAudio(audioBlob: Blob) {
+    const url =
+      process.env.MODE_API === "dev"
+        ? "https://apim.doctorassistant.ai/api/sandbox/consultations"
+        : "https://apim.doctorassistant.ai/api/production/consultations";
 
     const formData = new FormData();
-    formData.append('recording', audioBlob);
-    formData.append('specialty', specialty);
-    if(metadata){
-      formData.append('metadata', JSON.stringify(metadata));
-    }
-
-
-    console.log(apiKey,'apiKey')
+    formData.append("recording", audioBlob);
+    formData.append("specialty", this.specialty);
+    if (this.metadata)
+      formData.append("metadata", JSON.stringify(this.metadata));
 
     try {
       const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'x-daai-api-key': apiKey,
-        },
+        method: "POST",
+        headers: { "x-daai-api-key": this.apiKey },
         body: formData,
       });
 
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        if (typeof onError === 'function') {
-          onError('Erro na requisição', errorResponse);
-        }
-        return;
-      }
-
       if (response.ok) {
         const jsonResponse = await response.json();
-        if (typeof onSuccess === 'function') {
-          console.log('aquii')
-          onSuccess(jsonResponse);
-        }
+        this.onSuccess?.(jsonResponse);
+      } else {
+        const errorResponse = await response.json();
+        this.onError?.(errorResponse);
       }
     } catch (error) {
-      console.error('Erro ao enviar o áudio:', error);
-      if (typeof onError === 'function') {
-        console.log('aquii')
-        onError('erro na requisição', error);
-      }
+      console.error("Erro ao enviar o áudio:", error);
+      this.onError?.(error);
     }
+  }
 
+  renderButtons() {
+    switch (state.status) {
+      case "initial":
+        return (
+          <div class="flex items-center justify-center gap-2">
+            <daai-button-with-icon id="specialty">
+              <daai-stethoscope-icon />
+            </daai-button-with-icon>
+            <daai-button-with-icon
+              id="start-recording"
+              onClick={() => this.choosenMode()}
+            >
+              <daai-mic-icon />
+            </daai-button-with-icon>
+            <daai-button-with-icon id="button-support">
+              <daai-support-icon />
+            </daai-button-with-icon>
+          </div>
+        );
+      case "choosen":
+        return (
+          <div class="flex items-center justify-center gap-2">
+            <daai-button-with-icon
+              id="choose-local-consultation"
+              onClick={() => this.startRecordingLocal()}
+            >
+              Presencial
+            </daai-button-with-icon>
+            <daai-button-with-icon
+              id="choose-telemedicine-consultation"
+              onClick={() => this.startRecordingTelemedicine()}
+            >
+              Telemedicina
+            </daai-button-with-icon>
+          </div>
+        );
+      case "recording":
+      case "resume":
+        return (
+          <div class="flex items-center justify-center gap-2">
+            <daai-button-with-icon
+              id="pause-recording"
+              onClick={() => this.pauseRecording()}
+            >
+              <daai-pause-icon />
+            </daai-button-with-icon>
+            <daai-button-with-icon
+              id="button-finish"
+              onClick={() => this.finishRecording()}
+            >
+              <daai-finish-recording-icon />
+            </daai-button-with-icon>
+          </div>
+        );
+      case "paused":
+        return (
+          <div class="flex items-center justify-center gap-2">
+            <daai-button-with-icon id="pause-recording-disabled" disabled>
+              <daai-pause-icon />
+            </daai-button-with-icon>
+            <daai-button-with-icon
+              id="button-resume"
+              onClick={() => this.resumeRecording()}
+            >
+              <daai-resume-recording-icon />
+            </daai-button-with-icon>
+          </div>
+        );
+      case "finished":
+        return (
+          <div class="flex items-center justify-center gap-2">
+            <daai-button-with-icon
+              id="start-recording"
+              onClick={() => this.startRecordingLocal()}
+            >
+              <daai-mic-icon />
+            </daai-button-with-icon>
+          </div>
+        );
+      default:
+        return null;
+    }
   }
 
   render() {
-    return (
-      <div>
-        {
-          state.status === 'initial' ?
-          <div class='flex items-center justify-center gap-2'>
-             <daai-button-with-icon id='specialty'>
-                <daai-stethoscope-icon />
-              </daai-button-with-icon>
-              <daai-button-with-icon id='start-recording' onClick={this.choosenMode}>
-                <daai-mic-icon/>
-              </daai-button-with-icon>
-              <daai-button-with-icon id='button-support'>
-                <daai-support-icon/>
-              </daai-button-with-icon>
-          </div> : ''
-        }
-        {
-          state.status === 'choosen' ?
-          <div class='flex items-center justify-center gap-2'>
-             <daai-button-with-icon id='choose-local-consultation' onClick={this.startRecordingLocal}>
-                Presencial
-              </daai-button-with-icon>
-              <daai-button-with-icon id='choose-telemedicine-consultation' onClick={this.startRecordingTelemedicine}>
-                Telemedicina
-              </daai-button-with-icon>
-          </div> : ''
-        }
-        {
-          state.status === 'recording' || state.status === 'resume' ?
-          <div class='flex items-center justify-center gap-2'>
-              <daai-button-with-icon id='pause-recording' onClick={this.pauseRecording}>
-                <daai-pause-icon/>
-              </daai-button-with-icon>
-              <daai-button-with-icon id='button-finish' onClick={this.finishRecording}>
-                <daai-finish-recording-icon/>
-              </daai-button-with-icon>
-          </div> : ''
-        }
-        {
-          state.status === 'paused' ?
-          <div class='flex items-center justify-center gap-2'>
-              <daai-button-with-icon id='pause-recording-disabled' onClick={this.pauseRecording} disabled>
-                <daai-pause-icon/>
-              </daai-button-with-icon>
-              <daai-button-with-icon id='button-resume' onClick={this.resumeRecording}>
-                <daai-resume-recording-icon/>
-              </daai-button-with-icon>
-          </div> : ''
-        }
-        {
-          state.status === 'finished' ?
-          <div class='flex items-center justify-center gap-2'>
-               <daai-button-with-icon id='start-recording' onClick={this.startRecordingLocal}>
-                <daai-mic-icon/>
-              </daai-button-with-icon>
-          </div> : ''
-        }
-      </div>
-    );
+    return <div>{this.renderButtons()}</div>;
   }
 }

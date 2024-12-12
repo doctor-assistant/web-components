@@ -1,20 +1,22 @@
-import { Component, Prop, h } from '@stencil/core';
+import { Component, Prop, h } from "@stencil/core";
 
 @Component({
-  tag: 'daai-mic-icon',
-  styleUrl: '',
+  tag: "daai-mic-icon",
+  styleUrl: "",
   shadow: true,
 })
 export class DaaiMicIcon {
-  @Prop() width: string = '26px';
-  @Prop() height: string = '26px';
-  @Prop() color: string = 'white';
+  @Prop() width: string = "26px";
+  @Prop() height: string = "26px";
+  @Prop() color: string = "white";
 
   render() {
     return (
       <div class="icon-container">
         <slot>
-        <svg width={this.width} height={this.height}
+          <svg
+            width={this.width}
+            height={this.height}
             viewBox="0 0 16 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

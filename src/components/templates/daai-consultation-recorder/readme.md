@@ -5,11 +5,23 @@
 <!-- Auto Generated Below -->
 
 
+## Properties
+
+| Property    | Attribute    | Description | Type     | Default     |
+| ----------- | ------------ | ----------- | -------- | ----------- |
+| `apiKey`    | `api-key`    |             | `string` | `undefined` |
+| `metadata`  | `metadata`   |             | `string` | `undefined` |
+| `onError`   | `on-error`   |             | `any`    | `undefined` |
+| `onSuccess` | `on-success` |             | `any`    | `undefined` |
+| `specialty` | `specialty`  |             | `string` | `undefined` |
+
+
 ## Dependencies
 
 ### Depends on
 
 - [daai-mic](../../organisms/mic)
+- [daai-text](../../atoms/text)
 - [daai-clock](../../atoms/daai-clock)
 - [daai-consultation-actions](../../organisms/daai-consultation-actions)
 - [daai-modal](../../molecules/daai-modal)
@@ -18,6 +30,7 @@
 ```mermaid
 graph TD;
   daai-consultation-recorder --> daai-mic
+  daai-consultation-recorder --> daai-text
   daai-consultation-recorder --> daai-clock
   daai-consultation-recorder --> daai-consultation-actions
   daai-consultation-recorder --> daai-modal
