@@ -172,3 +172,9 @@ daai-mic {
   border-radius: var(--recorder-button-radius);
   background-color: var(--recorder-primary-color);
 }
+
+#upload-text {
+  color: var(--recorder-text-color);
+  font-weight: bold;
+  margin-left:10px;
+}

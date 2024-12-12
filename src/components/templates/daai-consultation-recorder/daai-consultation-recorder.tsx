@@ -7,15 +7,13 @@ import state from "../../../Store/RecorderComponentStore";
   shadow: true,
 })
 export class DaaiConsultationRecorder {
-  @Prop() apiKey: string;
+  @Prop() apikey: string;
   @Prop() specialty: string;
-  @Prop() onSuccess: any;
-  @Prop() onError: any;
+  @Prop() success: (response: any) => void;
+  @Prop() error: (error: any) => void;
   @Prop() metadata: string;
 
   render() {
-    console.log("apiKey:", this.apiKey);
-    console.log(state.chooseModality, "state.chooseModality");
     return (
       <Host>
         <slot>
@@ -26,6 +24,16 @@ export class DaaiConsultationRecorder {
             ) : (
               ""
             )}
+            {state.status === "finished" ? (
+              <daai-text
+                text="Aguarde enquanto geramos o registro final..."
+                id="upload-text"
+              />
+            ) : (
+              state.status === "upload-ok" && (
+                <daai-text text="Registro Finalizado!" id="upload-text" />
+              )
+            )}
             <div class="ml-auto flex gap-2 items-center">
               {state.status === "recording" ||
               state.status === "paused" ||
@@ -35,11 +43,11 @@ export class DaaiConsultationRecorder {
                 ""
               )}
               <daai-consultation-actions
-                apiKey={this.apiKey}
+                apikey={this.apikey}
                 specialty={this.specialty}
                 metadata={this.metadata}
-                onError={this.onError}
-                onSuccess={this.onSuccess}
+                error={this.error}
+                success={this.success}
               ></daai-consultation-actions>
             </div>
           </div>

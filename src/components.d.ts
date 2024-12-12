@@ -21,18 +21,18 @@ export namespace Components {
         "width": string;
     }
     interface DaaiConsultationActions {
-        "apiKey": string;
+        "apikey": string;
+        "error": (error: any) => void;
         "metadata": string;
-        "onError": (error: any) => void;
-        "onSuccess": (response: any) => void;
         "specialty": string;
+        "success": (response: any) => void;
     }
     interface DaaiConsultationRecorder {
-        "apiKey": string;
+        "apikey": string;
+        "error": (error: any) => void;
         "metadata": string;
-        "onError": any;
-        "onSuccess": any;
         "specialty": string;
+        "success": (response: any) => void;
     }
     interface DaaiFinishRecordingIcon {
         "color": string;
@@ -264,18 +264,18 @@ declare namespace LocalJSX {
         "width"?: string;
     }
     interface DaaiConsultationActions {
-        "apiKey"?: string;
+        "apikey"?: string;
+        "error"?: (error: any) => void;
         "metadata"?: string;
-        "onError"?: (error: any) => void;
-        "onSuccess"?: (response: any) => void;
         "specialty"?: string;
+        "success"?: (response: any) => void;
     }
     interface DaaiConsultationRecorder {
-        "apiKey"?: string;
+        "apikey"?: string;
+        "error"?: (error: any) => void;
         "metadata"?: string;
-        "onError"?: any;
-        "onSuccess"?: any;
         "specialty"?: string;
+        "success"?: (response: any) => void;
     }
     interface DaaiFinishRecordingIcon {
         "color"?: string;

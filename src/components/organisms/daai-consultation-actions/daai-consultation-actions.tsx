@@ -7,18 +7,15 @@ import state from "../../../Store/RecorderComponentStore";
   shadow: false,
 })
 export class DaaiConsultationActions {
-  @Prop() apiKey: string;
+  @Prop() apikey: string;
   @Prop() specialty: string;
-  @Prop() onSuccess: (response: any) => void;
-  @Prop() onError: (error: any) => void;
+  @Prop() success: (response: any) => void;
+  @Prop() error: (error: any) => void;
   @Prop() metadata: string;
 
-  @State() error: string = "";
   @State() localStream: MediaStream | null = null;
   @State() mode: "local" | "telemedicine" | null = null;
   @State() mediaRecorder: MediaRecorder | null = null;
-  @State() chunks: BlobPart[] = [];
-  @State() audioDownloadLink: string | null = null;
 
   newRecording() {
     state.status = "initial";
@@ -119,9 +116,9 @@ export class DaaiConsultationActions {
 
         await this.uploadAudio(
           audioBlob,
-          this.apiKey,
-          this.onSuccess,
-          this.onError,
+          this.apikey,
+          this.success,
+          this.error,
           this.specialty,
           "dev",
           this.metadata
@@ -184,15 +181,14 @@ export class DaaiConsultationActions {
 
       if (response.ok) {
         const jsonResponse = await response.json();
+        state.status = "upload-ok";
         if (typeof onSuccess === "function") {
-          console.log("aquii");
           onSuccess(jsonResponse);
         }
       }
     } catch (error) {
       console.error("Erro ao enviar o áudio:", error);
       if (typeof onError === "function") {
-        console.log("aquii");
         onError("erro na requisição", error);
       }
     }
@@ -266,7 +262,7 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
-      case "finished":
+      case "upload-ok":
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
