@@ -74,8 +74,6 @@ export class DaaiConsultationActions {
   };
 
   pauseRecording() {
-    console.log(this.localStream, "local");
-
     if (this.mediaRecorder?.state === "recording") {
       this.mediaRecorder.pause();
       state.status = "paused";
@@ -96,24 +94,9 @@ export class DaaiConsultationActions {
   }
 
   finishRecording = async () => {
-    console.log("Finalizou a gravação");
-    console.log("mediaRecorder", this.mediaRecorder);
-    console.log(this.mode, "this.mode");
-
     const handleRecordingStop = async (audioChunks: Blob[]) => {
-      console.log("entrou na handleRecordingStop");
       try {
         const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        const audioURL = URL.createObjectURL(audioBlob);
-        const a = document.createElement("a");
-        document.body.appendChild(a);
-        a.href = audioURL;
-        a.download = "audio.webm";
-        a.click();
-        console.log(audioBlob, "audioBlob");
-
-        console.log(audioBlob, "audio");
-
         await this.uploadAudio(
           audioBlob,
           this.apikey,
@@ -148,8 +131,6 @@ export class DaaiConsultationActions {
     modeApi,
     metadata
   ) {
-    console.log(apiKey, "apikey");
-    console.log(metadata, "metadata");
     const url =
       modeApi === "dev"
         ? "https://apim.doctorassistant.ai/api/sandbox/consultations"
