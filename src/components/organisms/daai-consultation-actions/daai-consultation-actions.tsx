@@ -140,7 +140,7 @@ export class DaaiConsultationActions {
     formData.append("recording", audioBlob);
     formData.append("specialty", specialty);
     if (metadata) {
-      formData.append("metadata", JSON.stringify(metadata));
+      formData.append("metadata", metadata);
     }
 
     try {
