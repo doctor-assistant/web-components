@@ -17,7 +17,7 @@ export class DaaiConsultationRecorder {
     return (
       <Host>
         <slot>
-          <div class="bg-white flex items-center justify-between rounded-lg border-4 border-gray-100 p-2">
+          <div id="daai-consultation-recorder">
             <daai-mic></daai-mic>
             {state.status === "choosen" ? (
               <daai-text text="Consulta" id="choosen-mode" />

@@ -1,28 +1,30 @@
-import { Component, Prop, h } from '@stencil/core';
+import { Component, Prop, h } from "@stencil/core";
 
 @Component({
-  tag: 'daai-finish-recording-icon',
-  styleUrl: '',
+  tag: "daai-finish-recording-icon",
+  styleUrl: "",
   shadow: true,
 })
 export class DaaiFinishRecordingsIcon {
-  @Prop() width: string = '20px';
-  @Prop() height: string = '20px';
-  @Prop() color: string = 'white';
+  @Prop() width: string = "24px";
+  @Prop() height: string = "24px";
+  @Prop() color: string = "#009CB1";
 
   render() {
     return (
       <div class="icon-container">
         <slot>
-        <svg width={this.width} height={this.height} viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g clip-path="url(#clip0_2240_4766)">
-          <path d="M12.2934 3.31246C12.1177 3.13673 11.8443 3.13673 11.6686 3.31246L5.03008 9.75572L1.74987 6.53409C1.57414 6.35836 1.30079 6.37789 1.12507 6.53409C0.949343 6.70981 0.968868 6.98316 1.12507 7.15889L4.581 10.5172C4.69815 10.6343 4.85435 10.6929 5.03008 10.6929C5.2058 10.6929 5.34248 10.6343 5.47915 10.5172L12.2934 3.89821C12.4691 3.76153 12.4691 3.48818 12.2934 3.31246Z" fill={this.color}/>
-          </g>
-          <defs>
-          <clipPath id="clip0_2240_4766">
-          <rect width="12.496" height="12.496" fill={this.color} transform="translate(0.461182 0.696289)"/>
-          </clipPath>
-          </defs>
+          <svg
+            width={this.width}
+            height={this.height}
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M18.7464 5.5371L8.62682 15.6566L5.25363 12.2835C4.73021 11.76 3.91599 11.76 3.39257 12.2835C2.86914 12.8069 2.86914 13.6211 3.39257 14.1445L7.69628 18.4482C7.92892 18.6809 8.27787 18.8554 8.62682 18.8554C8.97577 18.8554 9.32472 18.739 9.55735 18.4482L20.6074 7.39817C21.1309 6.87474 21.1309 6.06052 20.6074 5.5371C20.084 5.01368 19.2698 5.01368 18.7464 5.5371Z"
+              fill={this.color}
+            />
           </svg>
         </slot>
       </div>

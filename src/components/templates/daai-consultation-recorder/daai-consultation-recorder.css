@@ -12,11 +12,22 @@
   --recorder-background-color:var(--background-color);
   --recorder-border-color:var(--border-color);
   --recorder-button-radius:var(--button-roudend-sm);
-  --recorder-border-radius:var(--button-roudend-md);
+  --recorder-border-radius:var(--button-roudend-sm);
   --recorder-text-color:var(--text-default-color);
   --recorder-border-button-color:var(--border-button-color);
   --recorder-animation-recording-color:var(--animation-recorder-color);
   --recorder-animation-paused-color:var(--animation-recorder-color);
+}
+
+#daai-consultation-recorder{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--recorder-border-radius);
+  border: 2px solid var(--recorder-border-color);
+  padding: 4px;
+  gap:4px;
+  height: 60px;
 }
 
 daai-recording-animation {
@@ -145,10 +156,10 @@ daai-mic {
   align-items: center;
   justify-content: center;
   padding: 4px;
-  background-color: var(--recorder-secondary-color);
+  background-color: transparent;
   border-radius: var(--recorder-button-radius);
   color: var(--recorder-text-color);
-  border: 2px solid var(--dis)
+  border: 2px solid var(--primary-color)
 }
 
 #choose-local-consultation {
@@ -178,3 +189,5 @@ daai-mic {
   font-weight: bold;
   margin-left:10px;
 }
+
+
