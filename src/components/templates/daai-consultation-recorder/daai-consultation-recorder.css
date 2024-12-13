@@ -104,10 +104,13 @@ daai-mic {
 
 #error-msg {
   color: var(--recorder-error-color);
-  font-weight: bold
+  font-weight: bold;
+  margin-left: 4px;
+
 }
 
 #choosen-mode {
+  color: var(--recorder-text-color);
   font-weight: bold;
   margin-left: 4px;
 }

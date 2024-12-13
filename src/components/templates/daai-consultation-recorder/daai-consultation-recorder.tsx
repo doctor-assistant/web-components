@@ -13,6 +13,8 @@ export class DaaiConsultationRecorder {
   @Prop() error: (error: any) => void;
   @Prop() metadata: string;
 
+  async componentWillLoad() {}
+
   render() {
     return (
       <Host>
@@ -58,6 +60,8 @@ export class DaaiConsultationRecorder {
             items={state.availableMicrophones}
           />
         )}
+
+        {state.openModalSpecialty && <daai-specialty />}
       </Host>
     );
   }

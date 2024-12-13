@@ -5,6 +5,13 @@
 <!-- Auto Generated Below -->
 
 
+## Properties
+
+| Property | Attribute | Description | Type     | Default       |
+| -------- | --------- | ----------- | -------- | ------------- |
+| `status` | `status`  |             | `string` | `"recording"` |
+
+
 ## Dependencies
 
 ### Used by

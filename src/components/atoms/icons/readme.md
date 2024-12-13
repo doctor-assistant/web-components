@@ -9,9 +9,9 @@
 
 | Property | Attribute | Description | Type     | Default   |
 | -------- | --------- | ----------- | -------- | --------- |
-| `color`  | `color`   |             | `string` | `'white'` |
-| `height` | `height`  |             | `string` | `'26px'`  |
-| `width`  | `width`   |             | `string` | `'26px'`  |
+| `color`  | `color`   |             | `string` | `"white"` |
+| `height` | `height`  |             | `string` | `"26px"`  |
+| `width`  | `width`   |             | `string` | `"26px"`  |
 
 
 ## Dependencies

@@ -25,6 +25,10 @@ export class DaaiConsultationActions {
     state.status = "choosen";
   }
 
+  choosenSpecialty() {
+    state.openModalSpecialty = true;
+  }
+
   startRecordingLocal = async (isRemote: boolean) => {
     state.chooseModality = true;
     state.status = "recording";
@@ -180,17 +184,22 @@ export class DaaiConsultationActions {
       case "initial":
         return (
           <div class="flex items-center justify-center gap-2">
-            <daai-button-with-icon id="specialty">
+            <daai-button-with-icon
+              title="Especialidade:"
+              id="specialty"
+              onClick={this.choosenSpecialty}
+            >
               <daai-stethoscope-icon />
             </daai-button-with-icon>
+            <daai-button-with-icon title="Suporte" id="button-support">
+              <daai-support-icon />
+            </daai-button-with-icon>
             <daai-button-with-icon
+              title="Iniciar Registro"
               id="start-recording"
               onClick={() => this.choosenMode()}
             >
               <daai-mic-icon />
-            </daai-button-with-icon>
-            <daai-button-with-icon id="button-support">
-              <daai-support-icon />
             </daai-button-with-icon>
           </div>
         );
@@ -198,12 +207,14 @@ export class DaaiConsultationActions {
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
+              title="Iniciar Registro Presencial"
               id="choose-local-consultation"
               onClick={() => this.startRecordingLocal(false)}
             >
               Presencial
             </daai-button-with-icon>
             <daai-button-with-icon
+              title="Iniciar Registro Telemedicina"
               id="choose-telemedicine-consultation"
               onClick={() => this.startRecordingLocal(true)}
             >
@@ -216,12 +227,14 @@ export class DaaiConsultationActions {
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
+              title="Pausar Registro"
               id="pause-recording"
               onClick={() => this.pauseRecording()}
             >
               <daai-pause-icon />
             </daai-button-with-icon>
             <daai-button-with-icon
+              title="Finalizar Registro"
               id="button-finish"
               onClick={() => this.finishRecording()}
             >
@@ -232,10 +245,15 @@ export class DaaiConsultationActions {
       case "paused":
         return (
           <div class="flex items-center justify-center gap-2">
-            <daai-button-with-icon id="pause-recording-disabled" disabled>
+            <daai-button-with-icon
+              title="Pausar Registro"
+              id="pause-recording-disabled"
+              disabled
+            >
               <daai-pause-icon />
             </daai-button-with-icon>
             <daai-button-with-icon
+              title="Retomar Registro"
               id="button-resume"
               onClick={() => this.resumeRecording()}
             >
@@ -247,6 +265,7 @@ export class DaaiConsultationActions {
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
+              title="Iniciar Novo Registro"
               id="start-recording"
               onClick={() => this.newRecording()}
             >

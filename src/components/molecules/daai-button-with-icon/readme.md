@@ -7,10 +7,9 @@
 
 ## Properties
 
-| Property   | Attribute  | Description | Type                       | Default     |
-| ---------- | ---------- | ----------- | -------------------------- | ----------- |
-| `disabled` | `disabled` |             | `boolean`                  | `false`     |
-| `type`     | `type`     |             | `"primary" \| "secondary"` | `'primary'` |
+| Property   | Attribute  | Description | Type      | Default |
+| ---------- | ---------- | ----------- | --------- | ------- |
+| `disabled` | `disabled` |             | `boolean` | `false` |
 
 
 ## Dependencies

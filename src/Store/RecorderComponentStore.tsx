@@ -10,6 +10,8 @@ const { state } = createStore({
   chosenMicrophone: "",
   defaultMicrophone: "",
   recordingTime: 0,
+  specialtyList: [],
+  chooseSpecialty: "",
 });
 
 export default state;

@@ -7,13 +7,13 @@
 
 ## Properties
 
-| Property    | Attribute    | Description | Type     | Default     |
-| ----------- | ------------ | ----------- | -------- | ----------- |
-| `apiKey`    | `api-key`    |             | `string` | `undefined` |
-| `metadata`  | `metadata`   |             | `string` | `undefined` |
-| `onError`   | `on-error`   |             | `any`    | `undefined` |
-| `onSuccess` | `on-success` |             | `any`    | `undefined` |
-| `specialty` | `specialty`  |             | `string` | `undefined` |
+| Property    | Attribute   | Description | Type                      | Default     |
+| ----------- | ----------- | ----------- | ------------------------- | ----------- |
+| `apikey`    | `apikey`    |             | `string`                  | `undefined` |
+| `error`     | --          |             | `(error: any) => void`    | `undefined` |
+| `metadata`  | `metadata`  |             | `string`                  | `undefined` |
+| `specialty` | `specialty` |             | `string`                  | `undefined` |
+| `success`   | --          |             | `(response: any) => void` | `undefined` |
 
 
 ## Dependencies

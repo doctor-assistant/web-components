@@ -10,7 +10,6 @@ export namespace Components {
     }
     interface DaaiButtonWithIcon {
         "disabled": boolean;
-        "type": 'primary' | 'secondary';
     }
     interface DaaiClock {
         "status": string;
@@ -71,6 +70,8 @@ export namespace Components {
         "color": string;
         "height": string;
         "width": string;
+    }
+    interface DaaiSpecialty {
     }
     interface DaaiStethoscopeIcon {
         "color": string;
@@ -208,6 +209,12 @@ declare global {
         prototype: HTMLDaaiResumeRecordingIconElement;
         new (): HTMLDaaiResumeRecordingIconElement;
     };
+    interface HTMLDaaiSpecialtyElement extends Components.DaaiSpecialty, HTMLStencilElement {
+    }
+    var HTMLDaaiSpecialtyElement: {
+        prototype: HTMLDaaiSpecialtyElement;
+        new (): HTMLDaaiSpecialtyElement;
+    };
     interface HTMLDaaiStethoscopeIconElement extends Components.DaaiStethoscopeIcon, HTMLStencilElement {
     }
     var HTMLDaaiStethoscopeIconElement: {
@@ -242,6 +249,7 @@ declare global {
         "daai-pause-icon": HTMLDaaiPauseIconElement;
         "daai-recording-animation": HTMLDaaiRecordingAnimationElement;
         "daai-resume-recording-icon": HTMLDaaiResumeRecordingIconElement;
+        "daai-specialty": HTMLDaaiSpecialtyElement;
         "daai-stethoscope-icon": HTMLDaaiStethoscopeIconElement;
         "daai-support-icon": HTMLDaaiSupportIconElement;
         "daai-text": HTMLDaaiTextElement;
@@ -253,7 +261,6 @@ declare namespace LocalJSX {
     }
     interface DaaiButtonWithIcon {
         "disabled"?: boolean;
-        "type"?: 'primary' | 'secondary';
     }
     interface DaaiClock {
         "status"?: string;
@@ -316,6 +323,8 @@ declare namespace LocalJSX {
         "height"?: string;
         "width"?: string;
     }
+    interface DaaiSpecialty {
+    }
     interface DaaiStethoscopeIcon {
         "color"?: string;
         "height"?: string;
@@ -346,6 +355,7 @@ declare namespace LocalJSX {
         "daai-pause-icon": DaaiPauseIcon;
         "daai-recording-animation": DaaiRecordingAnimation;
         "daai-resume-recording-icon": DaaiResumeRecordingIcon;
+        "daai-specialty": DaaiSpecialty;
         "daai-stethoscope-icon": DaaiStethoscopeIcon;
         "daai-support-icon": DaaiSupportIcon;
         "daai-text": DaaiText;
@@ -370,6 +380,7 @@ declare module "@stencil/core" {
             "daai-pause-icon": LocalJSX.DaaiPauseIcon & JSXBase.HTMLAttributes<HTMLDaaiPauseIconElement>;
             "daai-recording-animation": LocalJSX.DaaiRecordingAnimation & JSXBase.HTMLAttributes<HTMLDaaiRecordingAnimationElement>;
             "daai-resume-recording-icon": LocalJSX.DaaiResumeRecordingIcon & JSXBase.HTMLAttributes<HTMLDaaiResumeRecordingIconElement>;
+            "daai-specialty": LocalJSX.DaaiSpecialty & JSXBase.HTMLAttributes<HTMLDaaiSpecialtyElement>;
             "daai-stethoscope-icon": LocalJSX.DaaiStethoscopeIcon & JSXBase.HTMLAttributes<HTMLDaaiStethoscopeIconElement>;
             "daai-support-icon": LocalJSX.DaaiSupportIcon & JSXBase.HTMLAttributes<HTMLDaaiSupportIconElement>;
             "daai-text": LocalJSX.DaaiText & JSXBase.HTMLAttributes<HTMLDaaiTextElement>;

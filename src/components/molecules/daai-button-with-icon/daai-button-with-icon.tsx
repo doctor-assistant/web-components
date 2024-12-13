@@ -1,12 +1,11 @@
-import { Component, Prop, h } from '@stencil/core';
+import { Component, Prop, h } from "@stencil/core";
 
 @Component({
-  tag: 'daai-button-with-icon',
-  styleUrl: 'daai-button-with-icon.css',
+  tag: "daai-button-with-icon",
+  styleUrl: "daai-button-with-icon.css",
   shadow: true,
 })
 export class DaaiButtonWithIcon {
-  @Prop() type: 'primary' | 'secondary' = 'primary';
   @Prop() disabled: boolean = false;
 
   render() {

@@ -1,17 +1,17 @@
-import { Component, h, Prop, State } from '@stencil/core';
-import state from '../../../Store/RecorderComponentStore';
+import { Component, h, Prop, State } from "@stencil/core";
+import state from "../../../Store/RecorderComponentStore";
 
 @Component({
-  tag: 'daai-modal',
-  styleUrl: 'daai-modal.css',
+  tag: "daai-modal",
+  styleUrl: "daai-modal.css",
   shadow: true,
 })
 export class DaaiModal {
   @Prop() items = [];
-  @Prop() headerTitle = '';
+  @Prop() headerTitle = "";
 
   @State() devices: MediaDeviceInfo[] = [];
-  @State() selectedMicrophone: string = '';
+  @State() selectedMicrophone: string = "";
 
   async componentDidLoad() {
     await this.loadAudioDevices();
@@ -20,7 +20,9 @@ export class DaaiModal {
 
   async loadAudioDevices() {
     const devices = await navigator.mediaDevices.enumerateDevices();
-    const audioDevices = devices.filter(device => device.kind === 'audioinput');
+    const audioDevices = devices.filter(
+      (device) => device.kind === "audioinput"
+    );
     this.devices = audioDevices;
   }
 
@@ -48,21 +50,20 @@ export class DaaiModal {
   render() {
     return (
       <div class="w-96 p-4 rounded-md border-2 border-gray-200 mt-4">
-        <p class="text-md text-gray-600 mb-4">
-          {this.headerTitle}
-        </p>
+        <p class="text-md text-gray-600 mb-4">{this.headerTitle}</p>
         <div class="w-full h-64 overflow-y-auto border p-4">
           <ul class="space-y-2">
-            {this.devices.map(device => (
+            {this.devices.map((device) => (
               <li
                 class={`cursor-pointer p-3 rounded-lg border transition
-                  ${this.selectedMicrophone === device.deviceId
-                    ? 'bg-gray-500 text-white border-gray-600'
-                    : 'bg-gray-100 hover:bg-gray-200 border-gray-300'
+                  ${
+                    this.selectedMicrophone === device.deviceId
+                      ? "bg-gray-500 text-white border-gray-600"
+                      : "bg-gray-100 hover:bg-gray-200 border-gray-300"
                   }`}
                 onClick={() => this.toggleSelection(device.deviceId)}
               >
-                {device.label || 'Microfone desconhecido'}
+                {device.label || "Microfone desconhecido"}
               </li>
             ))}
           </ul>
