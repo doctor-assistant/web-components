@@ -40,6 +40,7 @@ export class DaaiModal {
   setDefaultMicrophone() {
     if (this.selectedMicrophone) {
       state.defaultMicrophone = this.selectedMicrophone;
+      state.openModalConfig = false;
     }
   }
 
@@ -50,7 +51,15 @@ export class DaaiModal {
   render() {
     return (
       <div class="w-96 p-4 rounded-md border-2 border-gray-200 mt-4">
-        <p class="text-md text-gray-600 mb-4">{this.headerTitle}</p>
+        <div class="flex gap-32 space-x-8">
+          <p class="text-md text-gray-600 mb-4">{this.headerTitle}</p>
+          <daai-button
+            class="text-black font-medium  text-sm mb-4"
+            onClick={() => this.handleClick()}
+          >
+            X
+          </daai-button>
+        </div>
         <div class="w-full h-64 overflow-y-auto border p-4">
           <ul class="space-y-2">
             {this.devices.map((device) => (
@@ -74,12 +83,6 @@ export class DaaiModal {
             onClick={this.setDefaultMicrophone.bind(this)}
           >
             Escolher microfone
-          </daai-button>
-          <daai-button
-            class="text-white bg-gray-500 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-            onClick={this.handleClick}
-          >
-            Fechar
           </daai-button>
         </div>
       </div>

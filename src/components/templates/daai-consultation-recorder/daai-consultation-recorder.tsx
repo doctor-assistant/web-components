@@ -8,12 +8,10 @@ import state from "../../../Store/RecorderComponentStore";
 })
 export class DaaiConsultationRecorder {
   @Prop() apikey: string;
-  @Prop() specialty: string;
+  @Prop() specialty: string = state.chooseSpecialty;
   @Prop() success: (response: any) => void;
   @Prop() error: (error: any) => void;
   @Prop() metadata: string;
-
-  async componentWillLoad() {}
 
   render() {
     return (
@@ -46,7 +44,7 @@ export class DaaiConsultationRecorder {
               )}
               <daai-consultation-actions
                 apikey={this.apikey}
-                specialty={this.specialty}
+                specialty={this.specialty || state.chooseSpecialty}
                 metadata={this.metadata}
                 error={this.error}
                 success={this.success}

@@ -16,7 +16,7 @@
       }
 
       document.addEventListener('DOMContentLoaded', () => {
-        const daaiMicElement = document.querySelector('daai-consultation-recorder');
+        const daaiMicElement = document.querySelector('daai-copnsultation-recorder');
 
         if (daaiMicElement) {
           daaiMicElement.addEventListener('interfaceEvent', (event) => {
@@ -29,6 +29,6 @@
     </script>
   </head>
   <body>
-    <daai-consultation-recorder apikey="" specialty="" success="" error="" metadata=''></daai-consultation-recorder>
+    <daai-consultation-recorder apikey="" specialty='generic'></daai-consultation-recorder>
   </body>
 </html>

@@ -31,14 +31,9 @@ export class DaaiMic {
     }
   }
 
-  handleClick = () => {
-    this.interfaceEvent.emit({ microphoneSelect: true });
-    state.openModalConfig = true;
-  };
-
   render() {
     return (
-      <div class="flex items-center justify-center bg-white">
+      <div class="flex items-center justify-center bg-white gap-2">
         <daai-logo-icon></daai-logo-icon>
         <div class="flex items-center justify-center">
           {state.microphonePermission === false ? (
@@ -47,9 +42,7 @@ export class DaaiMic {
               id="error-msg"
             />
           ) : state.status === "initial" ? (
-            <div class="mt-4">
-              <daai-mic-animation id="animation-test" />
-            </div>
+            <div class="mt-4"></div>
           ) : state.status === "recording" ||
             state.status === "paused" ||
             state.status === "resume" ? (
@@ -62,9 +55,7 @@ export class DaaiMic {
           ) : null}
         </div>
         {state.microphonePermission === true && state.status === "initial" && (
-          <daai-button-with-icon id="config-mic" onClick={this.handleClick}>
-            <daai-config-mic-icon></daai-config-mic-icon>
-          </daai-button-with-icon>
+          <div></div>
         )}
       </div>
     );

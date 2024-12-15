@@ -178,12 +178,22 @@ export class DaaiConsultationActions {
       }
     }
   }
+  openConfigModal = () => {
+    // this.interfaceEvent.emit({ microphoneSelect: true });
+    state.openModalConfig = true;
+  };
 
   renderButtons() {
     switch (state.status) {
       case "initial":
         return (
           <div class="flex items-center justify-center gap-2">
+            <daai-button-with-icon
+              id="config-mic"
+              onClick={this.openConfigModal}
+            >
+              <daai-config-mic-icon></daai-config-mic-icon>
+            </daai-button-with-icon>
             <daai-button-with-icon
               title="Especialidade:"
               id="specialty"

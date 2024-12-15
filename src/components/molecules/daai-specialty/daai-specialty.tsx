@@ -33,7 +33,7 @@ async function getSpecialtyApi(modeApi) {
 })
 export class DaaiSpecialty {
   @State() specialtyList: Array<{ title: string; id: string }> = [];
-  @State() chooseSpecialty: string = "";
+  @State() chooseSpecialty: string = "generic";
 
   async componentDidLoad() {
     const modeApi = "dev";
@@ -44,9 +44,7 @@ export class DaaiSpecialty {
     try {
       const jsonResponse = await getSpecialtyApi(modeApi);
       if (jsonResponse && jsonResponse.specialties) {
-        const specialties = jsonResponse.specialties;
-
-        const formattedSpecialties = Object.entries(specialties).map(
+        const specialties = Object.entries(jsonResponse.specialties).map(
           //@ts-ignore
           ([key, { title }]) => ({
             id: key,
@@ -54,7 +52,7 @@ export class DaaiSpecialty {
           })
         );
 
-        this.specialtyList = formattedSpecialties;
+        this.specialtyList = specialties;
       }
     } catch (error) {
       console.error("Erro ao carregar as especialidades", error);
@@ -65,10 +63,27 @@ export class DaaiSpecialty {
     state.openModalSpecialty = false;
   }
 
+  handleChooseSpecialty() {
+    if (this.chooseSpecialty) {
+      state.chooseSpecialty = this.chooseSpecialty;
+      state.openModalSpecialty = false;
+    } else {
+      console.warn("Nenhuma especialidade foi selecionada.");
+    }
+  }
+
   render() {
     return (
       <div class="w-96 p-4 rounded-md border-2 border-gray-200 mt-4">
-        <p class="text-md text-gray-600 mb-4">Escolha a sua Especialidade</p>
+        <div class="flex gap-24 space-x-8">
+          <p class="text-md text-gray-600 mb-4">Escolha a sua Especialidade</p>
+          <daai-button
+            class="text-black font-medium  text-sm mb-4"
+            onClick={() => this.handleClick()}
+          >
+            X
+          </daai-button>
+        </div>
         <div class="w-full h-64 overflow-y-auto border p-4">
           <ul class="space-y-2">
             {this.specialtyList.map((specialty) => (
@@ -86,18 +101,12 @@ export class DaaiSpecialty {
             ))}
           </ul>
         </div>
-        <div class="flex items-start justify-start gap-2 mt-2">
+        <div class="flex items-start justify-end gap-2 mt-2">
           <daai-button
             class="text-white bg-gray-500 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-            onClick={this.handleClick}
+            onClick={() => this.handleChooseSpecialty()}
           >
             Escolher Especialidade
-          </daai-button>
-          <daai-button
-            class="text-white bg-gray-500 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-            onClick={this.handleClick}
-          >
-            Fechar
           </daai-button>
         </div>
       </div>

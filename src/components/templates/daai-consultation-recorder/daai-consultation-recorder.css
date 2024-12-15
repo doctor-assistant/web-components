@@ -24,8 +24,9 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--recorder-border-radius);
-  border: 2px solid var(--recorder-border-color);
-  padding: 4px;
+  border: 1px solid var(--recorder-border-color);
+  box-shadow: 2px 2px 1px 1px rgb(201, 201, 201);
+  padding: 8px;
   gap:4px;
   height: 60px;
 }
