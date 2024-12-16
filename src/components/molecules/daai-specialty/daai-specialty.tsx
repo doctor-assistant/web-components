@@ -1,31 +1,6 @@
 import { Component, h, State } from "@stencil/core";
 import state from "../../../Store/RecorderComponentStore";
 
-async function getSpecialtyApi(modeApi) {
-  const url =
-    modeApi === "dev"
-      ? "https://apim.doctorassistant.ai/api/sandbox/specialties"
-      : "https://apim.doctorassistant.ai/api/production/specialties";
-
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-    });
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      return jsonResponse;
-    } else {
-      console.error(
-        "Erro na requisição:",
-        response.status,
-        response.statusText
-      );
-    }
-  } catch (error) {
-    console.error("Erro ao carregar as especialidades", error);
-  }
-}
-
 @Component({
   tag: "daai-specialty",
   styleUrl: "daai-specialty.css",
@@ -35,37 +10,19 @@ export class DaaiSpecialty {
   @State() specialtyList: Array<{ title: string; id: string }> = [];
   @State() chooseSpecialty: string = "generic";
 
-  async componentDidLoad() {
-    const modeApi = "dev";
-    await this.getSpecialty(modeApi);
-  }
-
-  async getSpecialty(modeApi: string) {
-    try {
-      const jsonResponse = await getSpecialtyApi(modeApi);
-      if (jsonResponse && jsonResponse.specialties) {
-        const specialties = Object.entries(jsonResponse.specialties).map(
-          //@ts-ignore
-          ([key, { title }]) => ({
-            id: key,
-            title,
-          })
-        );
-
-        this.specialtyList = specialties;
-      }
-    } catch (error) {
-      console.error("Erro ao carregar as especialidades", error);
-    }
-  }
-
   handleClick() {
     state.openModalSpecialty = false;
   }
 
   handleChooseSpecialty() {
     if (this.chooseSpecialty) {
+      console.log(this.chooseSpecialty, " this.chooseSpecialty");
       state.chooseSpecialty = this.chooseSpecialty;
+      console.log(
+        this.chooseSpecialty,
+        "this.chooseSpecialty",
+        state.chooseSpecialty
+      );
       state.openModalSpecialty = false;
     } else {
       console.warn("Nenhuma especialidade foi selecionada.");
@@ -86,7 +43,7 @@ export class DaaiSpecialty {
         </div>
         <div class="w-full h-64 overflow-y-auto border p-4">
           <ul class="space-y-2">
-            {this.specialtyList.map((specialty) => (
+            {state.specialtyList.map((specialty) => (
               <li
                 class={`cursor-pointer p-3 rounded-lg border transition
                   ${

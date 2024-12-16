@@ -1,6 +1,7 @@
 import { Component, h, Host, Prop } from "@stencil/core";
 import state from "../../../Store/RecorderComponentStore";
-
+import { getSpecialty } from "../../../utils/Specialty";
+import { saveSpecialties } from "../../../utils/indexDb";
 @Component({
   tag: "daai-consultation-recorder",
   styleUrl: "daai-consultation-recorder.css",
@@ -12,6 +13,14 @@ export class DaaiConsultationRecorder {
   @Prop() success: (response: any) => void;
   @Prop() error: (error: any) => void;
   @Prop() metadata: string;
+
+  async componentDidLoad() {
+    const mode = "dev";
+    const spec = await getSpecialty(mode);
+
+    console.log(spec, "spec");
+    saveSpecialties(spec);
+  }
 
   render() {
     return (

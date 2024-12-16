@@ -173,6 +173,7 @@ daai-mic {
   justify-content: center;
   padding: 10px;
   color: white;
+  font-size: 14px;
   border-radius: var(--recorder-button-radius);
   background-color: var(--recorder-primary-color);
 }
@@ -184,6 +185,7 @@ daai-mic {
   justify-content: center;
   padding: 10px;
   color: white;
+  font-size: 14px;
   border-radius: var(--recorder-button-radius);
   background-color: var(--recorder-primary-color);
 }

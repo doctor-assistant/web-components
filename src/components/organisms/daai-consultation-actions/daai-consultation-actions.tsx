@@ -1,5 +1,6 @@
 import { Component, h, Prop, State } from "@stencil/core";
 import state from "../../../Store/RecorderComponentStore";
+import { getSpecialtyTitle } from "../../../utils/indexDb";
 
 @Component({
   tag: "daai-consultation-actions",
@@ -28,6 +29,14 @@ export class DaaiConsultationActions {
   choosenSpecialty() {
     state.openModalSpecialty = true;
   }
+
+  async componentDidLoad() {
+    console.log(state.chooseSpecialty, "state.chooseSpecialty");
+    const specialty = await getSpecialtyTitle(state.chooseSpecialty);
+    console.log(specialty, "specialty");
+    console.log(state.chooseSpecialty);
+  }
+  titleSpecilty = `Especialidade ${state.chooseSpecialty}`;
 
   startRecordingLocal = async (isRemote: boolean) => {
     state.chooseModality = true;
@@ -195,7 +204,7 @@ export class DaaiConsultationActions {
               <daai-config-mic-icon></daai-config-mic-icon>
             </daai-button-with-icon>
             <daai-button-with-icon
-              title="Especialidade:"
+              title={this.titleSpecilty}
               id="specialty"
               onClick={this.choosenSpecialty}
             >

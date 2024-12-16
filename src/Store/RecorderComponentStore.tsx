@@ -12,6 +12,7 @@ const { state } = createStore({
   recordingTime: 0,
   specialtyList: [],
   chooseSpecialty: "",
+  specialtyTitle: "",
 });
 
 export default state;
