@@ -17,6 +17,7 @@ export class DaaiConsultationActions {
   @State() localStream: MediaStream | null = null;
   @State() mode: "local" | "telemedicine" | null = null;
   @State() mediaRecorder: MediaRecorder | null = null;
+  @State() title: string = "";
 
   newRecording() {
     state.status = "initial";
@@ -30,13 +31,15 @@ export class DaaiConsultationActions {
     state.openModalSpecialty = true;
   }
 
-  async componentDidLoad() {
-    console.log(state.chooseSpecialty, "state.chooseSpecialty");
-    const specialty = await getSpecialtyTitle(state.chooseSpecialty);
-    console.log(specialty, "specialty");
-    console.log(state.chooseSpecialty);
+  handleClickSupportButton() {
+    window.open("https://doctorassistant.ai/tutorial/", "_blank");
   }
-  titleSpecilty = `Especialidade ${state.chooseSpecialty}`;
+
+  async componentDidLoad() {
+    console.log("this.specialty", this.specialty);
+    const spec = await getSpecialtyTitle(this.specialty);
+    this.title = `Especialidade ${spec}`;
+  }
 
   startRecordingLocal = async (isRemote: boolean) => {
     state.chooseModality = true;
@@ -151,7 +154,9 @@ export class DaaiConsultationActions {
 
     const formData = new FormData();
     formData.append("recording", audioBlob);
-    formData.append("specialty", specialty);
+    if (specialty) {
+      formData.append("specialty", specialty);
+    }
     if (metadata) {
       formData.append("metadata", metadata);
     }
@@ -198,20 +203,19 @@ export class DaaiConsultationActions {
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
+              title="Configuração de microfone"
               id="config-mic"
               onClick={this.openConfigModal}
             >
               <daai-config-mic-icon></daai-config-mic-icon>
             </daai-button-with-icon>
             <daai-button-with-icon
-              title={this.titleSpecilty}
+              title={this.title}
               id="specialty"
               onClick={this.choosenSpecialty}
+              disabled={state.defaultSpecialty !== ""}
             >
               <daai-stethoscope-icon />
-            </daai-button-with-icon>
-            <daai-button-with-icon title="Suporte" id="button-support">
-              <daai-support-icon />
             </daai-button-with-icon>
             <daai-button-with-icon
               title="Iniciar Registro"
@@ -219,6 +223,13 @@ export class DaaiConsultationActions {
               onClick={() => this.choosenMode()}
             >
               <daai-mic-icon />
+            </daai-button-with-icon>
+            <daai-button-with-icon
+              title="Suporte"
+              id="button-support"
+              onClick={this.handleClickSupportButton}
+            >
+              <daai-support-icon />
             </daai-button-with-icon>
           </div>
         );

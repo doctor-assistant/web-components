@@ -16,6 +16,9 @@ export class DaaiConsultationRecorder {
 
   async componentDidLoad() {
     const mode = "dev";
+    if (this.specialty) {
+      state.defaultSpecialty = this.specialty;
+    }
     const spec = await getSpecialty(mode);
 
     console.log(spec, "spec");
@@ -53,7 +56,7 @@ export class DaaiConsultationRecorder {
               )}
               <daai-consultation-actions
                 apikey={this.apikey}
-                specialty={this.specialty || state.chooseSpecialty}
+                specialty={state.defaultSpecialty || state.chooseSpecialty}
                 metadata={this.metadata}
                 error={this.error}
                 success={this.success}

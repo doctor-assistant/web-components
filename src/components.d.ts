@@ -7,6 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface DaaiButton {
+        "disabled": boolean;
     }
     interface DaaiButtonWithIcon {
         "disabled": boolean;
@@ -257,6 +258,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface DaaiButton {
+        "disabled"?: boolean;
         "onOnClick"?: (event: DaaiButtonCustomEvent<any>) => void;
     }
     interface DaaiButtonWithIcon {

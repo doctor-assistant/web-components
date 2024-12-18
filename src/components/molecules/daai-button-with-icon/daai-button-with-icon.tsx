@@ -9,10 +9,13 @@ export class DaaiButtonWithIcon {
   @Prop() disabled: boolean = false;
 
   render() {
+    {
+      console.log(this.disabled, "### desabilitado?");
+    }
     return (
       <div class="button-with-icon">
         <slot name="icon" />
-        <daai-button>
+        <daai-button disabled={this.disabled}>
           <slot />
         </daai-button>
       </div>

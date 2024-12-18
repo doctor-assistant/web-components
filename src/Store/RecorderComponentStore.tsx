@@ -13,6 +13,7 @@ const { state } = createStore({
   specialtyList: [],
   chooseSpecialty: "",
   specialtyTitle: "",
+  defaultSpecialty: "",
 });
 
 export default state;

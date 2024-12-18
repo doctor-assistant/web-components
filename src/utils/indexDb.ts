@@ -9,31 +9,30 @@ professionalDb.version(1).stores({
 });
 
 specialtiesDb.version(1).stores({
-  specialties: "key,title",
-});
+    specialties: 'key, title'
+  });
 
 export async function saveSpecialties(data) {
+  console.log('## data ##',data)
   try {
     await specialtiesDb.transaction(
-      "rw",
+      'rw',
       specialtiesDb.specialties,
       async () => {
-        for (const [key, value] of Object.entries(data)) {
+        for (const value of Object.entries(data)) {
           //@ts-ignore
-          await specialtiesDb.specialties.put({ key, title: value.title });
+         console.log('### value ###', value[1].id)
+          // await specialtiesDb.specialties.put();
         }
       }
     );
   } catch (error) {
-    console.error("Erro ao salvar os dados:", error);
+    console.error('Erro ao salvar os dados:', error);
   }
 }
 
-
 export async function getSpecialtyTitle(specialtyKey: string) {
   try {
-    console.log('entrou')
-    console.log('specialtyKey',specialtyKey)
     const specialty = await specialtiesDb.specialties.get(specialtyKey);
     console.log(specialty,'specialty - index')
     if (specialty) {
