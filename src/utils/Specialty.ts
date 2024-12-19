@@ -10,7 +10,6 @@ async function getSpecialtyApi(mode: string) {
     const response = await fetch(url, {
       method: "GET",
     });
-    console.log(response,'response')
     if (response.ok) {
       const jsonResponse = await response.json();
       return jsonResponse;
@@ -29,7 +28,6 @@ async function getSpecialtyApi(mode: string) {
 export async function getSpecialty(mode:string) {
   try {
     const jsonResponse = await getSpecialtyApi(mode);
-    console.log('jsonResponse:', jsonResponse)
     if (jsonResponse && jsonResponse.specialties) {
       const specialties = Object.entries(jsonResponse.specialties).map(
         //@ts-ignore
@@ -40,7 +38,6 @@ export async function getSpecialty(mode:string) {
       );
 
       state.specialtyList = specialties;
-      console.log(specialties,'specialties')
       return specialties
     }
   } catch (error) {

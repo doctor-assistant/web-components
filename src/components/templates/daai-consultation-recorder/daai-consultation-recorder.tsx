@@ -21,7 +21,6 @@ export class DaaiConsultationRecorder {
     }
     const spec = await getSpecialty(mode);
 
-    console.log(spec, "spec");
     saveSpecialties(spec);
   }
 

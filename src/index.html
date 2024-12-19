@@ -8,24 +8,6 @@
     <script type="module" src="/build/web-components.esm.js"></script>
     <script nomodule src="/build/web-components.js"></script>
     <script>
-       function onSuccess(data) {
-        console.log('sucesso',data);
-      }
-      function onError(data) {
-        console.log('erro',data);
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-        const daaiMicElement = document.querySelector('daai-copnsultation-recorder');
-
-        if (daaiMicElement) {
-          daaiMicElement.addEventListener('interfaceEvent', (event) => {
-            console.log('Evento', event.detail);
-          });
-        } else {
-          console.error('Evento não capturado');
-        }
-      });
     </script>
   </head>
   <body>

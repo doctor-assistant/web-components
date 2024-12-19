@@ -36,14 +36,12 @@ export class DaaiConsultationActions {
   }
 
   async componentDidLoad() {
-    console.log("this.specialty", this.specialty);
     const spec = await getSpecialtyTitle(this.specialty);
     this.title = `Especialidade ${spec}`;
   }
 
-  startRecordingLocal = async (isRemote: boolean) => {
+  startRecording = async (isRemote: boolean) => {
     state.chooseModality = true;
-    state.status = "recording";
 
     this.mode = "local";
     const constraints = {
@@ -55,10 +53,16 @@ export class DaaiConsultationActions {
     };
     let screenStream = null;
     if (isRemote) {
-      screenStream = await navigator.mediaDevices.getDisplayMedia({
-        audio: true,
-      });
+      try {
+        screenStream = await navigator.mediaDevices.getDisplayMedia({
+          audio: true,
+        });
+      } catch (error) {
+        return (state.status = "initial");
+      }
     }
+
+    state.status = "recording";
 
     const micStream = await navigator.mediaDevices.getUserMedia(constraints);
     const composedStream = new MediaStream();
@@ -239,14 +243,14 @@ export class DaaiConsultationActions {
             <daai-button-with-icon
               title="Iniciar Registro Presencial"
               id="choose-local-consultation"
-              onClick={() => this.startRecordingLocal(false)}
+              onClick={() => this.startRecording(false)}
             >
               Presencial
             </daai-button-with-icon>
             <daai-button-with-icon
               title="Iniciar Registro Telemedicina"
               id="choose-telemedicine-consultation"
-              onClick={() => this.startRecordingLocal(true)}
+              onClick={() => this.startRecording(true)}
             >
               Telemedicina
             </daai-button-with-icon>

@@ -13,7 +13,6 @@ specialtiesDb.version(1).stores({
   });
 
 export async function saveSpecialties(data) {
-  console.log('## data ##',data)
   try {
     await specialtiesDb.transaction(
       'rw',
@@ -21,8 +20,8 @@ export async function saveSpecialties(data) {
       async () => {
         for (const value of Object.entries(data)) {
           //@ts-ignore
-         console.log('### value ###', value[1].id)
           // await specialtiesDb.specialties.put();
+          console.log(value)
         }
       }
     );
@@ -34,7 +33,6 @@ export async function saveSpecialties(data) {
 export async function getSpecialtyTitle(specialtyKey: string) {
   try {
     const specialty = await specialtiesDb.specialties.get(specialtyKey);
-    console.log(specialty,'specialty - index')
     if (specialty) {
       return specialty.title;
     }

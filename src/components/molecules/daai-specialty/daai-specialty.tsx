@@ -16,13 +16,8 @@ export class DaaiSpecialty {
 
   handleChooseSpecialty() {
     if (this.chooseSpecialty) {
-      console.log(this.chooseSpecialty, " this.chooseSpecialty");
       state.chooseSpecialty = this.chooseSpecialty;
-      console.log(
-        this.chooseSpecialty,
-        "this.chooseSpecialty",
-        state.chooseSpecialty
-      );
+
       state.openModalSpecialty = false;
     } else {
       console.warn("Nenhuma especialidade foi selecionada.");

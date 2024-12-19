@@ -7,13 +7,13 @@
 
 ## Properties
 
-| Property    | Attribute   | Description | Type                      | Default     |
-| ----------- | ----------- | ----------- | ------------------------- | ----------- |
-| `apikey`    | `apikey`    |             | `string`                  | `undefined` |
-| `error`     | --          |             | `(error: any) => void`    | `undefined` |
-| `metadata`  | `metadata`  |             | `string`                  | `undefined` |
-| `specialty` | `specialty` |             | `string`                  | `undefined` |
-| `success`   | --          |             | `(response: any) => void` | `undefined` |
+| Property    | Attribute   | Description | Type                      | Default                 |
+| ----------- | ----------- | ----------- | ------------------------- | ----------------------- |
+| `apikey`    | `apikey`    |             | `string`                  | `undefined`             |
+| `error`     | --          |             | `(error: any) => void`    | `undefined`             |
+| `metadata`  | `metadata`  |             | `string`                  | `undefined`             |
+| `specialty` | `specialty` |             | `string`                  | `state.chooseSpecialty` |
+| `success`   | --          |             | `(response: any) => void` | `undefined`             |
 
 
 ## Dependencies
@@ -38,18 +38,15 @@ graph TD;
   daai-consultation-recorder --> daai-specialty
   daai-mic --> daai-logo-icon
   daai-mic --> daai-text
-  daai-mic --> daai-mic-animation
   daai-mic --> daai-recording-animation
-  daai-mic --> daai-button-with-icon
-  daai-mic --> daai-config-mic-icon
-  daai-button-with-icon --> daai-button
   daai-consultation-actions --> daai-button-with-icon
+  daai-consultation-actions --> daai-config-mic-icon
   daai-consultation-actions --> daai-stethoscope-icon
   daai-consultation-actions --> daai-mic-icon
   daai-consultation-actions --> daai-support-icon
   daai-consultation-actions --> daai-pause-icon
   daai-consultation-actions --> daai-finish-recording-icon
-  daai-consultation-actions --> daai-resume-recording-icon
+  daai-button-with-icon --> daai-button
   daai-modal --> daai-button
   daai-specialty --> daai-button
   style daai-consultation-recorder fill:#f9f,stroke:#333,stroke-width:4px

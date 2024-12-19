@@ -7,11 +7,11 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default   |
-| -------- | --------- | ----------- | -------- | --------- |
-| `color`  | `color`   |             | `string` | `"white"` |
-| `height` | `height`  |             | `string` | `"26px"`  |
-| `width`  | `width`   |             | `string` | `"26px"`  |
+| Property | Attribute | Description | Type     | Default     |
+| -------- | --------- | ----------- | -------- | ----------- |
+| `color`  | `color`   |             | `string` | `"#64748B"` |
+| `height` | `height`  |             | `string` | `"26px"`    |
+| `width`  | `width`   |             | `string` | `"26px"`    |
 
 
 ## Dependencies
