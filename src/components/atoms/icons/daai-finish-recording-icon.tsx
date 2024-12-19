@@ -6,8 +6,8 @@ import { Component, Prop, h } from "@stencil/core";
   shadow: true,
 })
 export class DaaiFinishRecordingsIcon {
-  @Prop() width: string = "24px";
-  @Prop() height: string = "24px";
+  @Prop() width: string = "20px";
+  @Prop() height: string = "20px";
   @Prop() color: string = "white";
 
   render() {

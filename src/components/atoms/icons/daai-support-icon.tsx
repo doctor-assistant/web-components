@@ -6,8 +6,8 @@ import { Component, Prop, h } from "@stencil/core";
   shadow: true,
 })
 export class DaaiSupportIcon {
-  @Prop() width: string = "26px";
-  @Prop() height: string = "26px";
+  @Prop() width: string = "20px";
+  @Prop() height: string = "20px";
   @Prop() color: string = "#64748B";
 
   render() {

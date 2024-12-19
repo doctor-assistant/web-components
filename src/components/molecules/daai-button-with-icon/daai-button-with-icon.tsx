@@ -2,7 +2,6 @@ import { Component, Prop, h } from "@stencil/core";
 
 @Component({
   tag: "daai-button-with-icon",
-  styleUrl: "daai-button-with-icon.css",
   shadow: true,
 })
 export class DaaiButtonWithIcon {

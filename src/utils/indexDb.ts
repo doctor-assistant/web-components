@@ -18,10 +18,9 @@ export async function saveSpecialties(data) {
       'rw',
       specialtiesDb.specialties,
       async () => {
-        for (const value of Object.entries(data)) {
+        for (const _value of Object.entries(data)) {
           //@ts-ignore
           // await specialtiesDb.specialties.put();
-          console.log(value)
         }
       }
     );

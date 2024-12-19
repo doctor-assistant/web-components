@@ -141,14 +141,9 @@ export class DaaiConsultationActions {
     state.status = "finished";
   };
 
-  async uploadAudio(
-    audioBlob,
-    apiKey,
-    onSuccess,
-    onError,
-    specialty,
-    metadata
-  ) {
+  async uploadAudio(audioBlob, apiKey, success, error, specialty, metadata) {
+    console.log(success);
+    console.log(error);
     const mode =
       this.apikey && this.apikey.startsWith("PRODUCTION") ? "prod" : "dev";
     const url =
@@ -176,23 +171,25 @@ export class DaaiConsultationActions {
 
       if (!response.ok) {
         const errorResponse = await response.json();
-        if (typeof onError === "function") {
-          onError("Erro na requisição", errorResponse);
+        if (typeof error === "function") {
+          error("Erro na requisição", errorResponse);
         }
-        return;
       }
 
       if (response.ok) {
+        console.log("aquii");
         const jsonResponse = await response.json();
         state.status = "upload-ok";
-        if (typeof onSuccess === "function") {
-          onSuccess(jsonResponse);
+        console.log(typeof success, "(typeof onSuccess");
+        if (typeof success === "function") {
+          console.log("chamou");
+          success(jsonResponse);
         }
       }
     } catch (error) {
       console.error("Erro ao enviar o áudio:", error);
-      if (typeof onError === "function") {
-        onError("erro na requisição", error);
+      if (typeof error === "function") {
+        error("erro na requisição", error);
       }
     }
   }
@@ -225,8 +222,9 @@ export class DaaiConsultationActions {
               title="Iniciar Registro"
               id="start-recording"
               onClick={() => this.choosenMode()}
+              disabled={!state.microphonePermission}
             >
-              <daai-mic-icon />
+              Iniciar Registro
             </daai-button-with-icon>
             <daai-button-with-icon
               title="Suporte"
@@ -254,6 +252,13 @@ export class DaaiConsultationActions {
             >
               Telemedicina
             </daai-button-with-icon>
+            <daai-button-with-icon
+              title="voltar ao inicio"
+              id="button-resume"
+              onClick={() => this.newRecording()}
+            >
+              <daai-resume-recording-icon />
+            </daai-button-with-icon>
           </div>
         );
       case "recording":
@@ -272,13 +277,16 @@ export class DaaiConsultationActions {
               id="button-finish"
               onClick={() => this.finishRecording()}
             >
-              <daai-finish-recording-icon />
+              Finalizar Registro
             </daai-button-with-icon>
           </div>
         );
       case "paused":
         return (
-          <div class="flex items-center justify-center gap-2">
+          <div
+            class="flex items-center justify-center gap-2
+          "
+          >
             <daai-button-with-icon
               title="Pausar Registro"
               id="pause-recording-disabled"
@@ -291,14 +299,14 @@ export class DaaiConsultationActions {
               id="start-recording"
               onClick={() => this.resumeRecording()}
             >
-              <daai-mic-icon />
+              Retomar Registro
             </daai-button-with-icon>
             <daai-button-with-icon
               title="Retomar Registro"
               id="button-finish"
               onClick={() => this.finishRecording()}
             >
-              <daai-finish-recording-icon />
+              Finalizar Registro
             </daai-button-with-icon>
             <daai-button-with-icon
               title="Retomar Registro"

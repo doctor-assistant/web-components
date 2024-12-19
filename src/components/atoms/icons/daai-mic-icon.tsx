@@ -6,7 +6,7 @@ import { Component, Prop, h } from "@stencil/core";
   shadow: true,
 })
 export class DaaiMicIcon {
-  @Prop() width: string = "26px";
+  @Prop() width: string = "19px";
   @Prop() height: string = "26px";
   @Prop() color: string = "white";
 

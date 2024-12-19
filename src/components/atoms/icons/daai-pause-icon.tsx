@@ -6,8 +6,8 @@ import { Component, Prop, h } from "@stencil/core";
   shadow: true,
 })
 export class DaaiPauseIcon {
-  @Prop() width: string = "16px";
-  @Prop() height: string = "16px";
+  @Prop() width: string = "14px";
+  @Prop() height: string = "14px";
   @Prop() color: string = "white";
 
   render() {

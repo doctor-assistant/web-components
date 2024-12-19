@@ -29,7 +29,18 @@ export class DaaiConsultationRecorder {
       <Host>
         <slot>
           <div id="daai-consultation-recorder">
-            <daai-mic></daai-mic>
+            <div>
+              <div class="items-center flex gap-6">
+                <daai-mic></daai-mic>
+                {state.status === "recording" ||
+                state.status === "paused" ||
+                state.status === "resume" ? (
+                  <daai-clock status={state.status} />
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
             {state.status === "choosen" ? (
               <daai-text text="Consulta" id="choosen-mode" />
             ) : (
@@ -45,14 +56,8 @@ export class DaaiConsultationRecorder {
                 <daai-text text="Registro Finalizado!" id="upload-text" />
               )
             )}
-            <div class="min-[350px]:ml-auto flex gap-2 items-center">
-              {state.status === "recording" ||
-              state.status === "paused" ||
-              state.status === "resume" ? (
-                <daai-clock status={state.status} />
-              ) : (
-                ""
-              )}
+
+            <div class="min-[380px]:ml-auto flex gap-2 items-center">
               <daai-consultation-actions
                 apikey={this.apikey}
                 specialty={state.defaultSpecialty || state.chooseSpecialty}
