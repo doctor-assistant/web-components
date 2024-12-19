@@ -8,8 +8,15 @@
     <script type="module" src="/build/web-components.esm.js"></script>
     <script nomodule src="/build/web-components.js"></script>
     <script>
+       function onSuccess(data) {
+        console.log('sucesso',data);
+      }
+      function onError(data) {
+        console.log('erro',data);
+      }
+
       document.addEventListener('DOMContentLoaded', () => {
-        const daaiMicElement = document.querySelector('daai-consultation-recorder');
+        const daaiMicElement = document.querySelector('daai-copnsultation-recorder');
 
         if (daaiMicElement) {
           daaiMicElement.addEventListener('interfaceEvent', (event) => {
@@ -22,6 +29,6 @@
     </script>
   </head>
   <body>
-    <daai-consultation-recorder/>
+    <daai-consultation-recorder></daai-consultation-recorder>
   </body>
 </html>

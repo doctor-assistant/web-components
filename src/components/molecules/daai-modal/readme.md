@@ -9,7 +9,7 @@
 
 | Property      | Attribute      | Description | Type     | Default |
 | ------------- | -------------- | ----------- | -------- | ------- |
-| `headerTitle` | `header-title` |             | `string` | `''`    |
+| `headerTitle` | `header-title` |             | `string` | `""`    |
 | `items`       | --             |             | `any[]`  | `[]`    |
 
 

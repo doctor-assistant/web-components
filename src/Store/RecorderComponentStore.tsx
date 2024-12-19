@@ -1,12 +1,19 @@
 import { createStore } from "@stencil/store";
 
 const { state } = createStore({
-  status: 'initial',
+  status: "initial",
   openModalConfig: false,
   openModalSpecialty: false,
+  chooseModality: false,
   microphonePermission: false,
-  availableMicrophones:[],
-  defaultMicrophone:''
+  availableMicrophones: [],
+  chosenMicrophone: "",
+  defaultMicrophone: "",
+  recordingTime: 0,
+  specialtyList: [],
+  chooseSpecialty: "",
+  specialtyTitle: "",
+  defaultSpecialty: "",
 });
 
 export default state;
