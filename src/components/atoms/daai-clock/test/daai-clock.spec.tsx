@@ -1,8 +1,8 @@
-import { newSpecPage } from '@stencil/core/testing';
-import { DaaiClock } from '../daai-clock';
+import { newSpecPage } from "@stencil/core/testing";
+import { DaaiClock } from "../daai-clock";
 
-describe('daai-clock', () => {
-  it('renders', async () => {
+describe("daai-clock", () => {
+  it("renders", async () => {
     const page = await newSpecPage({
       components: [DaaiClock],
       html: `<daai-clock></daai-clock>`,
@@ -10,7 +10,11 @@ describe('daai-clock', () => {
     expect(page.root).toEqualHtml(`
       <daai-clock>
         <mock:shadow-root>
-          <slot></slot>
+          <div class="font-bold text-sm">
+           <span>
+             00:00:00
+           </span>
+         </div>
         </mock:shadow-root>
       </daai-clock>
     `);
