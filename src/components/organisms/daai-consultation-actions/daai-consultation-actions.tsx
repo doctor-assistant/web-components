@@ -119,7 +119,6 @@ export class DaaiConsultationActions {
           this.success,
           this.error,
           this.specialty,
-          "dev",
           this.metadata
         );
       } catch (error) {
@@ -144,11 +143,12 @@ export class DaaiConsultationActions {
     onSuccess,
     onError,
     specialty,
-    modeApi,
     metadata
   ) {
+    const mode =
+      this.apikey && this.apikey.startsWith("PRODUCTION") ? "prod" : "dev";
     const url =
-      modeApi === "dev"
+      mode === "dev"
         ? "https://apim.doctorassistant.ai/api/sandbox/consultations"
         : "https://apim.doctorassistant.ai/api/production/consultations";
 
@@ -284,10 +284,24 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
             <daai-button-with-icon
               title="Retomar Registro"
-              id="button-resume"
+              id="start-recording"
               onClick={() => this.resumeRecording()}
             >
-              <daai-resume-recording-icon />
+              <daai-mic-icon />
+            </daai-button-with-icon>
+            <daai-button-with-icon
+              title="Retomar Registro"
+              id="button-finish"
+              onClick={() => this.finishRecording()}
+            >
+              <daai-finish-recording-icon />
+            </daai-button-with-icon>
+            <daai-button-with-icon
+              title="Retomar Registro"
+              id="button-support"
+              onClick={this.handleClickSupportButton}
+            >
+              <daai-support-icon />
             </daai-button-with-icon>
           </div>
         );

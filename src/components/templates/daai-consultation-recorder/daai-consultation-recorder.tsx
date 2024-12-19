@@ -46,7 +46,7 @@ export class DaaiConsultationRecorder {
                 <daai-text text="Registro Finalizado!" id="upload-text" />
               )
             )}
-            <div class="ml-auto flex gap-2 items-center">
+            <div class="min-[350px]:ml-auto flex gap-2 items-center">
               {state.status === "recording" ||
               state.status === "paused" ||
               state.status === "resume" ? (

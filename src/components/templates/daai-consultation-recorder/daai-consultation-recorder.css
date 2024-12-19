@@ -29,6 +29,10 @@
   padding: 8px;
   gap:4px;
   height: 60px;
+  @media (max-width: 324px) {
+   flex-direction: column;
+    height: 120px;
+}
 }
 
 daai-recording-animation {
