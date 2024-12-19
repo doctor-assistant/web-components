@@ -8,20 +8,9 @@
     <script type="module" src="/build/web-components.esm.js"></script>
     <script nomodule src="/build/web-components.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const daaiMicElement = document.querySelector('daai-consultation-recorder');
-
-        if (daaiMicElement) {
-          daaiMicElement.addEventListener('interfaceEvent', (event) => {
-            console.log('Evento', event.detail);
-          });
-        } else {
-          console.error('Evento não capturado');
-        }
-      });
     </script>
   </head>
   <body>
-    <daai-consultation-recorder/>
+    <daai-consultation-recorder></daai-consultation-recorder>
   </body>
 </html>
