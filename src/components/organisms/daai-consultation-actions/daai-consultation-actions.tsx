@@ -8,17 +8,18 @@ import { getSpecialtyTitle } from "../../../utils/indexDb";
   shadow: false,
 })
 export class DaaiConsultationActions {
-  @Prop() apikey: string;
-  @Prop() specialty: string;
-  @Prop() success: (response: any) => void;
-  @Prop() error: (error: any) => void;
+  @Prop() apikey: any;
+  @Prop() specialty: any;
+
+  @Prop() success: any;
+  @Prop() error: any;
+
   @Prop() metadata: string;
 
   @State() localStream: MediaStream | null = null;
   @State() mode: "local" | "telemedicine" | null = null;
   @State() mediaRecorder: MediaRecorder | null = null;
   @State() title: string = "";
-
   newRecording() {
     state.status = "initial";
   }
@@ -142,8 +143,6 @@ export class DaaiConsultationActions {
   };
 
   async uploadAudio(audioBlob, apiKey, success, error, specialty, metadata) {
-    console.log(success);
-    console.log(error);
     const mode =
       this.apikey && this.apikey.startsWith("PRODUCTION") ? "prod" : "dev";
     const url =
@@ -172,27 +171,24 @@ export class DaaiConsultationActions {
       if (!response.ok) {
         const errorResponse = await response.json();
         if (typeof error === "function") {
-          error("Erro na requisição", errorResponse);
+          error(errorResponse); // Chama a função de erro passando a resposta de erro
         }
       }
 
       if (response.ok) {
-        console.log("aquii");
-        const jsonResponse = await response.json();
         state.status = "upload-ok";
-        console.log(typeof success, "(typeof onSuccess");
         if (typeof success === "function") {
-          console.log("chamou");
-          success(jsonResponse);
+          success(response);
         }
       }
-    } catch (error) {
-      console.error("Erro ao enviar o áudio:", error);
+    } catch (err) {
+      console.error("Erro ao enviar o áudio:", err);
       if (typeof error === "function") {
-        error("erro na requisição", error);
+        error(err);
       }
     }
   }
+
   openConfigModal = () => {
     // this.interfaceEvent.emit({ microphoneSelect: true });
     state.openModalConfig = true;

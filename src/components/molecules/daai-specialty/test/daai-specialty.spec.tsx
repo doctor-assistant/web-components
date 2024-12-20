@@ -15,9 +15,9 @@ describe("daai-specialty", () => {
              <p class="mb-4 text-gray-600 text-md">
                Escolha a sua Especialidade
              </p>
-             <daai-button class="font-medium mb-4 text-black text-sm">
+             <daai-button-with-icon class="font-medium mb-4 text-black text-sm">
                X
-             </daai-button>
+             </daai-button-with-icon>
            </div>
            <div class="border h-64 overflow-y-auto p-4 w-full">
              <ul class="space-y-2"></ul>

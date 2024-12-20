@@ -8,14 +8,16 @@ import { saveSpecialties } from "../../../utils/indexDb";
   shadow: true,
 })
 export class DaaiConsultationRecorder {
+  @Prop() onSuccess: (response: Response) => void;
+  @Prop() onError: (err: Error) => void;
+
   @Prop() apikey: string;
   @Prop() specialty: string = state.chooseSpecialty;
-  @Prop() success: (response: any) => void;
-  @Prop() error: (error: any) => void;
   @Prop() metadata: string;
 
   async componentDidLoad() {
-    const mode = "dev";
+    const mode =
+      this.apikey && this.apikey.startsWith("PRODUCTION") ? "prod" : "dev";
     if (this.specialty) {
       state.defaultSpecialty = this.specialty;
     }
@@ -62,8 +64,8 @@ export class DaaiConsultationRecorder {
                 apikey={this.apikey}
                 specialty={state.defaultSpecialty || state.chooseSpecialty}
                 metadata={this.metadata}
-                error={this.error}
-                success={this.success}
+                success={this.onSuccess}
+                error={this.onError}
               ></daai-consultation-actions>
             </div>
           </div>
