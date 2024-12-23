@@ -10,6 +10,7 @@ import { getSpecialtyTitle } from "../../../utils/indexDb";
 export class DaaiConsultationActions {
   @Prop() apikey: any;
   @Prop() specialty: any;
+  @Prop() telemedicine: boolean;
 
   @Prop() success: any;
   @Prop() error: any;
@@ -25,7 +26,10 @@ export class DaaiConsultationActions {
   }
 
   async choosenMode() {
-    state.status = "choosen";
+    if (this.telemedicine) {
+      state.status = "choosen";
+    }
+    state.status = "recording";
   }
 
   choosenSpecialty() {
@@ -171,7 +175,7 @@ export class DaaiConsultationActions {
       if (!response.ok) {
         const errorResponse = await response.json();
         if (typeof error === "function") {
-          error(errorResponse); // Chama a função de erro passando a resposta de erro
+          error(errorResponse);
         }
       }
 
@@ -217,7 +221,11 @@ export class DaaiConsultationActions {
             <daai-button-with-icon
               title="Iniciar Registro"
               id="start-recording"
-              onClick={() => this.choosenMode()}
+              onClick={() =>
+                this.telemedicine
+                  ? this.choosenMode()
+                  : this.startRecording(false)
+              }
               disabled={!state.microphonePermission}
             >
               Iniciar Registro
@@ -321,7 +329,7 @@ export class DaaiConsultationActions {
               id="start-recording"
               onClick={() => this.newRecording()}
             >
-              <daai-mic-icon />
+              Iniciar Novo Registro
             </daai-button-with-icon>
           </div>
         );

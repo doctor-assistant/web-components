@@ -26,6 +26,7 @@ export namespace Components {
         "metadata": string;
         "specialty": any;
         "success": any;
+        "telemedicine": boolean;
     }
     interface DaaiConsultationRecorder {
         "apikey": string;
@@ -33,6 +34,7 @@ export namespace Components {
         "onError": (err: Error) => void;
         "onSuccess": (response: Response) => void;
         "specialty": string;
+        "telemedicine": boolean;
     }
     interface DaaiFinishRecordingIcon {
         "color": string;
@@ -278,6 +280,7 @@ declare namespace LocalJSX {
         "metadata"?: string;
         "specialty"?: any;
         "success"?: any;
+        "telemedicine"?: boolean;
     }
     interface DaaiConsultationRecorder {
         "apikey"?: string;
@@ -285,6 +288,7 @@ declare namespace LocalJSX {
         "onError"?: (err: Error) => void;
         "onSuccess"?: (response: Response) => void;
         "specialty"?: string;
+        "telemedicine"?: boolean;
     }
     interface DaaiFinishRecordingIcon {
         "color"?: string;
