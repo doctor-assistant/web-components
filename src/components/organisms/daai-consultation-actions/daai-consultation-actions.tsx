@@ -211,14 +211,16 @@ export class DaaiConsultationActions {
             >
               <daai-config-mic-icon></daai-config-mic-icon>
             </daai-button-with-icon>
-            <daai-button-with-icon
-              title={this.title}
-              id="specialty"
-              onClick={this.choosenSpecialty}
-              disabled={state.defaultSpecialty !== ""}
-            >
-              <daai-stethoscope-icon />
-            </daai-button-with-icon>
+            {!state.defaultSpecialty && (
+              <daai-button-with-icon
+                title={this.title}
+                id="specialty"
+                onClick={this.choosenSpecialty}
+                disabled={state.defaultSpecialty !== ""}
+              >
+                <daai-stethoscope-icon />
+              </daai-button-with-icon>
+            )}
             <daai-button-with-icon
               title="Iniciar Registro"
               id="start-recording"
