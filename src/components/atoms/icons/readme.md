@@ -10,8 +10,8 @@
 | Property | Attribute | Description | Type     | Default     |
 | -------- | --------- | ----------- | -------- | ----------- |
 | `color`  | `color`   |             | `string` | `"#64748B"` |
-| `height` | `height`  |             | `string` | `"26px"`    |
-| `width`  | `width`   |             | `string` | `"26px"`    |
+| `height` | `height`  |             | `string` | `"20px"`    |
+| `width`  | `width`   |             | `string` | `"20px"`    |
 
 
 ## Dependencies
