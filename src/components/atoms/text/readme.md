@@ -17,11 +17,13 @@
 
 ### Used by
 
+ - [daai-consultation-recorder](../../templates/daai-consultation-recorder)
  - [daai-mic](../../organisms/mic)
 
 ### Graph
 ```mermaid
 graph TD;
+  daai-consultation-recorder --> daai-text
   daai-mic --> daai-text
   style daai-text fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -1,8 +1,8 @@
-import { newSpecPage } from '@stencil/core/testing';
-import { DaaiConsultationRecorder } from '../daai-consultation-recorder';
+import { newSpecPage } from "@stencil/core/testing";
+import { DaaiConsultationRecorder } from "../daai-consultation-recorder";
 
-describe('daai-consultation-recorder', () => {
-  it('renderiza corrretamente o daai-consultation-recorder', async () => {
+describe("daai-consultation-recorder", () => {
+  it("renderiza corrretamente o daai-consultation-recorder", async () => {
     const page = await newSpecPage({
       components: [DaaiConsultationRecorder],
       html: `<daai-consultation-recorder></daai-consultation-recorder>`,
