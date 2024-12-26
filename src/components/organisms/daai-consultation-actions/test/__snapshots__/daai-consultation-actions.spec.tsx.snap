@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`daai-consultation-actions Verifica se o daai-consultation-actions renderiza corretamente 1`] = `
+<daai-consultation-actions apikey="test-key" metadata="test-metadata" specialty="cardiology">
+  <div>
+    <div class="flex gap-2 items-center justify-center">
+      <daai-button-with-icon id="config-mic" title="Configuração de microfone">
+        <daai-config-mic-icon></daai-config-mic-icon>
+      </daai-button-with-icon>
+      <daai-button-with-icon id="specialty" title="Especialidade null">
+        <daai-stethoscope-icon></daai-stethoscope-icon>
+      </daai-button-with-icon>
+      <daai-button-with-icon disabled="" id="start-recording" title="Iniciar Registro">
+        Iniciar Registro
+      </daai-button-with-icon>
+      <daai-button-with-icon id="button-support" title="Suporte">
+        <daai-support-icon></daai-support-icon>
+      </daai-button-with-icon>
+    </div>
+  </div>
+</daai-consultation-actions>
+`;

@@ -1,27 +1,34 @@
 # daai-mic
 
-
-
 <!-- Auto Generated Below -->
+
+
+## Events
+
+| Event            | Description | Type                                          |
+| ---------------- | ----------- | --------------------------------------------- |
+| `interfaceEvent` |             | `CustomEvent<{ microphoneSelect: boolean; }>` |
 
 
 ## Dependencies
 
+### Used by
+
+ - [daai-consultation-recorder](../../templates/daai-consultation-recorder)
+
 ### Depends on
 
+- [daai-logo-icon](../../atoms/icons)
 - [daai-text](../../atoms/text)
-- [daai-button-with-icon](../../molecules/daai-button-with-icon)
-- [daai-mic-icon](../../atoms/icons)
-- [daai-pause-icon](../../atoms/icons)
+- [daai-recording-animation](../../atoms/daai-recording-animation)
 
 ### Graph
 ```mermaid
 graph TD;
+  daai-mic --> daai-logo-icon
   daai-mic --> daai-text
-  daai-mic --> daai-button-with-icon
-  daai-mic --> daai-mic-icon
-  daai-mic --> daai-pause-icon
-  daai-button-with-icon --> daai-button
+  daai-mic --> daai-recording-animation
+  daai-consultation-recorder --> daai-mic
   style daai-mic fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

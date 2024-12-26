@@ -6,25 +6,61 @@
   --recorder-primary-color: var(--primary-color);
   --recorder-secondary-color: var(--secondary-color);
   --recorder-success-color: var(--success-color);
+  --recorder-support-color: var(--support-color);
+  --recorder-disable-color: var(--disable-color);
  --recorder-error-color:var(--error-color);
   --recorder-background-color:var(--background-color);
   --recorder-border-color:var(--border-color);
   --recorder-button-radius:var(--button-roudend-sm);
-  --recorder-border-radius:var(--button-roudend-md);
-  --recorder-text-color:var(--text-default-color)
+  --recorder-border-radius:var(--button-roudend-sm);
+  --recorder-text-color:var(--text-default-color);
+  --recorder-border-button-color:var(--border-button-color);
+  --recorder-animation-recording-color:var(--animation-recorder-color);
+  --recorder-animation-paused-color:var(--animation-recorder-color);
 }
+
+daai-button-with-icon {
+  max-height: 40px;
+  min-height: 40px;
+  padding: 8px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#daai-consultation-recorder{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--recorder-border-radius);
+  border: 1px solid var(--recorder-border-color);
+  box-shadow: 2px 2px 1px 1px rgb(201, 201, 201);
+  padding: 8px;
+  gap:4px;
+  height: 60px;
+  @media (max-width: 375px) {
+   flex-direction: column;
+    height: 120px;
+}
+}
+
+daai-recording-animation {
+  --animation-recording-color: var(--recorder-animation-recording-color);
+  --animation-paused-color: var(--recorder-animation-paused-color);
+}
+
 
 daai-mic {
   background-color: var(--recorder-background-color);
-  border-radius: var(--recorder-button-radius);
-  padding: 10px;
-  border: 3px solid var(--recorder-border-color);
 }
 
-#pause-recording {
+#animation-recording{
+  color:brown
+}
+
+#close-icon{
   display: flex;
-  width: 50px;
-  height: 50px;
   align-items: center;
   justify-content: center;
   padding: 4px;
@@ -33,18 +69,153 @@ daai-mic {
   color: var(--recorder-text-color);
 }
 
-#start-recording {
+#config-mic {
   display: flex;
-  width: 50px;
-  height: 50px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  color: var(--recorder-text-color);
+}
+
+#pause-recording {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  width: 40px;
+  height: 40px;
   align-items: center;
   justify-content: center;
   padding: 4px;
   border-radius: var(--recorder-button-radius);
-  background-color: var(--recorder-primary-color);
+  background-color:var(--recorder-secondary-color);
+  border: 2px var(--recorder-secondary-color) solid;
   color: var(--recorder-text-color);
 }
 
-#daai-text{
+#pause-recording-disabled {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--recorder-button-radius);
+  background-color: var(--recorder-disable-color);
   color: var(--recorder-text-color);
 }
+
+#start-recording {
+  /* width: 40px; */
+  flex-direction: row;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: var(--recorder-button-radius);
+  background-color: var(--recorder-primary-color);
+  color: var(--recorder-text-color);
+  color:white;
+}
+
+
+#error-msg {
+  color: var(--recorder-error-color);
+  font-weight: bold;
+  margin-left: 4px;
+
+}
+
+#choosen-mode {
+  color: var(--recorder-text-color);
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+#specialty{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--recorder-button-radius);
+  color: var(--recorder-text-color);
+  border: 1.5px solid var(--recorder-border-button-color)
+}
+
+#button-support {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--recorder-button-radius);
+  color: var(--recorder-text-color);
+  border: 1.5px solid var(--recorder-border-button-color)
+}
+
+#button-resume {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--recorder-button-radius);
+  border: 2px solid var(--recorder-border-button-color);
+  color: var(--recorder-text-color);
+  border: 2px solid var(--recorder-border-button-color)
+}
+
+
+#button-finish {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 12px;
+  padding-right: 12px;
+  font-size: 12px;
+  color: white;
+  background-color: var(--recorder-secondary-color);
+  border-radius: var(--recorder-button-radius);
+}
+
+#choose-local-consultation {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: white;
+  font-size: 12px;
+  border-radius: var(--recorder-button-radius);
+  background-color: var(--recorder-primary-color);
+}
+
+#choose-telemedicine-consultation {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 4px;
+  padding-bottom: 5px;
+  padding-left: 16px;
+  padding-right: 16px;;
+  color: white;
+  font-size: 12px;
+  border-radius: var(--recorder-button-radius);
+  background-color: var(--recorder-primary-color);
+}
+
+#upload-text {
+  color: var(--recorder-text-color);
+  font-weight: bold;
+  margin-left:10px;
+}
+
+
