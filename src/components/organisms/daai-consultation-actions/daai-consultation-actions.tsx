@@ -28,8 +28,9 @@ export class DaaiConsultationActions {
   async choosenMode() {
     if (this.telemedicine) {
       state.status = "choosen";
+    } else {
+      state.status = "recording";
     }
-    state.status = "recording";
   }
 
   choosenSpecialty() {
