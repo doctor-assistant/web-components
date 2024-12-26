@@ -11,8 +11,15 @@ describe("daai-consultation-recorder", () => {
       <daai-consultation-recorder>
         <mock:shadow-root>
           <slot>
-           <div class="bg-white border-4 border-gray-100 flex items-center justify-center p-2 rounded-lg w-96">
-             <daai-mic></daai-mic>
+           <div id="daai-consultation-recorder">
+              <div>
+               <div class="flex gap-6 items-center">
+                 <daai-mic></daai-mic>
+               </div>
+             </div>
+             <div class="flex gap-2 items-center min-[380px]:ml-auto">
+               <daai-consultation-actions specialty=""></daai-consultation-actions>
+             </div>
            </div>
          </slot>
         </mock:shadow-root>

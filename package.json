@@ -50,5 +50,8 @@
     "tailwindcss": "^3.4.15",
     "typescript": "^5.7.2"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "dexie": "^4.0.10"
+  }
 }
