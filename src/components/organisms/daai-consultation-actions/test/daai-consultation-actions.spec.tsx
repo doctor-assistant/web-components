@@ -35,18 +35,4 @@ describe("daai-consultation-actions", () => {
     expect(component.title).toBe("Especialidade Cardiology");
     expect(mockGetSpecialtyTitle).toHaveBeenCalledWith("cardiology");
   });
-
-  it("lida com finishRecording e atualiza o estado", async () => {
-    const component = new DaaiConsultationActions();
-    component.mediaRecorder = {
-      state: "recording",
-      stop: jest.fn(),
-      ondataavailable: null,
-      onstop: null,
-    } as unknown as MediaRecorder;
-
-    await component.finishRecording();
-    expect(state.status).toBe("finished");
-    expect(component.mediaRecorder.stop).toHaveBeenCalled();
-  });
 });

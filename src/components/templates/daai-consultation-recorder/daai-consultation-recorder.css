@@ -218,4 +218,6 @@ daai-mic {
   margin-left:10px;
 }
 
-
+  #daai-select-guide-button {
+    background-color: var(--recorder-primary-color);
+  }
