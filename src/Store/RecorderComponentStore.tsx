@@ -2,6 +2,7 @@ import { createStore } from "@stencil/store";
 
 const { state } = createStore({
   status: "initial",
+  telemedicine: false,
   openModalConfig: false,
   openModalSpecialty: false,
   chooseModality: false,

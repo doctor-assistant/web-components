@@ -21,6 +21,7 @@ export const startRecording = async (isRemote: boolean) => {
   };
   let screenStream = null;
   if (isRemote) {
+    state.telemedicine = true
     try {
       screenStream = await navigator.mediaDevices.getDisplayMedia({
         audio: true,

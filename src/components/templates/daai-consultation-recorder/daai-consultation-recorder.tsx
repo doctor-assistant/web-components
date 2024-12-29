@@ -79,7 +79,7 @@ export class DaaiConsultationRecorder {
           />
         )}
 
-        {state.openModalConfig && <daai-popup></daai-popup>}
+        {state.status === "choosen" && <daai-popup></daai-popup>}
 
         {state.openModalSpecialty && <daai-specialty />}
       </Host>
