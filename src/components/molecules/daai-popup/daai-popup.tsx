@@ -1,5 +1,6 @@
 import { Component, h } from "@stencil/core";
 import { startRecording } from "../../../core/Recorder";
+import state from "../../../Store/RecorderComponentStore";
 
 @Component({
   tag: "daai-popup",
@@ -7,17 +8,39 @@ import { startRecording } from "../../../core/Recorder";
   shadow: true,
 })
 export class DaaiPopup {
+  handleClose() {
+    state.openTutorialPopup = false;
+    const isUserLoggedIn = true;
+    localStorage.setItem("isUserLoggedIn", JSON.stringify(isUserLoggedIn));
+  }
   render() {
     return (
       <div class="flex items-center justify-center flex-col gap-4 w-96 p-4 rounded-md border-2 border-gray-200 mt-4">
         <daai-popup-icon></daai-popup-icon>
-        <daai-text text="Compartilhar guia da consulta online" />
-        <daai-text text="Para realizar o registro, você deve compartilhar o áudio da guia do navegador na qual a consulta será realizada." />
-        <daai-text text="ATENÇÃO: é necessário compartilhar o áudio da guia, ainda que seja a mesma guia em que você se encontra agora." />
+        <div class="flex items-center justify-center flex-col gap-2">
+          <daai-text
+            tag="h5"
+            text="Compartilhar guia da consulta online"
+            id="title"
+          />
+          <daai-text
+            tag="h6"
+            text="Para realizar o registro, você deve compartilhar o áudio da guia do navegador na qual a consulta será realizada."
+            class="tutorial-text"
+          />
+          <daai-text
+            tag="h5"
+            class="alert-text"
+            text="ATENÇÃO: é necessário compartilhar o áudio da guia, ainda que seja a mesma guia em que você se encontra agora."
+          />
+        </div>
         <div class="flex items-center mb-4"></div>
         <daai-checkbox label="Não mostrar novamente"></daai-checkbox>
         <div class="flex items-center gap-4">
-          <daai-daai-button-with-icon id="daai-cancel-button">
+          <daai-daai-button-with-icon
+            id="daai-cancel-button"
+            onClick={() => this.handleClose()}
+          >
             Cancelar
           </daai-daai-button-with-icon>
           <daai-daai-button-with-icon

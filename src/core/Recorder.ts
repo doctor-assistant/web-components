@@ -21,6 +21,9 @@ export const startRecording = async (isRemote: boolean) => {
   };
   let screenStream = null;
   if (isRemote) {
+    if(state.isChecked === false){
+      state.openTutorialPopup = true
+    }
     state.telemedicine = true
     try {
       screenStream = await navigator.mediaDevices.getDisplayMedia({

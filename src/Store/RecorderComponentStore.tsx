@@ -5,6 +5,8 @@ const { state } = createStore({
   telemedicine: false,
   openModalConfig: false,
   openModalSpecialty: false,
+  openTutorialPopup: false,
+  isChecked: false,
   chooseModality: false,
   microphonePermission: false,
   availableMicrophones: [],
