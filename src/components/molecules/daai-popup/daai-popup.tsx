@@ -10,8 +10,6 @@ import state from "../../../Store/RecorderComponentStore";
 export class DaaiPopup {
   handleClose() {
     state.openTutorialPopup = false;
-    const isUserLoggedIn = true;
-    localStorage.setItem("isUserLoggedIn", JSON.stringify(isUserLoggedIn));
   }
   render() {
     return (

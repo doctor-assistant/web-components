@@ -5,6 +5,7 @@ import {
   pauseRecording,
   resumeRecording,
   startRecording,
+  StartTutorial,
 } from "../../../core/Recorder";
 import state from "../../../Store/RecorderComponentStore";
 import { getSpecialtyTitle } from "../../../utils/indexDb";
@@ -45,6 +46,8 @@ export class DaaiConsultationActions {
   }
 
   async componentDidLoad() {
+    const storedValue = localStorage.getItem("checkboxState");
+    state.isChecked = storedValue !== null ? JSON.parse(storedValue) : "";
     const spec = await getSpecialtyTitle(this.specialty);
     this.title = `Especialidade ${spec}`;
   }
@@ -103,7 +106,9 @@ export class DaaiConsultationActions {
             <daai-button-with-icon
               title="Iniciar Registro Telemedicina"
               id="choose-telemedicine-consultation"
-              onClick={() => startRecording(true)}
+              onClick={() =>
+                state.isChecked ? startRecording(true) : StartTutorial()
+              }
             >
               Telemedicina
             </daai-button-with-icon>

@@ -1,17 +1,18 @@
 import state from "../Store/RecorderComponentStore";
 
-let  mode: "local" | "telemedicine" | null = null;
 let mediaRecorder: MediaRecorder | null = null;
 let localStream: MediaStream | null = null;
 
 let apikey: any;
 
+export const StartTutorial = () => {
+  state.openTutorialPopup = true;
+}
 
 
 export const startRecording = async (isRemote: boolean) => {
   state.chooseModality = true;
 
-  mode = "local";
   const constraints = {
     audio: {
       deviceId: state.chosenMicrophone
@@ -21,9 +22,6 @@ export const startRecording = async (isRemote: boolean) => {
   };
   let screenStream = null;
   if (isRemote) {
-    if(state.isChecked === false){
-      state.openTutorialPopup = true
-    }
     state.telemedicine = true
     try {
       screenStream = await navigator.mediaDevices.getDisplayMedia({
@@ -34,6 +32,7 @@ export const startRecording = async (isRemote: boolean) => {
     }
   }
 
+  state.openTutorialPopup = false;
   state.status = "recording";
 
   const micStream = await navigator.mediaDevices.getUserMedia(constraints);
