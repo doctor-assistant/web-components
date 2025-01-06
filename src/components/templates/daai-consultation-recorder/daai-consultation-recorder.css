@@ -219,6 +219,24 @@ daai-mic {
   margin-left:10px;
 }
 
+
+@keyframes popup-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#popup-icon{
+  opacity: 0;
+  transform: scale(0.9);
+  animation: popup-appear 0.3s ease-out forwards;
+}
+
   #daai-select-guide-button {
     flex-direction: row;
     font-size: 14px;
