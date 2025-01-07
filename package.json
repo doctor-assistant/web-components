@@ -52,6 +52,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "dexie": "^4.0.10"
+    "dexie": "^4.0.10",
+    "extended-eventsource": "^1.4.9"
   }
 }

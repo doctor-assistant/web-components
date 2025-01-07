@@ -16,15 +16,20 @@
     function handleSuccess(response) {
       console.log("Sucesso na requisição:", response);
     }
-
     function handleError(error) {
       console.error("Erro na requisição:", error);
+    }
+    function handleEvent(event) {
+      console.log("Eventos:", event);
+
     }
 
     const recorder = document.querySelector('daai-consultation-recorder');
 
     recorder.onSuccess = handleSuccess;
     recorder.onError = handleError;
+    recorder.onEvent = handleEvent;
+
   </script>
 </body>
 </html>

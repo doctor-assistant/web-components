@@ -1,9 +1,9 @@
 import state from "../Store/RecorderComponentStore";
+import { EventSourceManager } from "../utils/sse";
 
 let mediaRecorder: MediaRecorder | null = null;
 let localStream: MediaStream | null = null;
 
-let apikey: any;
 
 export const StartTutorial = () => {
   state.openTutorialPopup = true;
@@ -90,7 +90,7 @@ export const finishRecording = async (
   success,
   error,
   specialty,
-  metadata) => {
+  metadata, onEvent) => {
   const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
@@ -100,7 +100,8 @@ export const finishRecording = async (
         success,
         error,
         specialty,
-        metadata
+        metadata,
+        onEvent,
       );
     } catch (error) {
       console.error("Erro ao salvar ou recuperar áudio:", error);
@@ -117,11 +118,10 @@ export const finishRecording = async (
  mediaRecorder.stop();
   state.status = "finished";
 };
+export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event) => {
+  let eventSourceManager = null;
 
-export const uploadAudio =  async(audioBlob, apiKey, success, error, specialty, metadata) => {
-  console.log('apikey',apiKey)
-  const mode =
-    apikey && apikey.startsWith("PRODUCTION") ? "prod" : "dev";
+  const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
   const url =
     mode === "dev"
       ? "https://apim.doctorassistant.ai/api/sandbox/consultations"
@@ -145,6 +145,8 @@ export const uploadAudio =  async(audioBlob, apiKey, success, error, specialty, 
       body: formData,
     });
 
+    console.log(apiKey, "apiKey");
+
     if (!response.ok) {
       const errorResponse = await response.json();
       if (typeof error === "function") {
@@ -153,9 +155,20 @@ export const uploadAudio =  async(audioBlob, apiKey, success, error, specialty, 
     }
 
     if (response.ok) {
+      const jsonResponse = await response.json();
+      const consultationId = jsonResponse.id;
+
       state.status = "upload-ok";
       if (typeof success === "function") {
         success(response);
+      }
+      console.log(event, "event");
+      if (typeof event === "function") {
+        console.log(apiKey, "apiKey inside event");
+        const sseUrl = `${url}/${consultationId}/events`;
+        eventSourceManager = new EventSourceManager(apiKey, sseUrl, event);
+        console.log( eventSourceManager ,' eventSourceManager ')
+        eventSourceManager.connect();
       }
     }
   } catch (err) {
@@ -164,7 +177,8 @@ export const uploadAudio =  async(audioBlob, apiKey, success, error, specialty, 
       error(err);
     }
   }
-}
+};
+
 
 export const openConfigModal = () => {
   state.openModalConfig = true;

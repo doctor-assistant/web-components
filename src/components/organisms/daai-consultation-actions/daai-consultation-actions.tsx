@@ -22,7 +22,7 @@ export class DaaiConsultationActions {
   @Prop() success: any;
   @Prop() error: any;
   @Prop() metadata: string;
-
+  @Prop() event: any;
   @State() title: string = "";
 
   newRecording() {
@@ -141,7 +141,8 @@ export class DaaiConsultationActions {
                   this.success,
                   this.error,
                   this.specialty,
-                  this.metadata
+                  this.metadata,
+                  this.event
                 )
               }
             >
@@ -178,7 +179,8 @@ export class DaaiConsultationActions {
                   this.success,
                   this.error,
                   this.specialty,
-                  this.metadata
+                  this.metadata,
+                  this.event
                 )
               }
             >

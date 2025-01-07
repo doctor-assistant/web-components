@@ -10,6 +10,7 @@ import { saveSpecialties } from "../../../utils/indexDb";
 export class DaaiConsultationRecorder {
   @Prop() onSuccess: (response: Response) => void;
   @Prop() onError: (err: Error) => void;
+  @Prop() onEvent: (response: Response) => void;
 
   @Prop() apikey: string;
   @Prop() specialty: string = state.chooseSpecialty;
@@ -68,6 +69,7 @@ export class DaaiConsultationRecorder {
                 success={this.onSuccess}
                 error={this.onError}
                 telemedicine={this.telemedicine}
+                event={this.onEvent}
               ></daai-consultation-actions>
             </div>
           </div>

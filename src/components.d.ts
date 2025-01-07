@@ -28,6 +28,7 @@ export namespace Components {
     interface DaaiConsultationActions {
         "apikey": any;
         "error": any;
+        "event": any;
         "metadata": string;
         "specialty": any;
         "success": any;
@@ -37,6 +38,7 @@ export namespace Components {
         "apikey": string;
         "metadata": string;
         "onError": (err: Error) => void;
+        "onEvent": (response: Response) => void;
         "onSuccess": (response: Response) => void;
         "specialty": string;
         "telemedicine": boolean;
@@ -331,6 +333,7 @@ declare namespace LocalJSX {
     interface DaaiConsultationActions {
         "apikey"?: any;
         "error"?: any;
+        "event"?: any;
         "metadata"?: string;
         "specialty"?: any;
         "success"?: any;
@@ -340,6 +343,7 @@ declare namespace LocalJSX {
         "apikey"?: string;
         "metadata"?: string;
         "onError"?: (err: Error) => void;
+        "onEvent"?: (response: Response) => void;
         "onSuccess"?: (response: Response) => void;
         "specialty"?: string;
         "telemedicine"?: boolean;
