@@ -1,4 +1,4 @@
-// import EventSource from 'extended-eventsource';
+import { EventSource } from 'extended-eventsource/dist/index.esm.js';
 
 class EventSourceManager {
   public apiKey: string;
@@ -16,8 +16,6 @@ class EventSourceManager {
     this.eventSource = null;
     this.retryDelay = 5000;
 
-    console.log( this.apiKey,' this.apiKey')
-    console.log( this.sseUrl,' this.url')
 
     this.handleOpen = this.handleOpen.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
@@ -33,10 +31,9 @@ class EventSourceManager {
     const eventSourceOptions = {
       headers: { 'x-daai-api-key': this.apiKey },
     };
-    const EventSource  = await import('extended-eventsource')
-    //@ts-ignore
-    console.log(EventSource.default,'eventsource')
-    // this.eventSource = new EventSource(this.sseUrl, eventSourceOptions);
+    // const EventSource  = await import('extended-eventsource')
+    console.log(EventSource,'eventsource')
+    this.eventSource = new EventSource(this.sseUrl, eventSourceOptions);
 
     this.eventSource.onopen = this.handleOpen;
     this.eventSource.onmessage = this.handleMessage;

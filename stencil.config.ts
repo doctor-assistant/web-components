@@ -28,4 +28,5 @@ export const config: Config = {
   testing: {
     browserHeadless: "new",
   },
+  // rollupConfig: { inputOptions: { external: ['./mode_modules/extended-eventsource'] } }
 };
