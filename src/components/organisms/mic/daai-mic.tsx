@@ -34,7 +34,7 @@ export class DaaiMic {
   render() {
     return (
       <div class="flex items-center justify-center bg-white gap-2">
-        <daai-logo-icon></daai-logo-icon>
+        <div id="daai-logo-icon"></div>
         <div class="flex items-center justify-center">
           {state.microphonePermission === false ? (
             <daai-text

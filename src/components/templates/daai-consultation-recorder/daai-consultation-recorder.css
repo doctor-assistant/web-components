@@ -18,9 +18,8 @@
   --recorder-border-button-color:var(--border-button-color);
   --recorder-animation-recording-color:var(--animation-recorder-color);
   --recorder-animation-paused-color:var(--animation-recorder-color);
-  /* imagem provisória */
-  --recorder-tutorial-image:url('https://i0.wp.com/www.doctorassistant.ai/wp-content/uploads/2020/04/01-Logo-horizontal-para-fundo-claro.png?w=769&ssl=1');
-
+  --recorder-tutorial-image: url('/assets/tutorial.png');
+  --recorder-daai-logo-icon:url('/assets/logo.svg');
 }
 
 daai-button-with-icon {
@@ -55,6 +54,14 @@ daai-button-with-icon {
 daai-recording-animation {
   --animation-recording-color: var(--recorder-animation-recording-color);
   --animation-paused-color: var(--recorder-animation-paused-color);
+}
+
+
+#daai-logo-icon{
+  width: 30px;
+  height: 30px;
+  background-image: var(--recorder-daai-logo-icon);
+  background-repeat: no-repeat;
 }
 
 
@@ -236,8 +243,8 @@ daai-mic {
 }
 
 #popup-icon {
-  width: 200px;
-  height: 180px;
+  width: 375px;
+  height: 250px;
   background-image: var(--recorder-tutorial-image);
   background-repeat: no-repeat;
   transform: scale(0.9);
