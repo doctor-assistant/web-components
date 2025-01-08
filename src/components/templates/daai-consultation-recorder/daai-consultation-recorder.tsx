@@ -24,8 +24,7 @@ export class DaaiConsultationRecorder {
       state.defaultSpecialty = this.specialty;
     }
     const spec = await getSpecialty(mode);
-
-    saveSpecialties(spec);
+    await saveSpecialties(spec);
   }
 
   render() {

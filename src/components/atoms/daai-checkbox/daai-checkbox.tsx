@@ -18,7 +18,6 @@ export class DaaiCheckbox {
     const storedValue = localStorage.getItem("checkboxState");
     this.isChecked =
       storedValue !== null ? JSON.parse(storedValue) : this.checked;
-    console.log(this.isChecked, " this.isChecked");
     state.isChecked = this.isChecked;
   }
 

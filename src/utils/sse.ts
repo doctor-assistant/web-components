@@ -1,6 +1,5 @@
 import { EventSource } from "extended-eventsource";
 
-console.log(EventSource)
 
 class EventSourceManager {
   public apiKey: string;
@@ -22,11 +21,6 @@ class EventSourceManager {
     this.handleError = this.handleError.bind(this);
   }
   connect() {
-    console.log(typeof EventSource, 'eventSource')
-    console.log(this.eventSource,'this.eventSource')
-    console.log(this.apiKey,'this.eventSource')
-    console.log(this.url,'this.eventSource')
-    console.log(this.onMessage,'this.eventSource')
 
     if (this.eventSource) {
       console.warn('EventSource is already connected.');
@@ -36,7 +30,6 @@ class EventSourceManager {
     const eventSourceOptions = {
       headers: { 'x-daai-api-key': this.apiKey },
     };
-    console.log(eventSourceOptions,'eventSourceOptions')
 
     this.eventSource = new EventSource(this.url, eventSourceOptions);
 
@@ -46,7 +39,6 @@ class EventSourceManager {
   }
 
   handleOpen() {
-    console.log('abriuuu')
     console.info('SSE connection opened.');
   }
 

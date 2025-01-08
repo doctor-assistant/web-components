@@ -8,7 +8,7 @@ import {
   StartTutorial,
 } from "../../../core/Recorder";
 import state from "../../../Store/RecorderComponentStore";
-import { getSpecialtyTitle } from "../../../utils/indexDb";
+import { getSpecialtyTitleById } from "../../../utils/indexDb";
 
 @Component({
   tag: "daai-consultation-actions",
@@ -48,8 +48,10 @@ export class DaaiConsultationActions {
   async componentDidLoad() {
     const storedValue = localStorage.getItem("checkboxState");
     state.isChecked = storedValue !== null ? JSON.parse(storedValue) : "";
-    const spec = await getSpecialtyTitle(this.specialty);
-    this.title = `Especialidade ${spec}`;
+    const spec = state.chooseSpecialty;
+    const title = await getSpecialtyTitleById("anesthesiology");
+
+    this.title = `Especialidade ${title}`;
   }
 
   renderButtons() {

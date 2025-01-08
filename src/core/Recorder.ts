@@ -145,7 +145,6 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
       body: formData,
     });
 
-    console.log(apiKey, "apiKey");
 
     if (!response.ok) {
       const errorResponse = await response.json();
@@ -162,12 +161,9 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
       if (typeof success === "function") {
         success(response);
       }
-      console.log(event, "event");
       if (typeof event === "function") {
-        console.log(apiKey, "apiKey inside event");
         const sseUrl = `${url}/${consultationId}/events`;
         eventSourceManager = new EventSourceManager(apiKey, sseUrl, event);
-        console.log( eventSourceManager ,' eventSourceManager ')
         eventSourceManager.connect();
       }
     }
