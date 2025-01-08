@@ -7,9 +7,9 @@ import state from "../../../Store/RecorderComponentStore";
   shadow: true,
 })
 export class DaaiCheckbox {
-  @Prop() checked: boolean = false; // Valor inicial como Prop
-  @Prop() disabled: boolean = false; // Para desativar o checkbox
-  @Prop() label: string = ""; // Label do checkbox
+  @Prop() checked: boolean = false;
+  @Prop() disabled: boolean = false;
+  @Prop() label: string = "";
 
   @Event() change: EventEmitter<boolean>;
   @State() isChecked: boolean;
@@ -25,6 +25,7 @@ export class DaaiCheckbox {
     if (!this.disabled) {
       this.isChecked = !this.isChecked;
       localStorage.setItem("checkboxState", JSON.stringify(this.isChecked));
+      state.isChecked = this.isChecked;
       this.change.emit(this.isChecked);
     }
   };
@@ -35,9 +36,9 @@ export class DaaiCheckbox {
         <input
           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
           type="checkbox"
-          checked={this.isChecked} // Define o estado inicial
-          disabled={this.disabled} // Define se está desativado
-          onChange={this.handleToggle} // Chama o método ao alternar
+          checked={this.isChecked}
+          disabled={this.disabled}
+          onChange={this.handleToggle}
           id="checkbox"
         />
         <label

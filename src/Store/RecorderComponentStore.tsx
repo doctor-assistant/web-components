@@ -12,6 +12,7 @@ const { state } = createStore({
   availableMicrophones: [],
   chosenMicrophone: "",
   defaultMicrophone: "",
+  showsScreen: false,
   recordingTime: 0,
   specialtyList: [],
   chooseSpecialty: "",

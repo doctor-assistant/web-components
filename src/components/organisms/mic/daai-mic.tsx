@@ -42,7 +42,7 @@ export class DaaiMic {
               id="error-msg"
             />
           ) : state.status === "initial" ? (
-            <div class="mt-4"></div>
+            <daai-text text="Registro por IA" id="initial-text"></daai-text>
           ) : state.status === "recording" ||
             state.status === "paused" ||
             state.status === "resume" ? (

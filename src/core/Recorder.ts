@@ -119,7 +119,6 @@ export const finishRecording = async (
   state.status = "finished";
 };
 export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event) => {
-  let eventSourceManager = null;
 
   const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
   const url =
@@ -161,11 +160,11 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
       if (typeof success === "function") {
         success(response);
       }
-      if (typeof event === "function") {
+      // if (typeof event === "function") {
         const sseUrl = `${url}/${consultationId}/events`;
-        eventSourceManager = new EventSourceManager(apiKey, sseUrl, event);
+        let eventSourceManager = new EventSourceManager(apiKey, sseUrl, event);
         eventSourceManager.connect();
-      }
+      // }
     }
   } catch (err) {
     console.error("Erro ao enviar o áudio:", err);

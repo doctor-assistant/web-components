@@ -60,7 +60,7 @@ export class DaaiConsultationRecorder {
               )
             )}
 
-            <div class="min-[380px]:ml-auto flex gap-2 items-center">
+            <div class="min-[500px]:ml-auto flex gap-2 items-center">
               <daai-consultation-actions
                 apikey={this.apikey}
                 specialty={state.defaultSpecialty || state.chooseSpecialty}
