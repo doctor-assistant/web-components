@@ -160,11 +160,11 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
       if (typeof success === "function") {
         success(response);
       }
-      // if (typeof event === "function") {
+      if (typeof event === "function") {
         const sseUrl = `${url}/${consultationId}/events`;
         let eventSourceManager = new EventSourceManager(apiKey, sseUrl, event);
         eventSourceManager.connect();
-      // }
+      }
     }
   } catch (err) {
     console.error("Erro ao enviar o áudio:", err);

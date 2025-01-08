@@ -32,7 +32,6 @@ class EventSourceManager {
       headers: { 'x-daai-api-key': this.apiKey },
     };
     // const EventSource  = await import('extended-eventsource')
-    console.log(EventSource,'eventsource')
     this.eventSource = new EventSource(this.sseUrl, eventSourceOptions);
 
     this.eventSource.onopen = this.handleOpen;

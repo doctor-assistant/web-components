@@ -33,6 +33,7 @@ daai-button-with-icon {
 }
 
 #daai-consultation-recorder{
+  font-family: "Inter", sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -217,9 +218,8 @@ daai-mic {
 }
 
 #upload-text {
-  color: var(--recorder-text-color);
-  font-weight: bold;
-  margin-left:10px;
+  color: var(--recorder-primary-color);
+  font-weight: 600;
 }
 
 
