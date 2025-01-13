@@ -1,5 +1,5 @@
 import { Component, h, State } from "@stencil/core";
-import state from "../../../Store/RecorderComponentStore";
+import state from "../../../store";
 
 @Component({
   tag: "daai-specialty",

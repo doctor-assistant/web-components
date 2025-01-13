@@ -1,4 +1,4 @@
-import state from "../Store/RecorderComponentStore";
+import state from "../store";
 import { EventSourceManager } from "../utils/sse";
 
 let mediaRecorder: MediaRecorder | null = null;

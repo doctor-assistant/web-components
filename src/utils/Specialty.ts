@@ -1,4 +1,4 @@
-import state from "../Store/RecorderComponentStore";
+import state from "../store";
 
 async function getSpecialtyApi(mode: string) {
   const url =

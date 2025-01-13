@@ -5,31 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="module" src="/build/web-components.esm.js"></script>
   <script nomodule src="/build/web-components.js"></script>
+  <style>
+  </style>
 </head>
 <body>
+  <di>
   <daai-consultation-recorder
-    id="recorder"
-    telemedicine=true
   ></daai-consultation-recorder>
-
-  <script>
-    function handleSuccess(response) {
-      console.log("Sucesso na requisição:", response);
-    }
-    function handleError(error) {
-      console.error("Erro na requisição:", error);
-    }
-    function handleEvent(event) {
-      console.log("Eventos:", event);
-
-    }
-
-    const recorder = document.querySelector('daai-consultation-recorder');
-
-    recorder.onSuccess = handleSuccess;
-    recorder.onError = handleError;
-    recorder.onEvent = handleEvent;
-
-  </script>
+  </div>
 </body>
 </html>

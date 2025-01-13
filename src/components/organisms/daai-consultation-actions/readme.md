@@ -11,6 +11,7 @@
 | -------------- | -------------- | ----------- | --------- | ----------- |
 | `apikey`       | `apikey`       |             | `any`     | `undefined` |
 | `error`        | `error`        |             | `any`     | `undefined` |
+| `event`        | `event`        |             | `any`     | `undefined` |
 | `metadata`     | `metadata`     |             | `string`  | `undefined` |
 | `specialty`    | `specialty`    |             | `any`     | `undefined` |
 | `success`      | `success`      |             | `any`     | `undefined` |

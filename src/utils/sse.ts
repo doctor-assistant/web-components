@@ -9,7 +9,6 @@ class EventSourceManager {
 
 
   constructor(apiKey, sseUrl, onMessage) {
-    console.log(apiKey, sseUrl, onMessage,'apiKey, sseUrl, onMessage')
     this.apiKey = apiKey;
     this.sseUrl = sseUrl;
     this.onMessage = onMessage;

@@ -1,5 +1,5 @@
 import { Component, h, Host, Prop } from "@stencil/core";
-import state from "../../../Store/RecorderComponentStore";
+import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
 @Component({

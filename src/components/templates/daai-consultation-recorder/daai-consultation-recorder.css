@@ -33,6 +33,7 @@ daai-button-with-icon {
 }
 
 #daai-consultation-recorder{
+  max-width: 635px;
   font-family: "Inter", sans-serif;
   display: flex;
   align-items: center;
@@ -131,6 +132,19 @@ daai-mic {
   color:white;
 }
 
+#new-recording{
+  flex-direction: row;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: var(--recorder-button-radius);
+  border: 2px solid var(--recorder-primary-color);
+  color: var(--recorder-text-color);
+  color: var(--recorder-primary-color);
+}
 
 #error-msg {
   color: var(--recorder-error-color);
@@ -181,6 +195,7 @@ daai-mic {
 
 
 #button-finish {
+  font-weight: 600;
   height: 40px;
   display: flex;
   align-items: center;
@@ -190,8 +205,10 @@ daai-mic {
   padding-left: 12px;
   padding-right: 12px;
   font-size: 12px;
-  color: white;
-  background-color: var(--recorder-secondary-color);
+  color: var(--recorder-primary-color);
+  flex-direction: row;
+   border:  2px solid var(--recorder-primary-color);
+  /* background-color: var(--recorder-primary-color); */
   border-radius: var(--recorder-button-radius);
 }
 

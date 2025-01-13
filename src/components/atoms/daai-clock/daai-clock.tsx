@@ -1,5 +1,5 @@
 import { Component, h, Host, Prop, State, Watch } from "@stencil/core";
-import state from "../../../Store/RecorderComponentStore";
+import state from "../../../store";
 
 @Component({
   tag: "daai-clock",

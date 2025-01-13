@@ -1,6 +1,6 @@
 import { Component, h } from "@stencil/core";
 import { startRecording } from "../../../core/Recorder";
-import state from "../../../Store/RecorderComponentStore";
+import state from "../../../store";
 
 @Component({
   tag: "daai-popup",

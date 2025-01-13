@@ -18,14 +18,12 @@
 
 ### Depends on
 
-- [daai-logo-icon](../../atoms/icons)
 - [daai-text](../../atoms/text)
 - [daai-recording-animation](../../atoms/daai-recording-animation)
 
 ### Graph
 ```mermaid
 graph TD;
-  daai-mic --> daai-logo-icon
   daai-mic --> daai-text
   daai-mic --> daai-recording-animation
   daai-consultation-recorder --> daai-mic

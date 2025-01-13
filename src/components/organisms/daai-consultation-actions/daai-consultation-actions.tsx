@@ -7,7 +7,7 @@ import {
   startRecording,
   StartTutorial,
 } from "../../../core/Recorder";
-import state from "../../../Store/RecorderComponentStore";
+import state from "../../../store";
 
 @Component({
   tag: "daai-consultation-actions",
@@ -48,7 +48,6 @@ export class DaaiConsultationActions {
     const storedValue = localStorage.getItem("checkboxState");
     state.isChecked = storedValue !== null ? JSON.parse(storedValue) : "";
     // const title = await getSpecialtyTitleById(this.specialty);
-    console.log(state.specialtyTitle, "this.specialty");
     this.title = `Especialidade`;
   }
 
@@ -200,10 +199,10 @@ export class DaaiConsultationActions {
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
               title="Iniciar Novo Registro"
-              id="start-recording"
+              id="new-recording"
               onClick={() => this.newRecording()}
             >
-              Iniciar Novo Registro
+              Novo Registro
             </daai-button-with-icon>
           </div>
         );

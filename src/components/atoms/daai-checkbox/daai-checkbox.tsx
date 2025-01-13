@@ -1,5 +1,5 @@
 import { Component, Event, EventEmitter, h, Prop, State } from "@stencil/core";
-import state from "../../../Store/RecorderComponentStore";
+import state from "../../../store";
 
 @Component({
   tag: "daai-checkbox",

@@ -1,5 +1,5 @@
 import { newSpecPage } from "@stencil/core/testing";
-import state from "../../../../Store/RecorderComponentStore";
+import state from "../../../../store";
 import { DaaiConsultationActions } from "../daai-consultation-actions";
 
 describe("daai-consultation-actions", () => {
