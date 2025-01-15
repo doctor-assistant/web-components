@@ -2,24 +2,24 @@
 
 :host {
   display: block;
-  --logo-url:url('');
+  --logo-url: url('');
   --recorder-primary-color: var(--primary-color);
   --recorder-secondary-color: var(--secondary-color);
   --recorder-success-color: var(--success-color);
   --recorder-support-color: var(--support-color);
   --recorder-disable-color: var(--disable-color);
- --recorder-error-color:var(--error-color);
- --recorder-transparent-color:var(--transparent-color);
-  --recorder-background-color:var(--background-color);
-  --recorder-border-color:var(--border-color);
-  --recorder-button-radius:var(--button-roudend-sm);
-  --recorder-border-radius:var(--button-roudend-sm);
-  --recorder-text-color:var(--text-default-color);
-  --recorder-border-button-color:var(--border-button-color);
-  --recorder-animation-recording-color:var(--animation-recorder-color);
-  --recorder-animation-paused-color:var(--animation-recorder-color);
-  --recorder-tutorial-image: url('/assets/tutorial.png');
-  --recorder-daai-logo-icon:url('/assets/logo.svg');
+  --recorder-error-color: var(--error-color);
+  --recorder-transparent-color: var(--transparent-color);
+  --recorder-background-color: var(--background-color);
+  --recorder-border-color: var(--border-color);
+  --recorder-button-radius: var(--button-roudend-sm);
+  --recorder-border-radius: var(--button-roudend-sm);
+  --recorder-text-color: var(--text-default-color);
+  --recorder-border-button-color: var(--border-button-color);
+  --recorder-animation-recording-color: var(--animation-recorder-color);
+  --recorder-animation-paused-color: var(--animation-recorder-color);
+  --recorder-tutorial-image: url('https://storage.googleapis.com/landpage-prd/tutorial.png');
+  --recorder-daai-logo-icon: url('https://storage.googleapis.com/landpage-prd/logo.svg');
 }
 
 daai-button-with-icon {
@@ -32,7 +32,7 @@ daai-button-with-icon {
   text-align: center;
 }
 
-#daai-consultation-recorder{
+#daai-consultation-recorder {
   max-width: 635px;
   font-family: "Inter", sans-serif;
   display: flex;
@@ -42,14 +42,14 @@ daai-button-with-icon {
   border: 1px solid var(--recorder-border-color);
   box-shadow: 2px 2px 1px 1px rgb(201, 201, 201);
   padding: 8px;
-  gap:4px;
+  gap: 4px;
   height: 60px;
 
-@media (min-width: 100px) and (max-width: 499px) {
-  display: flex;
-  flex-direction: column;
-  height: 120px;
-}
+  @media (min-width: 100px) and (max-width: 499px) {
+    display: flex;
+    flex-direction: column;
+    height: 120px;
+  }
 }
 
 daai-recording-animation {
@@ -58,7 +58,7 @@ daai-recording-animation {
 }
 
 
-#daai-logo-icon{
+#daai-logo-icon {
   width: 30px;
   height: 30px;
   background-image: var(--recorder-daai-logo-icon);
@@ -70,11 +70,11 @@ daai-mic {
   background-color: var(--recorder-background-color);
 }
 
-#animation-recording{
-  color:brown
+#animation-recording {
+  color: brown
 }
 
-#close-icon{
+#close-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -102,7 +102,7 @@ daai-mic {
   justify-content: center;
   padding: 4px;
   border-radius: var(--recorder-button-radius);
-  background-color:var(--recorder-secondary-color);
+  background-color: var(--recorder-secondary-color);
   border: 2px var(--recorder-secondary-color) solid;
   color: var(--recorder-text-color);
 }
@@ -129,10 +129,10 @@ daai-mic {
   border-radius: var(--recorder-button-radius);
   background-color: var(--recorder-primary-color);
   color: var(--recorder-text-color);
-  color:white;
+  color: white;
 }
 
-#new-recording{
+#new-recording {
   flex-direction: row;
   font-size: 12px;
   font-weight: 600;
@@ -159,7 +159,7 @@ daai-mic {
   margin-left: 4px;
 }
 
-#specialty{
+#specialty {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,7 +207,7 @@ daai-mic {
   font-size: 12px;
   color: var(--recorder-primary-color);
   flex-direction: row;
-   border:  2px solid var(--recorder-primary-color);
+  border: 2px solid var(--recorder-primary-color);
   /* background-color: var(--recorder-primary-color); */
   border-radius: var(--recorder-button-radius);
 }
@@ -235,7 +235,8 @@ daai-mic {
   padding-top: 4px;
   padding-bottom: 5px;
   padding-left: 16px;
-  padding-right: 16px;;
+  padding-right: 16px;
+  ;
   color: white;
   font-size: 12px;
   border-radius: var(--recorder-button-radius);
@@ -253,6 +254,7 @@ daai-mic {
     opacity: 0;
     transform: scale(0.9);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
@@ -269,52 +271,52 @@ daai-mic {
   animation: popup-appear 0.3s ease-out forwards;
 }
 
-  #daai-select-guide-button {
-    flex-direction: row;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 16px;
-    border-radius: var(--recorder-border-radius);
-    background-color: var(--recorder-primary-color);
-    color: var(--recorder-text-color);
-    color:white;
-    cursor:pointer;
-  }
+#daai-select-guide-button {
+  flex-direction: row;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: var(--recorder-border-radius);
+  background-color: var(--recorder-primary-color);
+  color: var(--recorder-text-color);
+  color: white;
+  cursor: pointer;
+}
 
-  #daai-cancel-button{
-    flex-direction: row;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 16px;
-    border-radius: var(--recorder-border-radius);
-    border: 1px solid var(--recorder-disable-color);
-    background-color: var(--recorder-transparent-color);
-    color: #111928;
-    cursor:pointer;
-  }
+#daai-cancel-button {
+  flex-direction: row;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: var(--recorder-border-radius);
+  border: 1px solid var(--recorder-disable-color);
+  background-color: var(--recorder-transparent-color);
+  color: #111928;
+  cursor: pointer;
+}
 
- #title {
-    margin-bottom: 10px;
-  }
+#title {
+  margin-bottom: 10px;
+}
 
 .tutorial-text {
-    font-weight: 700;
-    color:#637381;
-    text-align: center;
-  }
+  font-weight: 700;
+  color: #637381;
+  text-align: center;
+}
 
-  .alert-text{
-    font-weight: 700;
-    color:#637381;
-    text-align: center;
-  }
+.alert-text {
+  font-weight: 700;
+  color: #637381;
+  text-align: center;
+}
 
 
-#initial-text{
-  color:var(--primary-color);
+#initial-text {
+  color: var(--primary-color);
   font-weight: 600;
 }
