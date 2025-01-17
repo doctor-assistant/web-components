@@ -1,5 +1,5 @@
 import { Component, Event, EventEmitter, h } from "@stencil/core";
-import state from "../../../Store/RecorderComponentStore";
+import state from "../../../store";
 
 @Component({
   tag: "daai-mic",
@@ -9,32 +9,45 @@ import state from "../../../Store/RecorderComponentStore";
 export class DaaiMic {
   @Event() interfaceEvent: EventEmitter<{ microphoneSelect: boolean }>;
 
-  async componentDidLoad() {
-    await this.requestMicrophonePermission();
+  connectedCallback() {
+    this.requestMicrophonePermission();
   }
 
   async requestMicrophonePermission() {
+    console.log("Solicitando permissão do microfone...");
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream: MediaStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+      console.log("Permissão concedida, stream:", stream);
+
       state.microphonePermission = true;
 
+      console.log("state.microphonePermission", state.microphonePermission);
+
       const devices = await navigator.mediaDevices.enumerateDevices();
+      console.log("Dispositivos disponíveis:", devices);
+
       const microphones = devices
         .filter((device) => device.kind === "audioinput")
         .map((device) => device.label || "Microfone sem nome");
+
+      console.log("Microfones encontrados:", microphones);
 
       state.availableMicrophones = microphones;
 
       stream.getTracks().forEach((track) => track.stop());
     } catch (error) {
-      console.error("Permissão do microfone negada ou erro ao acessar:", error);
+      console.log("Erro ao solicitar permissão do microfone");
+      console.error("Erro:", error);
+      state.microphonePermission = false;
     }
   }
 
   render() {
     return (
       <div class="flex items-center justify-center bg-white gap-2">
-        <daai-logo-icon></daai-logo-icon>
+        <div id="daai-logo-icon"></div>
         <div class="flex items-center justify-center">
           {state.microphonePermission === false ? (
             <daai-text
@@ -42,15 +55,28 @@ export class DaaiMic {
               id="error-msg"
             />
           ) : state.status === "initial" ? (
-            <div class="mt-4"></div>
-          ) : state.status === "recording" ||
-            state.status === "paused" ||
-            state.status === "resume" ? (
-            <div class="ml-4">
-              <daai-recording-animation
-                id="animation-recording"
-                status={state.status}
-              />
+            <daai-text text="Registro por IA" id="initial-text"></daai-text>
+          ) : state.status === "paused" ? (
+            <div class="flex items-center justify-center">
+              <daai-text text="Pausado" id="initial-text"></daai-text>
+              <div class="ml-4">
+                <daai-recording-animation
+                  id="animation-recording"
+                  status={state.status}
+                />
+              </div>
+            </div>
+          ) : null}
+
+          {state.status === "recording" || state.status === "resume" ? (
+            <div class="flex items-center justify-center">
+              <daai-text text="Gravando..." id="initial-text"></daai-text>
+              <div class="ml-4">
+                <daai-recording-animation
+                  id="animation-recording"
+                  status={state.status}
+                />
+              </div>
             </div>
           ) : null}
         </div>

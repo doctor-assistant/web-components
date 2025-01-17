@@ -8,7 +8,8 @@
   --success-color:#28A18C;
   --error-color:#E11D48;
   --disable-color:#DFE4EA;
-  --support-color:#c9c9c9;
+  --support-color:#64748B;
+  --transparent-color:transparent;
 
 
   --text-primary-color: #009CB1;
@@ -28,6 +29,8 @@
 
   --animation-recorder-color:#f43f5e;
   --animation-paused-color:#009cb1;
+
+  --logo-url:'';
 
 }
 

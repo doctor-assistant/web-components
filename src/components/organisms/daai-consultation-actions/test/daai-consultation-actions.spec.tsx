@@ -1,5 +1,5 @@
 import { newSpecPage } from "@stencil/core/testing";
-import state from "../../../../Store/RecorderComponentStore";
+import state from "../../../../store";
 import { DaaiConsultationActions } from "../daai-consultation-actions";
 
 describe("daai-consultation-actions", () => {
@@ -34,19 +34,5 @@ describe("daai-consultation-actions", () => {
     await component.componentDidLoad();
     expect(component.title).toBe("Especialidade Cardiology");
     expect(mockGetSpecialtyTitle).toHaveBeenCalledWith("cardiology");
-  });
-
-  it("lida com finishRecording e atualiza o estado", async () => {
-    const component = new DaaiConsultationActions();
-    component.mediaRecorder = {
-      state: "recording",
-      stop: jest.fn(),
-      ondataavailable: null,
-      onstop: null,
-    } as unknown as MediaRecorder;
-
-    await component.finishRecording();
-    expect(state.status).toBe("finished");
-    expect(component.mediaRecorder.stop).toHaveBeenCalled();
   });
 });

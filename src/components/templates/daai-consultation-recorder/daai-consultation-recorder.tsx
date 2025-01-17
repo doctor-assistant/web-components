@@ -1,5 +1,5 @@
 import { Component, h, Host, Prop } from "@stencil/core";
-import state from "../../../Store/RecorderComponentStore";
+import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
 @Component({
@@ -10,6 +10,7 @@ import { saveSpecialties } from "../../../utils/indexDb";
 export class DaaiConsultationRecorder {
   @Prop() onSuccess: (response: Response) => void;
   @Prop() onError: (err: Error) => void;
+  @Prop() onEvent: (response: Response) => void;
 
   @Prop() apikey: string;
   @Prop() specialty: string = state.chooseSpecialty;
@@ -23,8 +24,7 @@ export class DaaiConsultationRecorder {
       state.defaultSpecialty = this.specialty;
     }
     const spec = await getSpecialty(mode);
-
-    saveSpecialties(spec);
+    await saveSpecialties(spec);
   }
 
   render() {
@@ -60,7 +60,7 @@ export class DaaiConsultationRecorder {
               )
             )}
 
-            <div class="min-[380px]:ml-auto flex gap-2 items-center">
+            <div class="min-[500px]:ml-auto flex gap-2 items-center">
               <daai-consultation-actions
                 apikey={this.apikey}
                 specialty={state.defaultSpecialty || state.chooseSpecialty}
@@ -68,6 +68,7 @@ export class DaaiConsultationRecorder {
                 success={this.onSuccess}
                 error={this.onError}
                 telemedicine={this.telemedicine}
+                event={this.onEvent}
               ></daai-consultation-actions>
             </div>
           </div>
@@ -78,6 +79,8 @@ export class DaaiConsultationRecorder {
             items={state.availableMicrophones}
           />
         )}
+
+        {state.openTutorialPopup && <daai-popup class="popup"></daai-popup>}
 
         {state.openModalSpecialty && <daai-specialty />}
       </Host>
