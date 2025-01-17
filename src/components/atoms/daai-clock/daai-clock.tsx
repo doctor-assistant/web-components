@@ -100,7 +100,7 @@ export class DaaiClock {
   render() {
     return (
       <Host>
-        <div class="text-sm font-bold">
+        <div class="text-sm font-bold text-slate-500">
           <span ref={(el) => (this.timerElement = el as HTMLElement)}>
             {this.getFormattedRecordingTime(0)}
           </span>
