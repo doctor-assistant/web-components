@@ -1,7 +1,6 @@
 import { Component, h, Prop, State } from "@stencil/core";
 import {
   finishRecording,
-  openConfigModal,
   pauseRecording,
   resumeRecording,
   startRecording,
@@ -40,15 +39,15 @@ export class DaaiConsultationActions {
     state.openModalSpecialty = true;
   }
 
-  handleClickSupportButton() {
-    window.open("https://doctorassistant.ai/tutorial/", "_blank");
-  }
-
   async componentDidLoad() {
     const storedValue = localStorage.getItem("checkboxState");
     state.isChecked = storedValue !== null ? JSON.parse(storedValue) : "";
-    // const title = await getSpecialtyTitleById(this.specialty);
+    console.log("state.chooseSpecialty", state.chooseSpecialty);
     this.title = `Especialidade`;
+  }
+
+  openConfigModal() {
+    state.openMenu = true;
   }
 
   renderButtons() {
@@ -56,13 +55,6 @@ export class DaaiConsultationActions {
       case "initial":
         return (
           <div class="flex items-center justify-center gap-2">
-            <daai-button-with-icon
-              title="Configuração de microfone"
-              id="config-mic"
-              onClick={openConfigModal}
-            >
-              <daai-config-mic-icon></daai-config-mic-icon>
-            </daai-button-with-icon>
             {!state.defaultSpecialty && (
               <daai-button-with-icon
                 title={this.title}
@@ -70,7 +62,9 @@ export class DaaiConsultationActions {
                 onClick={this.choosenSpecialty}
                 disabled={state.defaultSpecialty !== ""}
               >
-                <daai-stethoscope-icon />
+                {state.specialtyTitle
+                  ? state.specialtyTitle
+                  : "SOAP GENERALISTA"}
               </daai-button-with-icon>
             )}
             <daai-button-with-icon
@@ -83,13 +77,14 @@ export class DaaiConsultationActions {
             >
               Iniciar Registro
             </daai-button-with-icon>
+
             <daai-button-with-icon
-              title="Suporte"
-              id="button-support"
-              onClick={this.handleClickSupportButton}
+              id="button-menu"
+              onClick={this.openConfigModal}
             >
-              <daai-support-icon />
+              <daai-menu-icon />
             </daai-button-with-icon>
+            {state.openMenu && <daai-config />}
           </div>
         );
       case "choosen":
@@ -185,12 +180,8 @@ export class DaaiConsultationActions {
             >
               Finalizar Registro
             </daai-button-with-icon>
-            <daai-button-with-icon
-              title="Retomar Registro"
-              id="button-support"
-              onClick={this.handleClickSupportButton}
-            >
-              <daai-support-icon />
+            <daai-button-with-icon id="button-menu">
+              <daai-menu-icon />
             </daai-button-with-icon>
           </div>
         );

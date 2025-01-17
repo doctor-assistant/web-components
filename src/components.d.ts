@@ -20,6 +20,8 @@ export namespace Components {
     interface DaaiClock {
         "status": string;
     }
+    interface DaaiConfig {
+    }
     interface DaaiConfigMicIcon {
         "color": string;
         "height": string;
@@ -49,6 +51,11 @@ export namespace Components {
         "width": string;
     }
     interface DaaiLogoIcon {
+        "color": string;
+        "height": string;
+        "width": string;
+    }
+    interface DaaiMenuIcon {
         "color": string;
         "height": string;
         "width": string;
@@ -164,6 +171,12 @@ declare global {
         prototype: HTMLDaaiClockElement;
         new (): HTMLDaaiClockElement;
     };
+    interface HTMLDaaiConfigElement extends Components.DaaiConfig, HTMLStencilElement {
+    }
+    var HTMLDaaiConfigElement: {
+        prototype: HTMLDaaiConfigElement;
+        new (): HTMLDaaiConfigElement;
+    };
     interface HTMLDaaiConfigMicIconElement extends Components.DaaiConfigMicIcon, HTMLStencilElement {
     }
     var HTMLDaaiConfigMicIconElement: {
@@ -193,6 +206,12 @@ declare global {
     var HTMLDaaiLogoIconElement: {
         prototype: HTMLDaaiLogoIconElement;
         new (): HTMLDaaiLogoIconElement;
+    };
+    interface HTMLDaaiMenuIconElement extends Components.DaaiMenuIcon, HTMLStencilElement {
+    }
+    var HTMLDaaiMenuIconElement: {
+        prototype: HTMLDaaiMenuIconElement;
+        new (): HTMLDaaiMenuIconElement;
     };
     interface HTMLDaaiMicElementEventMap {
         "interfaceEvent": { microphoneSelect: boolean };
@@ -288,11 +307,13 @@ declare global {
         "daai-button-with-icon": HTMLDaaiButtonWithIconElement;
         "daai-checkbox": HTMLDaaiCheckboxElement;
         "daai-clock": HTMLDaaiClockElement;
+        "daai-config": HTMLDaaiConfigElement;
         "daai-config-mic-icon": HTMLDaaiConfigMicIconElement;
         "daai-consultation-actions": HTMLDaaiConsultationActionsElement;
         "daai-consultation-recorder": HTMLDaaiConsultationRecorderElement;
         "daai-finish-recording-icon": HTMLDaaiFinishRecordingIconElement;
         "daai-logo-icon": HTMLDaaiLogoIconElement;
+        "daai-menu-icon": HTMLDaaiMenuIconElement;
         "daai-mic": HTMLDaaiMicElement;
         "daai-mic-animation": HTMLDaaiMicAnimationElement;
         "daai-mic-icon": HTMLDaaiMicIconElement;
@@ -325,6 +346,8 @@ declare namespace LocalJSX {
     interface DaaiClock {
         "status"?: string;
     }
+    interface DaaiConfig {
+    }
     interface DaaiConfigMicIcon {
         "color"?: string;
         "height"?: string;
@@ -354,6 +377,11 @@ declare namespace LocalJSX {
         "width"?: string;
     }
     interface DaaiLogoIcon {
+        "color"?: string;
+        "height"?: string;
+        "width"?: string;
+    }
+    interface DaaiMenuIcon {
         "color"?: string;
         "height"?: string;
         "width"?: string;
@@ -415,11 +443,13 @@ declare namespace LocalJSX {
         "daai-button-with-icon": DaaiButtonWithIcon;
         "daai-checkbox": DaaiCheckbox;
         "daai-clock": DaaiClock;
+        "daai-config": DaaiConfig;
         "daai-config-mic-icon": DaaiConfigMicIcon;
         "daai-consultation-actions": DaaiConsultationActions;
         "daai-consultation-recorder": DaaiConsultationRecorder;
         "daai-finish-recording-icon": DaaiFinishRecordingIcon;
         "daai-logo-icon": DaaiLogoIcon;
+        "daai-menu-icon": DaaiMenuIcon;
         "daai-mic": DaaiMic;
         "daai-mic-animation": DaaiMicAnimation;
         "daai-mic-icon": DaaiMicIcon;
@@ -443,11 +473,13 @@ declare module "@stencil/core" {
             "daai-button-with-icon": LocalJSX.DaaiButtonWithIcon & JSXBase.HTMLAttributes<HTMLDaaiButtonWithIconElement>;
             "daai-checkbox": LocalJSX.DaaiCheckbox & JSXBase.HTMLAttributes<HTMLDaaiCheckboxElement>;
             "daai-clock": LocalJSX.DaaiClock & JSXBase.HTMLAttributes<HTMLDaaiClockElement>;
+            "daai-config": LocalJSX.DaaiConfig & JSXBase.HTMLAttributes<HTMLDaaiConfigElement>;
             "daai-config-mic-icon": LocalJSX.DaaiConfigMicIcon & JSXBase.HTMLAttributes<HTMLDaaiConfigMicIconElement>;
             "daai-consultation-actions": LocalJSX.DaaiConsultationActions & JSXBase.HTMLAttributes<HTMLDaaiConsultationActionsElement>;
             "daai-consultation-recorder": LocalJSX.DaaiConsultationRecorder & JSXBase.HTMLAttributes<HTMLDaaiConsultationRecorderElement>;
             "daai-finish-recording-icon": LocalJSX.DaaiFinishRecordingIcon & JSXBase.HTMLAttributes<HTMLDaaiFinishRecordingIconElement>;
             "daai-logo-icon": LocalJSX.DaaiLogoIcon & JSXBase.HTMLAttributes<HTMLDaaiLogoIconElement>;
+            "daai-menu-icon": LocalJSX.DaaiMenuIcon & JSXBase.HTMLAttributes<HTMLDaaiMenuIconElement>;
             "daai-mic": LocalJSX.DaaiMic & JSXBase.HTMLAttributes<HTMLDaaiMicElement>;
             "daai-mic-animation": LocalJSX.DaaiMicAnimation & JSXBase.HTMLAttributes<HTMLDaaiMicAnimationElement>;
             "daai-mic-icon": LocalJSX.DaaiMicIcon & JSXBase.HTMLAttributes<HTMLDaaiMicIconElement>;

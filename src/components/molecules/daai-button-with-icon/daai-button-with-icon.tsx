@@ -9,12 +9,12 @@ export class DaaiButtonWithIcon {
 
   render() {
     return (
-      <div class="button-with-icon">
-        <slot name="icon" />
-        <daai-button disabled={this.disabled}>
-          <slot />
-        </daai-button>
-      </div>
+      <daai-button
+        disabled={this.disabled}
+        class="flex items-center justify-center"
+      >
+        <slot />
+      </daai-button>
     );
   }
 }

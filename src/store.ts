@@ -18,6 +18,7 @@ const { state } = createStore({
   chooseSpecialty: "",
   specialtyTitle: "",
   defaultSpecialty: "",
+  openMenu: false,
 });
 
 export default state;

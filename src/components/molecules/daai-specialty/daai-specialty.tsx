@@ -11,13 +11,19 @@ export class DaaiSpecialty {
 
   @State() chooseSpecialty: string = state.chooseSpecialty || "generic";
 
+  @State() chooseSpecialtyTitle: string =
+    state.specialtyTitle || "SOAP GENERALISTA";
+
   handleClick() {
     state.openModalSpecialty = false;
   }
 
   handleChooseSpecialty() {
+    console.log(this.chooseSpecialty, "his.chooseSpecialty");
     if (this.chooseSpecialty) {
+      console.log(this.chooseSpecialty, "this.chooseSpecialty");
       state.chooseSpecialty = this.chooseSpecialty;
+      state.specialtyTitle = this.chooseSpecialtyTitle;
       state.openModalSpecialty = false;
     } else {
       console.warn("Nenhuma especialidade foi selecionada.");
@@ -49,7 +55,10 @@ export class DaaiSpecialty {
                       ? "bg-gray-500 text-white border-gray-600"
                       : "bg-gray-100 hover:bg-gray-200 border-gray-300"
                   }`}
-                  onClick={() => (this.chooseSpecialty = specialty.id)}
+                  onClick={() => (
+                    (this.chooseSpecialty = specialty.id),
+                    (this.chooseSpecialtyTitle = specialty.title)
+                  )}
                 >
                   {specialty.title}
                 </li>

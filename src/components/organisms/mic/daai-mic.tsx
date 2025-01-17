@@ -56,14 +56,27 @@ export class DaaiMic {
             />
           ) : state.status === "initial" ? (
             <daai-text text="Registro por IA" id="initial-text"></daai-text>
-          ) : state.status === "recording" ||
-            state.status === "paused" ||
-            state.status === "resume" ? (
-            <div class="ml-4">
-              <daai-recording-animation
-                id="animation-recording"
-                status={state.status}
-              />
+          ) : state.status === "paused" ? (
+            <div class="flex items-center justify-center">
+              <daai-text text="Pausado" id="initial-text"></daai-text>
+              <div class="ml-4">
+                <daai-recording-animation
+                  id="animation-recording"
+                  status={state.status}
+                />
+              </div>
+            </div>
+          ) : null}
+
+          {state.status === "recording" || state.status === "resume" ? (
+            <div class="flex items-center justify-center">
+              <daai-text text="Gravando..." id="initial-text"></daai-text>
+              <div class="ml-4">
+                <daai-recording-animation
+                  id="animation-recording"
+                  status={state.status}
+                />
+              </div>
             </div>
           ) : null}
         </div>
