@@ -21,6 +21,8 @@ export class DaaiConsultationActions {
   @Prop() error: any;
   @Prop() metadata: string;
   @Prop() event: any;
+  @Prop() professional: string;
+
   @State() title: string = "";
 
   newRecording() {
@@ -136,7 +138,8 @@ export class DaaiConsultationActions {
                   this.error,
                   this.specialty,
                   this.metadata,
-                  this.event
+                  this.event,
+                  this.professional
                 )
               }
             >
@@ -174,15 +177,20 @@ export class DaaiConsultationActions {
                   this.error,
                   this.specialty,
                   this.metadata,
-                  this.event
+                  this.event,
+                  this.professional
                 )
               }
             >
               Finalizar Registro
             </daai-button-with-icon>
-            <daai-button-with-icon id="button-menu">
+            <daai-button-with-icon
+              id="button-menu"
+              onClick={this.openConfigModal}
+            >
               <daai-menu-icon />
             </daai-button-with-icon>
+            {state.openMenu && <daai-config />}
           </div>
         );
       case "upload-ok":

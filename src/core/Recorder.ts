@@ -90,7 +90,7 @@ export const finishRecording = async (
   success,
   error,
   specialty,
-  metadata, onEvent) => {
+  metadata, onEvent, professional) => {
   const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
@@ -102,6 +102,7 @@ export const finishRecording = async (
         specialty,
         metadata,
         onEvent,
+        professional,
       );
     } catch (error) {
       console.error("Erro ao salvar ou recuperar áudio:", error);
@@ -118,8 +119,8 @@ export const finishRecording = async (
  mediaRecorder.stop();
   state.status = "finished";
 };
-export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event) => {
-
+export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
+  console.log(professional,'professional')
   const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
   const url =
     mode === "dev"

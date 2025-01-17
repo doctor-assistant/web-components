@@ -32,6 +32,7 @@ export namespace Components {
         "error": any;
         "event": any;
         "metadata": string;
+        "professional": string;
         "specialty": any;
         "success": any;
         "telemedicine": boolean;
@@ -42,6 +43,7 @@ export namespace Components {
         "onError": (err: Error) => void;
         "onEvent": (response: Response) => void;
         "onSuccess": (response: Response) => void;
+        "professionalId": string;
         "specialty": string;
         "telemedicine": boolean;
     }
@@ -358,6 +360,7 @@ declare namespace LocalJSX {
         "error"?: any;
         "event"?: any;
         "metadata"?: string;
+        "professional"?: string;
         "specialty"?: any;
         "success"?: any;
         "telemedicine"?: boolean;
@@ -368,6 +371,7 @@ declare namespace LocalJSX {
         "onError"?: (err: Error) => void;
         "onEvent"?: (response: Response) => void;
         "onSuccess"?: (response: Response) => void;
+        "professionalId"?: string;
         "specialty"?: string;
         "telemedicine"?: boolean;
     }
