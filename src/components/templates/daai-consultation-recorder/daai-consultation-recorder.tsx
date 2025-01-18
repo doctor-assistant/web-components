@@ -16,7 +16,7 @@ export class DaaiConsultationRecorder {
   @Prop() specialty: string = state.chooseSpecialty;
   @Prop() metadata: string;
   @Prop() telemedicine: boolean;
-  @Prop() professionalId: string;
+  @Prop() professional: string;
 
   async componentDidLoad() {
     const mode =
@@ -70,7 +70,7 @@ export class DaaiConsultationRecorder {
                 error={this.onError}
                 telemedicine={this.telemedicine}
                 event={this.onEvent}
-                professional={this.professionalId}
+                professional={this.professional}
               ></daai-consultation-actions>
             </div>
           </div>

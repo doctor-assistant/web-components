@@ -7,6 +7,7 @@ import {
   StartTutorial,
 } from "../../../core/Recorder";
 import state from "../../../store";
+import { getSpecialtiesByProfessionalId } from "../../../utils/indexDb";
 
 @Component({
   tag: "daai-consultation-actions",
@@ -17,11 +18,12 @@ export class DaaiConsultationActions {
   @Prop() apikey: any;
   @Prop() specialty: any;
   @Prop() telemedicine: boolean;
+  @Prop() professional: string = "";
+
   @Prop() success: any;
   @Prop() error: any;
   @Prop() metadata: string;
   @Prop() event: any;
-  @Prop() professional: string;
 
   @State() title: string = "";
 
@@ -42,9 +44,13 @@ export class DaaiConsultationActions {
   }
 
   async componentDidLoad() {
+    const specialtyByProfessionalId = await getSpecialtiesByProfessionalId(
+      this.professional
+    );
+    state.specialtyTitle = specialtyByProfessionalId.mostRecentSpecialty.title;
+    state.chooseSpecialty = specialtyByProfessionalId.mostRecentSpecialty.id;
     const storedValue = localStorage.getItem("checkboxState");
     state.isChecked = storedValue !== null ? JSON.parse(storedValue) : "";
-    console.log("state.chooseSpecialty", state.chooseSpecialty);
     this.title = `Especialidade`;
   }
 
@@ -66,7 +72,7 @@ export class DaaiConsultationActions {
               >
                 {state.specialtyTitle
                   ? state.specialtyTitle
-                  : "SOAP GENERALISTA"}
+                  : "SOAP Generalista"}
               </daai-button-with-icon>
             )}
             <daai-button-with-icon

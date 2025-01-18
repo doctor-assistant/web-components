@@ -94,18 +94,20 @@ export const finishRecording = async (
   const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-      await uploadAudio(
-        audioBlob,
-        apikey,
-        success,
-        error,
-        specialty,
-        metadata,
-        onEvent,
-        professional,
-      );
+      if(professional){
+        await uploadAudio(
+          audioBlob,
+          apikey,
+          success,
+          error,
+          specialty,
+          metadata,
+          onEvent,
+          professional,
+        );
+      }
     } catch (error) {
-      console.error("Erro ao salvar ou recuperar áudio:", error);
+      console.error("Não foi possível enviar o áudio", error);
     }
   };
   const audioChunks: Blob[] = [];
@@ -119,8 +121,8 @@ export const finishRecording = async (
  mediaRecorder.stop();
   state.status = "finished";
 };
-export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
-  console.log(professional,'professional')
+export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, _professional) => {
+
   const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
   const url =
     mode === "dev"

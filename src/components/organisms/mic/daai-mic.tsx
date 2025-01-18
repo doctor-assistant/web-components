@@ -14,31 +14,23 @@ export class DaaiMic {
   }
 
   async requestMicrophonePermission() {
-    console.log("Solicitando permissão do microfone...");
     try {
       const stream: MediaStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-      console.log("Permissão concedida, stream:", stream);
 
       state.microphonePermission = true;
 
-      console.log("state.microphonePermission", state.microphonePermission);
-
       const devices = await navigator.mediaDevices.enumerateDevices();
-      console.log("Dispositivos disponíveis:", devices);
 
       const microphones = devices
         .filter((device) => device.kind === "audioinput")
         .map((device) => device.label || "Microfone sem nome");
 
-      console.log("Microfones encontrados:", microphones);
-
       state.availableMicrophones = microphones;
 
       stream.getTracks().forEach((track) => track.stop());
     } catch (error) {
-      console.log("Erro ao solicitar permissão do microfone");
       console.error("Erro:", error);
       state.microphonePermission = false;
     }

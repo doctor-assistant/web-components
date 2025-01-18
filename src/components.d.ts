@@ -43,7 +43,7 @@ export namespace Components {
         "onError": (err: Error) => void;
         "onEvent": (response: Response) => void;
         "onSuccess": (response: Response) => void;
-        "professionalId": string;
+        "professional": string;
         "specialty": string;
         "telemedicine": boolean;
     }
@@ -371,7 +371,7 @@ declare namespace LocalJSX {
         "onError"?: (err: Error) => void;
         "onEvent"?: (response: Response) => void;
         "onSuccess"?: (response: Response) => void;
-        "professionalId"?: string;
+        "professional"?: string;
         "specialty"?: string;
         "telemedicine"?: boolean;
     }
