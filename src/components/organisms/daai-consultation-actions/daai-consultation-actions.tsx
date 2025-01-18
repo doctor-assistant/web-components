@@ -47,8 +47,15 @@ export class DaaiConsultationActions {
     const specialtyByProfessionalId = await getSpecialtiesByProfessionalId(
       this.professional
     );
-    state.specialtyTitle = specialtyByProfessionalId.mostRecentSpecialty.title;
-    state.chooseSpecialty = specialtyByProfessionalId.mostRecentSpecialty.id;
+    if (
+      specialtyByProfessionalId.mostRecentSpecialty &&
+      specialtyByProfessionalId.specialtiesAsStrings
+    ) {
+      state.specialtyTitle =
+        specialtyByProfessionalId.mostRecentSpecialty.title;
+      state.chooseSpecialty = specialtyByProfessionalId.mostRecentSpecialty.id;
+    }
+
     const storedValue = localStorage.getItem("checkboxState");
     state.isChecked = storedValue !== null ? JSON.parse(storedValue) : "";
     this.title = `Especialidade`;
