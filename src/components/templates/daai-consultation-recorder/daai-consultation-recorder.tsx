@@ -84,7 +84,9 @@ export class DaaiConsultationRecorder {
 
         {state.openTutorialPopup && <daai-popup class="popup"></daai-popup>}
 
-        {state.openModalSpecialty && <daai-specialty />}
+        {state.openModalSpecialty && (
+          <daai-specialty professional={this.professional} />
+        )}
       </Host>
     );
   }

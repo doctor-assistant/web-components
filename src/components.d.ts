@@ -98,6 +98,7 @@ export namespace Components {
         "width": string;
     }
     interface DaaiSpecialty {
+        "professional": string;
     }
     interface DaaiStethoscopeIcon {
         "color": string;
@@ -427,6 +428,7 @@ declare namespace LocalJSX {
         "width"?: string;
     }
     interface DaaiSpecialty {
+        "professional"?: string;
     }
     interface DaaiStethoscopeIcon {
         "color"?: string;
