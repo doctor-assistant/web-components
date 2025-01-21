@@ -9,6 +9,23 @@ export class DaaiMicAnimation {
   @Element() el: HTMLElement;
 
   private canvasElement!: HTMLCanvasElement;
+  private currentStream: MediaStream | null = null;
+  private animationFrameId: number | null = null;
+
+  disconnectedCallback() {
+    // Clean up resources when component is destroyed
+    if (this.currentStream) {
+      this.currentStream.getTracks().forEach(track => {
+        track.stop();
+        console.log('Stopped mic-animation track:', track.kind, track.id);
+      });
+      this.currentStream = null;
+    }
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+  }
 
   async componentDidLoad() {
     await this.startAnimationMicTest(this.canvasElement);
@@ -16,7 +33,8 @@ export class DaaiMicAnimation {
 
   async startAnimationMicTest(canvasElement: HTMLCanvasElement) {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      // Store stream reference for cleanup
+      this.currentStream = await navigator.mediaDevices.getUserMedia({
         audio: {
           sampleRate: 44100,
           channelCount: 1,
@@ -27,7 +45,7 @@ export class DaaiMicAnimation {
       });
 
       const audioContext = new (window.AudioContext)();
-      const source = audioContext.createMediaStreamSource(stream);
+      const source = audioContext.createMediaStreamSource(this.currentStream);
       const analyser = audioContext.createAnalyser();
 
       analyser.fftSize = 4096;
@@ -63,7 +81,7 @@ export class DaaiMicAnimation {
       const lerp = (a, b, t) => a + (b - a) * t;
 
       const draw = () => {
-        requestAnimationFrame(draw);
+        this.animationFrameId = requestAnimationFrame(draw);
 
         analyser.getByteFrequencyData(dataArray);
 

@@ -1,7 +1,9 @@
 import state from "../store";
 import { EventSourceManager } from "../utils/sse";
 
+// Main MediaRecorder instance for handling the recording process
 let mediaRecorder: MediaRecorder | null = null;
+// Primary MediaStream for recording - this is the single source of truth for active recording
 let localStream: MediaStream | null = null;
 
 
@@ -35,8 +37,10 @@ export const startRecording = async (isRemote: boolean) => {
   state.openTutorialPopup = false;
   state.status = "recording";
 
+  // Get the main recording stream - this will be our single source of truth for the active recording
   const micStream = await navigator.mediaDevices.getUserMedia(constraints);
-  localStream = micStream; // Store micStream in localStream for later cleanup
+  // Store the stream for proper cleanup when recording finishes
+  localStream = micStream;
   const composedStream = new MediaStream();
   const context = new AudioContext();
   const audioDestination = context.createMediaStreamDestination();
@@ -119,17 +123,31 @@ export const finishRecording = async (
   mediaRecorder.onstop = () => {
     // Stop all tracks to remove browser recording indicator
     if (mediaRecorder.stream) {
-      mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      mediaRecorder.stream.getTracks().forEach(track => {
+        track.stop();
+        console.log('Stopped mediaRecorder track:', track.kind, track.id);
+      });
     }
     // Clean up localStream tracks
     if (localStream) {
-      localStream.getTracks().forEach(track => track.stop());
+      localStream.getTracks().forEach(track => {
+        track.stop();
+        console.log('Stopped localStream track:', track.kind, track.id);
+      });
       localStream = null;
     }
+    // Set mediaRecorder to null to prevent reuse
+    mediaRecorder = null;
     handleRecordingStop(audioChunks);
   };
-  mediaRecorder.stop();
-  state.status = "finished";
+  // Ensure we're in a valid state to stop recording
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+    state.status = "finished";
+  } else {
+    console.warn('MediaRecorder not in recording state, cannot stop');
+    state.status = "finished";
+  }
 };
 export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
   console.log(professional,'professional')

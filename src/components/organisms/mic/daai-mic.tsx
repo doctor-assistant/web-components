@@ -15,16 +15,20 @@ export class DaaiMic {
 
   async requestMicrophonePermission() {
     console.log("Solicitando permissão do microfone...");
+    let tempStream: MediaStream | null = null;
     try {
-      const stream: MediaStream = await navigator.mediaDevices.getUserMedia({
+      // Create a temporary stream just for permission check and device enumeration
+      // This stream will be stopped immediately after getting the device list
+      tempStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-      console.log("Permissão concedida, stream:", stream);
+      console.log("Permissão concedida, stream temporário:", tempStream);
 
       state.microphonePermission = true;
 
       console.log("state.microphonePermission", state.microphonePermission);
 
+      // Get the list of available audio devices
       const devices = await navigator.mediaDevices.enumerateDevices();
       console.log("Dispositivos disponíveis:", devices);
 
@@ -36,11 +40,22 @@ export class DaaiMic {
 
       state.availableMicrophones = microphones;
 
-      stream.getTracks().forEach((track) => track.stop());
+      // Always stop the temporary stream immediately after getting permissions and device list
+      // This ensures we don't keep any lingering streams that could affect the recording indicator
+      if (tempStream) {
+        tempStream.getTracks().forEach((track) => track.stop());
+        tempStream = null;
+      }
     } catch (error) {
       console.log("Erro ao solicitar permissão do microfone");
       console.error("Erro:", error);
       state.microphonePermission = false;
+    } finally {
+      // Ensure stream is always cleaned up, even if an error occurred
+      if (tempStream) {
+        tempStream.getTracks().forEach((track) => track.stop());
+        tempStream = null;
+      }
     }
   }
 

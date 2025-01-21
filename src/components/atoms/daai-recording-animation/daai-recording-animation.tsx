@@ -18,9 +18,29 @@ export class DaaiRecordingAnimation {
   private dataArray!: Uint8Array;
   private bufferLength!: number;
   private audioContext!: AudioContext;
+  private currentStream: MediaStream | null = null;
+  private animationFrameId: number | null = null;
 
   constructor() {
     this.audioContext = new window.AudioContext();
+  }
+
+  disconnectedCallback() {
+    // Clean up resources when component is destroyed
+    if (this.currentStream) {
+      this.currentStream.getTracks().forEach(track => {
+        track.stop();
+        console.log('Stopped recording-animation track:', track.kind, track.id);
+      });
+      this.currentStream = null;
+    }
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+    if (this.audioContext) {
+      this.audioContext.close();
+    }
   }
 
   @Watch("status")
@@ -30,9 +50,10 @@ export class DaaiRecordingAnimation {
   }
 
   async initializeAudio() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // Store stream reference for cleanup
+    this.currentStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    const source = this.audioContext.createMediaStreamSource(stream);
+    const source = this.audioContext.createMediaStreamSource(this.currentStream);
     this.analyser = this.audioContext.createAnalyser();
     source.connect(this.analyser);
     this.analyser.fftSize = 256;
@@ -67,7 +88,7 @@ export class DaaiRecordingAnimation {
         this.status === "micTest" ||
         this.status === "upload"
       ) {
-        requestAnimationFrame(draw);
+        this.animationFrameId = requestAnimationFrame(draw);
 
         this.analyser.getByteFrequencyData(this.dataArray);
 
@@ -120,6 +141,11 @@ export class DaaiRecordingAnimation {
         ctx.lineTo(defaultCanvWidth, centerY);
         ctx.stroke();
       } else {
+        // Clean up animation and audio resources when not recording
+        if (this.animationFrameId !== null) {
+          cancelAnimationFrame(this.animationFrameId);
+          this.animationFrameId = null;
+        }
         ctx.clearRect(0, 0, defaultCanvWidth, defaultCanvHeight);
         this.canvasElement.width = 0;
         this.canvasElement.height = 0;
