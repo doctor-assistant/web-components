@@ -26,6 +26,7 @@ export class DaaiConsultationActions {
   @Prop() event: any;
 
   @State() title: string = "";
+  @State() stopAnimation: string = "";
 
   newRecording() {
     state.status = "initial";
@@ -63,6 +64,11 @@ export class DaaiConsultationActions {
 
   openConfigModal() {
     state.openMenu = true;
+    state.isOpenMenuToCancelAnimation = true;
+    localStorage.setItem(
+      "isOpenMenuToCancelAnimation",
+      JSON.stringify(state.isOpenMenuToCancelAnimation)
+    );
   }
 
   renderButtons() {
@@ -90,11 +96,17 @@ export class DaaiConsultationActions {
               }
               disabled={!state.microphonePermission}
             >
-              Iniciar Registro
+              <div class="flex items-start justify-start gap-2">
+                <daai-mic-icon></daai-mic-icon>
+                <daai-text text="Iniciar Registro"></daai-text>
+              </div>
             </daai-button-with-icon>
-
             <daai-button-with-icon
-              id="button-menu"
+              id={
+                localStorage.getItem("isOpenMenuToCancelAnimation")
+                  ? "button-menu"
+                  : "pulse"
+              }
               onClick={this.openConfigModal}
             >
               <daai-menu-icon />
@@ -178,7 +190,10 @@ export class DaaiConsultationActions {
               id="start-recording"
               onClick={() => resumeRecording()}
             >
-              Retomar Registro
+              <div class="flex items-start justify-start gap-2">
+                <daai-mic-icon></daai-mic-icon>
+                <daai-text text="Retomar"></daai-text>
+              </div>
             </daai-button-with-icon>
             <daai-button-with-icon
               title="Retomar Registro"
@@ -197,13 +212,6 @@ export class DaaiConsultationActions {
             >
               Finalizar Registro
             </daai-button-with-icon>
-            <daai-button-with-icon
-              id="button-menu"
-              onClick={this.openConfigModal}
-            >
-              <daai-menu-icon />
-            </daai-button-with-icon>
-            {state.openMenu && <daai-config />}
           </div>
         );
       case "upload-ok":

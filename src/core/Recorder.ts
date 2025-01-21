@@ -94,7 +94,6 @@ export const finishRecording = async (
   const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-      if(professional){
         await uploadAudio(
           audioBlob,
           apikey,
@@ -105,7 +104,6 @@ export const finishRecording = async (
           onEvent,
           professional,
         );
-      }
     } catch (error) {
       console.error("Não foi possível enviar o áudio", error);
     }
@@ -117,6 +115,7 @@ export const finishRecording = async (
       audioChunks.push(event.data);
     }
   };
+
   mediaRecorder.onstop = () => handleRecordingStop(audioChunks);
  mediaRecorder.stop();
   state.status = "finished";

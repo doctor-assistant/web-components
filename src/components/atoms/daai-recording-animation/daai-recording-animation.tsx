@@ -9,8 +9,8 @@ export class DaaiRecordingAnimation {
   @Element() el: HTMLElement;
 
   @Prop() status: string;
-  @Prop() animationRecordingColor: string = "#F43F5E";
-  @Prop() animationPausedColor: string = "#009CB1";
+  @Prop() animationRecordingColor: string = "";
+  @Prop() animationPausedColor: string = "";
 
   @State() canvasElement!: HTMLCanvasElement;
 
@@ -40,6 +40,11 @@ export class DaaiRecordingAnimation {
     this.dataArray = new Uint8Array(this.bufferLength);
   }
 
+  private getCssVariable(variableName: string): string {
+    const style = getComputedStyle(this.el);
+    return style.getPropertyValue(variableName).trim() || "#000";
+  }
+
   startAnimationRecording() {
     if (!this.canvasElement) {
       console.error("Canvas não encontrado!");
@@ -48,7 +53,7 @@ export class DaaiRecordingAnimation {
 
     const ctx = this.canvasElement.getContext("2d");
 
-    const defaultCanvWidth = 120;
+    const defaultCanvWidth = 70;
     const defaultCanvHeight = 50;
     const lineWidth = 0.5;
     const frequLnum = 50;
@@ -76,7 +81,7 @@ export class DaaiRecordingAnimation {
         ctx.fillStyle = "#FFF";
         ctx.fillRect(0, 0, defaultCanvWidth, defaultCanvHeight);
 
-        ctx.strokeStyle = this.animationRecordingColor;
+        ctx.strokeStyle = this.getCssVariable("--animation-recording-color");
         ctx.lineWidth = lineWidth;
 
         const h = defaultCanvHeight;
@@ -112,7 +117,7 @@ export class DaaiRecordingAnimation {
 
         const centerY = defaultCanvHeight / 2;
 
-        ctx.strokeStyle = this.animationPausedColor;
+        ctx.strokeStyle = this.getCssVariable("--animation-pause-color");
         ctx.lineWidth = lineWidth;
 
         ctx.beginPath();

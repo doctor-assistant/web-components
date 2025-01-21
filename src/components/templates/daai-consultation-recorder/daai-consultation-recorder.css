@@ -1,8 +1,6 @@
 @import '../../theme.css';
 
 :host {
-  display: block;
-  --logo-url: url('');
   --recorder-primary-color: var(--primary-color);
   --recorder-secondary-color: var(--secondary-color);
   --recorder-success-color: var(--success-color);
@@ -17,7 +15,7 @@
   --recorder-text-color: var(--text-default-color);
   --recorder-border-button-color: var(--border-button-color);
   --recorder-animation-recording-color: var(--animation-recorder-color);
-  --recorder-animation-paused-color: var(--animation-recorder-color);
+  --recorder-animation-paused-color: var(--animation-paused-color);
   --recorder-tutorial-image: url('https://storage.googleapis.com/landpage-prd/tutorial.png');
   --recorder-daai-logo-icon: url('https://storage.googleapis.com/landpage-prd/logo.svg');
 }
@@ -25,7 +23,6 @@
 daai-button-with-icon {
   max-height: 40px;
   min-height: 40px;
-  padding: 8px 8px;
   gap: 8px;
   display: flex;
   align-items: center;
@@ -37,7 +34,7 @@ daai-button-with-icon {
 
 
 #daai-consultation-recorder {
-  max-width: 680px;
+  max-width: 525px;
   font-family: "Inter", sans-serif;
   display: flex;
   align-items: center;
@@ -48,7 +45,7 @@ daai-button-with-icon {
   box-shadow: 2px 2px 1px 1px rgb(201, 201, 201);
   padding: 8px;
   gap: 4px;
-  height: 60px;
+  height: 52px;
 
   @media (min-width: 100px) and (max-width: 499px) {
   max-width: 400px;
@@ -62,7 +59,7 @@ daai-button-with-icon {
 
 daai-recording-animation {
   --animation-recording-color: var(--recorder-animation-recording-color);
-  --animation-paused-color: var(--recorder-animation-paused-color);
+  --animation-pause-color:var(--recorder-animation-paused-color);
 }
 
 
@@ -129,6 +126,7 @@ daai-mic {
 }
 
 #start-recording {
+  max-width: 132px;
   flex-direction: row;
   font-size: 12px;
   display: flex;
@@ -159,7 +157,6 @@ daai-mic {
   color: var(--recorder-error-color);
   font-weight: bold;
   margin-left: 4px;
-
 }
 
 #choosen-mode {
@@ -195,6 +192,26 @@ daai-mic {
 #button-menu{
   margin-top: 4px;
 }
+
+#pulse {
+  margin-top: 4px;
+  animation: wiggle 0.3s ease infinite;
+  animation-direction: alternate;
+  -webkit-animation-name: wiggle;
+  animation-name: wiggle;
+}
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+}
+
 
 #button-resume {
   width: 40px;
@@ -333,6 +350,6 @@ daai-mic {
 
 
 #initial-text {
-  color: var(--primary-color);
+  color: var(--recorder-primary-color);
   font-weight: 600;
 }

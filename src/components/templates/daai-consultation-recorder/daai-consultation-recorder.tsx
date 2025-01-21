@@ -34,7 +34,7 @@ export class DaaiConsultationRecorder {
         <slot>
           <div id="daai-consultation-recorder">
             <div>
-              <div class="items-center flex gap-6">
+              <div class="items-center flex gap-3">
                 <daai-mic></daai-mic>
                 {state.status === "recording" ||
                 state.status === "paused" ||

@@ -18,6 +18,11 @@ export class DaaiConfig {
   handleClickOutside = (event: MouseEvent) => {
     if (this.popupRef && !this.popupRef.contains(event.target as Node)) {
       state.openMenu = false;
+      state.isOpenMenuToCancelAnimation = true;
+      localStorage.setItem(
+        "isOpenMenuToCancelAnimation",
+        JSON.stringify(state.isOpenMenuToCancelAnimation)
+      );
     }
   };
 

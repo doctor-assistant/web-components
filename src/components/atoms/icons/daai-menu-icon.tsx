@@ -7,7 +7,7 @@ import { Component, Prop, h } from "@stencil/core";
 })
 export class DaaiMenuIcon {
   @Prop() width: string = "20px";
-  @Prop() height: string = "20px";
+  @Prop() height: string = "35px";
   @Prop() color: string = "#64748B";
 
   render() {
@@ -15,8 +15,8 @@ export class DaaiMenuIcon {
       <div class="icon-container">
         <slot>
           <svg
-            width="3"
-            height="32"
+            width={this.width}
+            height={this.height}
             viewBox="0 0 3 32"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

@@ -6,19 +6,19 @@ const { state } = createStore({
   openModalConfig: false,
   openModalSpecialty: false,
   openTutorialPopup: false,
+  openMenu: false,
+  isOpenMenuToCancelAnimation: false,
   isChecked: false,
   chooseModality: false,
   microphonePermission: false,
   availableMicrophones: [],
   chosenMicrophone: "",
   defaultMicrophone: "",
-  showsScreen: false,
   recordingTime: 0,
   specialtyList: [],
   chooseSpecialty: "",
   specialtyTitle: "",
   defaultSpecialty: "",
-  openMenu: false,
 });
 
 export default state;

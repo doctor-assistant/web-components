@@ -1,5 +1,1 @@
-:host {
-  display: block;
-  text-align: center;
-  width: 100%;
-}
+@import url("../../templates/daai-consultation-recorder/daai-consultation-recorder.css");
