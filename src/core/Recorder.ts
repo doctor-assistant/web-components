@@ -36,6 +36,7 @@ export const startRecording = async (isRemote: boolean) => {
   state.status = "recording";
 
   const micStream = await navigator.mediaDevices.getUserMedia(constraints);
+  localStream = micStream; // Store micStream in localStream for later cleanup
   const composedStream = new MediaStream();
   const context = new AudioContext();
   const audioDestination = context.createMediaStreamDestination();
@@ -115,8 +116,19 @@ export const finishRecording = async (
       audioChunks.push(event.data);
     }
   };
-  mediaRecorder.onstop = () => handleRecordingStop(audioChunks);
- mediaRecorder.stop();
+  mediaRecorder.onstop = () => {
+    // Stop all tracks to remove browser recording indicator
+    if (mediaRecorder.stream) {
+      mediaRecorder.stream.getTracks().forEach(track => track.stop());
+    }
+    // Clean up localStream tracks
+    if (localStream) {
+      localStream.getTracks().forEach(track => track.stop());
+      localStream = null;
+    }
+    handleRecordingStop(audioChunks);
+  };
+  mediaRecorder.stop();
   state.status = "finished";
 };
 export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
