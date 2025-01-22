@@ -5,6 +5,8 @@ import { EventSourceManager } from "../utils/sse";
 let mediaRecorder: MediaRecorder | null = null;
 // Primary MediaStream for recording - this is the single source of truth for active recording
 let localStream: MediaStream | null = null;
+// Stream for screen sharing in remote/telemedicine mode
+let screenStream: MediaStream | null = null;
 
 
 export const StartTutorial = () => {
@@ -22,7 +24,6 @@ export const startRecording = async (isRemote: boolean) => {
         : undefined,
     },
   };
-  let screenStream = null;
   if (isRemote) {
     state.telemedicine = true
     try {
@@ -135,6 +136,14 @@ export const finishRecording = async (
         console.log('Stopped localStream track:', track.kind, track.id);
       });
       localStream = null;
+    }
+    // Clean up screen sharing if active
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => {
+        track.stop();
+        console.log('Stopped screenStream track:', track.kind, track.id);
+      });
+      screenStream = null;
     }
     // Set mediaRecorder to null to prevent reuse
     mediaRecorder = null;

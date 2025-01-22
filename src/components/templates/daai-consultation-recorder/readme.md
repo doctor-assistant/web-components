@@ -44,6 +44,8 @@ graph TD;
   daai-mic --> daai-text
   daai-mic --> daai-recording-animation
   daai-consultation-actions --> daai-button-with-icon
+  daai-consultation-actions --> daai-mic-icon
+  daai-consultation-actions --> daai-text
   daai-consultation-actions --> daai-menu-icon
   daai-consultation-actions --> daai-config
   daai-consultation-actions --> daai-resume-recording-icon

@@ -28,6 +28,8 @@
 ### Depends on
 
 - [daai-button-with-icon](../../molecules/daai-button-with-icon)
+- [daai-mic-icon](../../atoms/icons)
+- [daai-text](../../atoms/text)
 - [daai-menu-icon](../../atoms/icons)
 - [daai-config](../../molecules/daai-config)
 - [daai-resume-recording-icon](../../atoms/icons)
@@ -37,6 +39,8 @@
 ```mermaid
 graph TD;
   daai-consultation-actions --> daai-button-with-icon
+  daai-consultation-actions --> daai-mic-icon
+  daai-consultation-actions --> daai-text
   daai-consultation-actions --> daai-menu-icon
   daai-consultation-actions --> daai-config
   daai-consultation-actions --> daai-resume-recording-icon
