@@ -3,6 +3,7 @@ import { EventSourceManager } from "../utils/sse";
 
 let mediaRecorder: MediaRecorder | null = null;
 let localStream: MediaStream | null = null;
+let screenStream: MediaStream | null = null;
 
 
 export const StartTutorial = () => {
@@ -20,7 +21,6 @@ export const startRecording = async (isRemote: boolean) => {
         : undefined,
     },
   };
-  let screenStream = null;
   if (isRemote) {
     state.telemedicine = true
     try {
@@ -117,6 +117,13 @@ export const finishRecording = async (
   };
   mediaRecorder.onstop = () => handleRecordingStop(audioChunks);
  mediaRecorder.stop();
+  
+  // Stop screen sharing if active
+  if (screenStream) {
+    screenStream.getTracks().forEach((track) => track.stop());
+    screenStream = null;
+  }
+  
   state.status = "finished";
 };
 export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
