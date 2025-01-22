@@ -125,14 +125,12 @@ export const finishRecording = async (
     if (mediaRecorder.stream) {
       mediaRecorder.stream.getTracks().forEach(track => {
         track.stop();
-        console.log('Stopped mediaRecorder track:', track.kind, track.id);
       });
     }
     // Clean up localStream tracks
     if (localStream) {
       localStream.getTracks().forEach(track => {
         track.stop();
-        console.log('Stopped localStream track:', track.kind, track.id);
       });
       localStream = null;
     }

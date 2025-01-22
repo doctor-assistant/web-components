@@ -42,7 +42,7 @@ daai-button-with-icon {
   background-color: var(--recorder-background-color);
   border-radius: var(--recorder-border-radius);
   border: 1px solid var(--recorder-border-color);
-  box-shadow: 2px 2px 1px 1px rgb(201, 201, 201);
+  /* box-shadow: 2px 2px 1px 1px rgb(201, 201, 201); */
   padding: 8px;
   gap: 4px;
   height: 52px;
@@ -191,25 +191,6 @@ daai-mic {
 
 #button-menu{
   margin-top: 4px;
-}
-
-#pulse {
-  margin-top: 4px;
-  animation: wiggle 0.3s ease infinite;
-  animation-direction: alternate;
-  -webkit-animation-name: wiggle;
-  animation-name: wiggle;
-}
-@keyframes wiggle {
-  0%, 100% {
-    transform: rotate(0);
-  }
-  25% {
-    transform: rotate(5deg);
-  }
-  75% {
-    transform: rotate(-5deg);
-  }
 }
 
 

@@ -102,11 +102,7 @@ export class DaaiConsultationActions {
               </div>
             </daai-button-with-icon>
             <daai-button-with-icon
-              id={
-                localStorage.getItem("isOpenMenuToCancelAnimation")
-                  ? "button-menu"
-                  : "pulse"
-              }
+              id="button-menu"
               onClick={this.openConfigModal}
             >
               <daai-menu-icon />
