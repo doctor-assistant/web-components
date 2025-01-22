@@ -107,7 +107,16 @@ export class DaaiConsultationActions {
             >
               <daai-menu-icon />
             </daai-button-with-icon>
-            {state.openMenu && <daai-config />}
+            {state.openMenu && (
+              <div
+                class="
+    absolute top-10
+    max-[400px]:top:36px min-[300px]:top-32 min-[500px]:top-16
+  "
+              >
+                <daai-config />
+              </div>
+            )}
           </div>
         );
       case "choosen":

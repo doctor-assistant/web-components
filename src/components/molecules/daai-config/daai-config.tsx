@@ -42,7 +42,6 @@ export class DaaiConfig {
     return (
       <div
         class="absolute bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-lg"
-        style={{ top: "30", left: "2" }}
         ref={(el) => (this.popupRef = el)}
       >
         <div class="flex flex-col gap-4 p-4 rounded-md border-2 border-gray-200 bg-white shadow-md rounded-lg">
