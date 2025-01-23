@@ -75,7 +75,7 @@ export class DaaiConsultationActions {
               onClick={() =>
                 this.telemedicine ? this.choosenMode() : startRecording(false)
               }
-              disabled={!state.microphonePermission}
+              disabled={!state.microphonePermission || !this.apikey || !this.professional}
             >
               Iniciar Registro
             </daai-button-with-icon>
