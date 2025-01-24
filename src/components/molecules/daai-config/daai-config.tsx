@@ -11,7 +11,7 @@ export class DaaiConfig {
   private popupRef: HTMLElement;
   @State() isOpen: boolean = true;
 
-  handleClickSupportButton() {
+  handleClickTutorialButton() {
     window.open("https://doctorassistant.ai/tutorial/", "_blank");
   }
 
@@ -41,7 +41,7 @@ export class DaaiConfig {
 
     return (
       <div
-        class="absolute bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-lg"
+        class="absolute bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-lg text-gray-500"
         ref={(el) => (this.popupRef = el)}
       >
         <div class="flex flex-col gap-4 p-4 rounded-md border-2 border-gray-200 bg-white shadow-md rounded-lg">
@@ -59,11 +59,11 @@ export class DaaiConfig {
             class="flex items-center gap-2"
             title="Suporte"
             id="button-support"
-            onClick={this.handleClickSupportButton}
+            onClick={this.handleClickTutorialButton}
           >
             <div class="flex items-start justify-start gap-2">
-              <daai-support-icon />
-              <daai-text text="Suporte" class="font-bold"></daai-text>
+              <daai-menu-tutorial-icon />
+              <daai-text text="Tutorial" class="font-bold"></daai-text>
             </div>
           </daai-button-with-icon>
         </div>

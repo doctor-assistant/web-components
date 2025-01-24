@@ -1,1 +1,6 @@
 @import url("../../templates/daai-consultation-recorder/daai-consultation-recorder.css");
+
+canvas {
+  background-color: transparent !important; /* Força a transparência */
+  display: block;
+}

@@ -3,7 +3,7 @@ import { Component, Element, h, Prop, State, Watch } from "@stencil/core";
 @Component({
   tag: "daai-recording-animation",
   styleUrl: "daai-recording-animation.css",
-  shadow: true,
+  shadow: false,
 })
 export class DaaiRecordingAnimation {
   @Element() el: HTMLElement;
@@ -28,9 +28,8 @@ export class DaaiRecordingAnimation {
   disconnectedCallback() {
     // Clean up resources when component is destroyed
     if (this.currentStream) {
-      this.currentStream.getTracks().forEach(track => {
+      this.currentStream.getTracks().forEach((track) => {
         track.stop();
-        console.log('Stopped recording-animation track:', track.kind, track.id);
       });
       this.currentStream = null;
     }
@@ -51,9 +50,13 @@ export class DaaiRecordingAnimation {
 
   async initializeAudio() {
     // Store stream reference for cleanup
-    this.currentStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    this.currentStream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+    });
 
-    const source = this.audioContext.createMediaStreamSource(this.currentStream);
+    const source = this.audioContext.createMediaStreamSource(
+      this.currentStream
+    );
     this.analyser = this.audioContext.createAnalyser();
     source.connect(this.analyser);
     this.analyser.fftSize = 256;
@@ -75,7 +78,7 @@ export class DaaiRecordingAnimation {
     const ctx = this.canvasElement.getContext("2d");
 
     const defaultCanvWidth = 70;
-    const defaultCanvHeight = 50;
+    const defaultCanvHeight = 40;
     const lineWidth = 0.5;
     const frequLnum = 50;
 

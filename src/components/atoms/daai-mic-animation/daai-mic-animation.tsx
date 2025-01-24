@@ -1,8 +1,8 @@
-import { Component, Element, h } from '@stencil/core';
+import { Component, Element, h } from "@stencil/core";
 
 @Component({
-  tag: 'daai-mic-animation',
-  styleUrl: 'daai-mic-animation.css',
+  tag: "daai-mic-animation",
+  styleUrl: "daai-mic-animation.css",
   shadow: true,
 })
 export class DaaiMicAnimation {
@@ -15,9 +15,8 @@ export class DaaiMicAnimation {
   disconnectedCallback() {
     // Clean up resources when component is destroyed
     if (this.currentStream) {
-      this.currentStream.getTracks().forEach(track => {
+      this.currentStream.getTracks().forEach((track) => {
         track.stop();
-        console.log('Stopped mic-animation track:', track.kind, track.id);
       });
       this.currentStream = null;
     }
@@ -44,7 +43,7 @@ export class DaaiMicAnimation {
         },
       });
 
-      const audioContext = new (window.AudioContext)();
+      const audioContext = new window.AudioContext();
       const source = audioContext.createMediaStreamSource(this.currentStream);
       const analyser = audioContext.createAnalyser();
 
@@ -53,11 +52,11 @@ export class DaaiMicAnimation {
       const dataArray = new Uint8Array(bufferLength);
 
       if (!canvasElement) {
-        console.error('Canvas não encontrado!');
+        console.error("Canvas não encontrado!");
         return;
       }
 
-      const canvasCtx = canvasElement.getContext('2d');
+      const canvasCtx = canvasElement.getContext("2d");
       const WIDTH = 80;
       const HEIGHT = 40;
 
@@ -69,7 +68,8 @@ export class DaaiMicAnimation {
       const barWidth = 6;
       const barSpacing = 2;
       const numberOfBars = 6;
-      const totalWidth = numberOfBars * barWidth + (numberOfBars - 1) * barSpacing;
+      const totalWidth =
+        numberOfBars * barWidth + (numberOfBars - 1) * barSpacing;
       const startX = (WIDTH - totalWidth) / 2;
 
       const barPositions = [];
@@ -88,14 +88,19 @@ export class DaaiMicAnimation {
         canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
 
         barPositions.forEach((x, i) => {
-          const barIntensity = dataArray[i * Math.floor(bufferLength / numberOfBars)];
+          const barIntensity =
+            dataArray[i * Math.floor(bufferLength / numberOfBars)];
           const normalizedIntensity = Math.min(barIntensity / 256, 1);
 
-          previousIntensities[i] = lerp(previousIntensities[i], normalizedIntensity, 0.1);
+          previousIntensities[i] = lerp(
+            previousIntensities[i],
+            normalizedIntensity,
+            0.1
+          );
 
           const isActive = previousIntensities[i] > 0.05;
 
-          const color = isActive ? '#637381' : '#DFE4EA';
+          const color = isActive ? "#637381" : "#DFE4EA";
 
           const barHeight = HEIGHT / 2;
           const radius = 4; // Bordas arredondadas
@@ -104,10 +109,22 @@ export class DaaiMicAnimation {
 
           canvasCtx.beginPath();
           canvasCtx.moveTo(x + radius, HEIGHT / 2 - barHeight);
-          canvasCtx.arcTo(x + barWidth, HEIGHT / 2 - barHeight, x + barWidth, HEIGHT / 2, radius);
+          canvasCtx.arcTo(
+            x + barWidth,
+            HEIGHT / 2 - barHeight,
+            x + barWidth,
+            HEIGHT / 2,
+            radius
+          );
           canvasCtx.arcTo(x + barWidth, HEIGHT / 2, x, HEIGHT / 2, radius);
           canvasCtx.arcTo(x, HEIGHT / 2, x, HEIGHT / 2 - barHeight, radius);
-          canvasCtx.arcTo(x, HEIGHT / 2 - barHeight, x + radius, HEIGHT / 2 - barHeight, radius);
+          canvasCtx.arcTo(
+            x,
+            HEIGHT / 2 - barHeight,
+            x + radius,
+            HEIGHT / 2 - barHeight,
+            radius
+          );
           canvasCtx.closePath();
           canvasCtx.fill();
         });
@@ -115,11 +132,15 @@ export class DaaiMicAnimation {
 
       draw();
     } catch (error) {
-      console.error('Erro ao capturar o áudio:', error);
+      console.error("Erro ao capturar o áudio:", error);
     }
   }
 
   render() {
-    return <canvas ref={(el) => (this.canvasElement = el as HTMLCanvasElement)}></canvas>;
+    return (
+      <canvas
+        ref={(el) => (this.canvasElement = el as HTMLCanvasElement)}
+      ></canvas>
+    );
   }
 }

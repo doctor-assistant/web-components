@@ -139,7 +139,6 @@ export const finishRecording = async (
     if (screenStream) {
       screenStream.getTracks().forEach(track => {
         track.stop();
-        console.log('Stopped screenStream track:', track.kind, track.id);
       });
       screenStream = null;
     }
@@ -156,7 +155,7 @@ export const finishRecording = async (
     state.status = "finished";
   }
 };
-export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, _professional) => {
+export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
 
   const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
   const url =
@@ -172,6 +171,8 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
   if (metadata) {
     formData.append("metadata", metadata);
   }
+
+  formData.append("professionalId",professional)
 
   try {
     const response = await fetch(url, {

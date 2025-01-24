@@ -14,7 +14,6 @@ export class DaaiMic {
   }
 
   async requestMicrophonePermission() {
-    console.log("Solicitando permissão do microfone...");
     let tempStream: MediaStream | null = null;
     try {
       // Create a temporary stream just for permission check and device enumeration
@@ -22,11 +21,8 @@ export class DaaiMic {
       tempStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-      console.log("Permissão concedida, stream temporário:", tempStream);
 
       state.microphonePermission = true;
-
-      console.log("state.microphonePermission", state.microphonePermission);
 
       // Get the list of available audio devices
       const devices = await navigator.mediaDevices.enumerateDevices();
@@ -57,7 +53,7 @@ export class DaaiMic {
 
   render() {
     return (
-      <div class="flex items-center justify-center bg-white gap-2">
+      <div class="flex items-center justify-center gap-2">
         <div id="daai-logo-icon"></div>
         <div class="flex items-center justify-center">
           {state.microphonePermission === false ? (
@@ -66,7 +62,7 @@ export class DaaiMic {
               id="error-msg"
             />
           ) : state.status === "initial" ? (
-            <daai-text text="Registro por IA" id="initial-text"></daai-text>
+            <daai-text text="Assistente de IA" id="initial-text"></daai-text>
           ) : state.status === "paused" ? (
             <div class="flex items-center justify-center">
               <daai-text text="Pausado" id="initial-text"></daai-text>
