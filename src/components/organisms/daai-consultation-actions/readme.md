@@ -9,7 +9,7 @@
 
 | Property       | Attribute      | Description | Type      | Default     |
 | -------------- | -------------- | ----------- | --------- | ----------- |
-| `apikey`       | `apikey`       |             | `any`     | `undefined` |
+| `apikey`       | `apikey`       |             | `any`     | `""`        |
 | `error`        | `error`        |             | `any`     | `undefined` |
 | `event`        | `event`        |             | `any`     | `undefined` |
 | `metadata`     | `metadata`     |             | `string`  | `undefined` |
@@ -49,7 +49,7 @@ graph TD;
   daai-config --> daai-button-with-icon
   daai-config --> daai-config-mic-icon
   daai-config --> daai-text
-  daai-config --> daai-support-icon
+  daai-config --> daai-menu-tutorial-icon
   daai-consultation-recorder --> daai-consultation-actions
   style daai-consultation-actions fill:#f9f,stroke:#333,stroke-width:4px
 ```
