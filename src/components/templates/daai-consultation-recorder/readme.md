@@ -54,7 +54,7 @@ graph TD;
   daai-config --> daai-button-with-icon
   daai-config --> daai-config-mic-icon
   daai-config --> daai-text
-  daai-config --> daai-support-icon
+  daai-config --> daai-menu-tutorial-icon
   daai-modal --> daai-button
   daai-popup --> daai-text
   daai-popup --> daai-checkbox

@@ -12,6 +12,13 @@
 | `disabled` | `disabled` |             | `boolean` | `false` |
 
 
+## Events
+
+| Event     | Description | Type               |
+| --------- | ----------- | ------------------ |
+| `onClick` |             | `CustomEvent<any>` |
+
+
 ## Dependencies
 
 ### Used by

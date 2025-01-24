@@ -51,7 +51,7 @@ import '@doctorassistant/daai-component';
 
 onde ele for chamado vai ser renderizado nesse modelo:
 
-![readme_component_layout.png](https://raw.githubusercontent.com/doctor-assistant/daai-component/main/readme_component_layout.png)
+![readme_component_layout.png](https://raw.githubusercontent.com/doctor-assistant/web-components/main/readme_component_layout.png)
 
 ## propriedades
 
