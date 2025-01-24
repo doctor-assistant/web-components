@@ -9,8 +9,8 @@
 
 | Property                  | Attribute                   | Description | Type     | Default     |
 | ------------------------- | --------------------------- | ----------- | -------- | ----------- |
-| `animationPausedColor`    | `animation-paused-color`    |             | `string` | `"#009CB1"` |
-| `animationRecordingColor` | `animation-recording-color` |             | `string` | `"#F43F5E"` |
+| `animationPausedColor`    | `animation-paused-color`    |             | `string` | `""`        |
+| `animationRecordingColor` | `animation-recording-color` |             | `string` | `""`        |
 | `status`                  | `status`                    |             | `string` | `undefined` |
 
 

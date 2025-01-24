@@ -11,7 +11,15 @@ export class DaaiButton {
 
   render() {
     return (
-      <button type="button" onClick={this.onClick} disabled={this.disabled}>
+      <button
+        type="button"
+        onClick={(e) => {
+          if (!this.disabled) {
+            this.onClick(e);
+          }
+        }}
+        disabled={this.disabled}
+      >
         <slot></slot>
       </button>
     );

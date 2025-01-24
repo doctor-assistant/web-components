@@ -1,115 +1,251 @@
-[![Built With Stencil](https://img.shields.io/badge/-Built%20With%20Stencil-16161d.svg?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjIuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIgNTEyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI%2BCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI%2BCgkuc3Qwe2ZpbGw6I0ZGRkZGRjt9Cjwvc3R5bGU%2BCjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik00MjQuNywzNzMuOWMwLDM3LjYtNTUuMSw2OC42LTkyLjcsNjguNkgxODAuNGMtMzcuOSwwLTkyLjctMzAuNy05Mi43LTY4LjZ2LTMuNmgzMzYuOVYzNzMuOXoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTQyNC43LDI5Mi4xSDE4MC40Yy0zNy42LDAtOTIuNy0zMS05Mi43LTY4LjZ2LTMuNkgzMzJjMzcuNiwwLDkyLjcsMzEsOTIuNyw2OC42VjI5Mi4xeiIvPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNNDI0LjcsMTQxLjdIODcuN3YtMy42YzAtMzcuNiw1NC44LTY4LjYsOTIuNy02OC42SDMzMmMzNy45LDAsOTIuNywzMC43LDkyLjcsNjguNlYxNDEuN3oiLz4KPC9zdmc%2BCg%3D%3D&colorA=16161d&style=flat-square)](https://stenciljs.com)
+# Componentes Doctor Assitant.ai
 
-# Stencil Component Starter
+1. [Introdução](#introdução)
+2. [Como usar o componente](#uso)
+3. [Propriedades para o componente](#propriedades)
+4. [Customização](#customização)
+5. [Uso do componente via CDN](#uso-do-componente-via-cdn)
+6. [Especialidades](#especialidades)
+7. [Eventos](#eventos)
 
-This is a starter project for building a standalone Web Component using Stencil.
+## Introdução
 
-Stencil is also great for building entire apps. For that, use the [stencil-app-starter](https://github.com/ionic-team/stencil-app-starter) instead.
+## Daai Components
 
-# Stencil
+O Daai Components é uma biblioteca de componentes web especializados para sistemas de saúde, incluindo o Consultation Recorder para gravação de consultas médicas. Desenvolvido para facilitar a integração em sistemas de saúde, clínicas e plataformas médicas, oferecendo componentes reutilizáveis e personalizáveis.
 
-Stencil is a compiler for building fast web apps using Web Components.
+### daai-consultation-recorder
 
-Stencil combines the best concepts of the most popular frontend frameworks into a compile-time rather than runtime tool. Stencil takes TypeScript, JSX, a tiny virtual DOM layer, efficient one-way data binding, an asynchronous rendering pipeline (similar to React Fiber), and lazy-loading out of the box, and generates 100% standards-based Web Components that run in any browser supporting the Custom Elements v1 spec.
+O componente é um sistema de integração para empresas de saúde, como clínicas, sistemas de prontuário eletrônico e empresas que possuem soluções próprias. Seu objetivo é capturar o registro das consultas por meio do áudio entre o profissional de saúde e o paciente via API, entregar os resultados da consulta através da transcrição.
 
-Stencil components are just Web Components, so they work in any major framework or with no framework at all.
+#### Benefícios
 
-## Getting Started
+- Automatização de processos dentro da empresa
+- Registro do áudio e processamento de entrega de acordo com a necessidade específica
+- Facilidade de customização de acordo com a interface da empresa (whitelabel)
+- Ganho de produtividade: não há necessidade de utilizar vários sistemas em paralelo
 
-To start building a new web component using Stencil, clone this repo to a new directory:
+## Uso
 
-```bash
-git clone https://github.com/ionic-team/stencil-component-starter.git my-component
-cd my-component
-git remote rm origin
-```
+### instalação
 
-and run:
+Para instalar o `daai-consultation-recorder` no seu projeto, basta rodar no terminal do projeto que você deseja usar o componente.
 
-```bash
-npm install
-npm start
-```
-
-To build the component for production, run:
-
-```bash
-npm run build
-```
-
-To run the unit tests for the components, run:
+💻 Execute:
 
 ```bash
-npm test
+npm i @doctorassistant/daai-component@2.0.0-rc
 ```
 
-Need help? Check out our docs [here](https://stenciljs.com/docs/my-first-component).
+### Como usar após a instalação:
 
-## Naming Components
-
-When creating new component tags, we recommend _not_ using `stencil` in the component name (ex: `<stencil-datepicker>`). This is because the generated component has little to nothing to do with Stencil; it's just a web component!
-
-Instead, use a prefix that fits your company or any name for a group of related components. For example, all of the Ionic-generated web components use the prefix `ion`.
-
-## Using this component
-
-There are two strategies we recommend for using web components built with Stencil.
-
-The first step for all two of these strategies is to [publish to NPM](https://docs.npmjs.com/getting-started/publishing-npm-packages).
-
-You can read more about these different approaches in the [Stencil docs](https://stenciljs.com/docs/publishing).
-
-### Lazy Loading
-
-If your Stencil project is built with the [`dist`](https://stenciljs.com/docs/distribution) output target, you can import a small bootstrap script that registers all components and allows you to load individual component scripts lazily.
-
-For example, given your Stencil project namespace is called `my-design-system`, to use `my-component` on any website, inject this into your HTML:
+Após instalar o pacote no seu projeto, basta adicionar a tag <daai-consultation-recorder> no local onde deseja que o componente seja renderizado:
 
 ```html
-<script type="module" src="https://unpkg.com/my-design-system"></script>
-<!--
-To avoid unpkg.com redirects to the actual file, you can also directly import:
-https://unpkg.com/foobar-design-system@0.0.1/dist/foobar-design-system/foobar-design-system.esm.js
--->
-<my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+import '@doctorassistant/daai-component';
+<daai-consultation-recorder
+  apiKey="YOUR_API_KEY"
+  professional="YOUR_PROFESSIONAL_ID"
+></daai-consultation-recorder>
 ```
 
-This will only load the necessary scripts needed to render `<my-component />`. Once more components of this package are used, they will automatically be loaded lazily.
+onde ele for chamado vai ser renderizado nesse modelo:
 
-You can also import the script as part of your `node_modules` in your applications entry file:
+![readme_component_layout.png](https://raw.githubusercontent.com/doctor-assistant/daai-component/main/readme_component_layout.png)
 
-```tsx
-import 'foobar-design-system/dist/foobar-design-system/foobar-design-system.esm.js';
+## propriedades
+
+### propriedades de funcionamento
+
+```js
+// ⚠️ A propriedade professional é obrigatória, sem ela o componente não irá iniciar o registro.
+professional =
+  "aqui você deve passar um identificador único do usuário que irá utilizar o componente";
+
+// ⚠️ A propriedade apiKey é obrigatória, sem ela o componente não irá fazer requisições a api,
+apikey = "aqui você deve passar a chave da api para realizar as requisições";
+
+// A propriedade specialty não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, caso ela não seja passada o usuário pode selecionar a especialidade desejada no select.
+specialty =
+  "aqui você deve passar a especialidade que você quer que o usuário use";
+// A propriedade metadata não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para enviar dados que você deseja recuperar posteriormente pela nossa API quando a gravação for finalizada, possibilitando a recuperação por meio do webhook.
+metadata =
+  "aqui você deve passar o valor que deseja recuperar, se atente ao formato, descrevo no tópico abaixo.";
+
+// A propriedade telemedicine não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para ativar a funcionalidade de telemedicina no componente.
+telemedicine =
+  "aqui você deve passar um valor booleano de true caso queira usar a funcionalidade de telemedicina do componente";
 ```
 
-Check out this [Live Demo](https://stackblitz.com/edit/vitejs-vite-y6v26a?file=src%2Fmain.tsx).
+⚠️ A propriedade ~~modeApi~~ não é mais necessária. A partir da versão 1.2.0, identificamos o ambiente de execução através da apiKey
 
-### Standalone
+### Formato metadata
 
-If you are using a Stencil component library with `dist-custom-elements`, we recommend importing Stencil components individually in those files where they are needed.
+```html
+// ⚠️ Essse deve ser o formato
+<body>
+  <daai-consultation-recorder
+    metadata='{"name": "doctor", "role": "Assistant"}'
+    apiKey="YOUR_API_KEY"
+    professional="YOUR_PROFESSIONAL_ID"
+  >
+  </daai-consultation-recorder>
+</body>
+```
 
-To export Stencil components as standalone components make sure you have the [`dist-custom-elements`](https://stenciljs.com/docs/custom-elements) output target defined in your `stencil.config.ts`.
+## Customização
 
-For example, given you'd like to use `<my-component />` as part of a React component, you can import the component directly via:
+o componente é customizado por meio de variáveis css, então para você customizar você deve fazer o seguinte exemplo:
 
-```tsx
-import 'foobar-design-system/my-component';
+### 🖌️ Exemplo de uso da customização:
 
-function App() {
-  return (
-    <>
-      <div>
-        <my-component
-          first="Stencil"
-          middle="'Don't call me a framework'"
-          last="JS"
-        ></my-component>
-      </div>
-    </>
-  );
+Na da versão 2.0.0 temos a estilização por meio de variáveis css:
+
+```css
+daai-consultation-recorder {
+  --recorder-primary-color: red;
+  --recorder-secondary-color: gray;
+  --recorder-success-color: red;
+  --recorder-support-color: red;
+  --recorder-disable-color: red;
+  --recorder-error-color: red;
+  --recorder-transparent-color: red;
+  --recorder-background-color: red;
+  --recorder-border-color: red;
+  --recorder-button-radius: 1px;
+  --recorder-border-radius: 1px;
+  --recorder-text-color: yellow;
+  --recorder-border-button-color: red;
+  --recorder-animation-recording-color: green;
+  --recorder-animation-paused-color: green;
+  --recorder-tutorial-image: "image_url";
+  --recorder-tutorial-image: "image_url";
 }
-
-export default App;
 ```
 
-Check out this [Live Demo](https://stackblitz.com/edit/vitejs-vite-b6zuds?file=src%2FApp.tsx).
+### Callbacks
+
+```js
+// Função chamada em caso de sucesso na gravação
+onSuccess = (data) => {
+  console.log("Gravação finalizada com sucesso:", data);
+};
+
+// Função chamada em caso de erro
+onError = (error) => {
+  console.log("Erro durante a gravação:", error);
+};
+
+// Função chamada para eventos do componente
+onEvent = (event) => {
+  console.log("Evento:", event);
+};
+```
+
+## Uso do componente via CDN
+
+Para utilizar o componente via CDN, adicione o seguinte script ao seu HTML:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@2.0.0-rc/dist/web-components/web-components.esm.js"
+      type="module"
+    ></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const recorder = document.getElementById("recorder");
+
+        recorder.onSuccess = (event) => {
+          console.log("Recording succeeded!", event);
+        };
+
+        recorder.onError = (error) => {
+          console.error("An error occurred during recording.", error);
+        };
+
+        recorder.onEvent = (event) => {
+          console.log("An event occurred:", event);
+        };
+      });
+    </script>
+  </head>
+  <body>
+    <daai-consultation-recorder
+      id="recorder"
+      apiKey="YOUR_API_KEY"
+      professional="YOUR_IDENTIFICATOR"
+    ></daai-consultation-recorder>
+  </body>
+</html>
+```
+
+## Especialidades
+
+A propriedade `specialty` permite definir a especialidade desejada no componente, definindo o modelo em que o registro será gerado. Quando essa propriedade é fornecida, o seletor de especialidade será desabilitado, garantindo que todos os usuários utilizem a mesma especialidade.
+
+### Especialidades disponíveis:
+
+```js
+cardiology: "Cardiologia",
+case_discussion: "Discussão de Caso",
+dermatology: "Dermatologia",
+generic: "SOAP Generalista",
+psychiatry: "Psiquiatria",
+oncology: "Oncologia",
+pediatry: "Pediatria",
+pre_natal: "Pré-natal",
+geriatry: "Geriatria",
+gynecology: "Ginecologia",
+neurology: "Neurologia",
+rheumatology: "Reumatologia",
+family: "Medicina de Família",
+emergency: "Medicina de Emergência",
+endocrinology: "Endocrinologia",
+ophthalmology: "Oftalmologia",
+occupational: "Saúde Ocupacional",
+psychology: "Psicologia",
+general_surgery: "Cirurgia Geral",
+plastic_surgery: "Cirurgia Plástica",
+nephrology: "Nefrologia",
+orthopedic: "Ortopedia",
+otorhinolaryngology: "Otorrinolaringologia",
+nursing: "Enfermagem",
+anesthesiology: "Anestesiologia"
+```
+
+🔎 consulte aqui para versões mais atualizada das [especialidades](https://docs.doctorassistant.ai/daai-api-resources/components/processing-a-consultation)
+
+### ⚠️ O que deve ser passado para essa propriedade?
+
+Você deve fornecer o valor em inglês conforme indicado acima. A versão exibida para o usuário será traduzida e formatada automaticamente.
+
+exemplo:
+caso você queira setar a especialidade como `Psiquiatria`
+
+```html
+<daai-consultation-recorder specialty="psychiatry"></daai-consultation-recorder>
+```
+
+⚠️ importante!
+
+- essa propriedade não é obrigatória, caso você não passe o usuário poderá escolher no select a especialidade desejada, caso isso não aconteça o valor default é genérico.
+- sempre verifique se o nome da especialidade está correto, caso esteja com erro de digitação o registro será gerado como genérico.
+
+## eventos
+
+Eventos de processamento em tempo real disponíveis que serão recebidos pelo `onEvent`
+
+```json
+{ "event": "consultation.processing" }
+```
+
+```json
+{ "event": "consultation.completed" }
+```
+
+```json
+{ "event": "consultation.integrated" }
+```

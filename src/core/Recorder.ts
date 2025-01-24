@@ -1,8 +1,12 @@
 import state from "../store";
 import { EventSourceManager } from "../utils/sse";
 
+// Main MediaRecorder instance for handling the recording process
 let mediaRecorder: MediaRecorder | null = null;
+// Primary MediaStream for recording - this is the single source of truth for active recording
 let localStream: MediaStream | null = null;
+// Stream for screen sharing in remote/telemedicine mode
+let screenStream: MediaStream | null = null;
 
 
 export const StartTutorial = () => {
@@ -20,7 +24,6 @@ export const startRecording = async (isRemote: boolean) => {
         : undefined,
     },
   };
-  let screenStream = null;
   if (isRemote) {
     state.telemedicine = true
     try {
@@ -35,7 +38,10 @@ export const startRecording = async (isRemote: boolean) => {
   state.openTutorialPopup = false;
   state.status = "recording";
 
+  // Get the main recording stream - this will be our single source of truth for the active recording
   const micStream = await navigator.mediaDevices.getUserMedia(constraints);
+  // Store the stream for proper cleanup when recording finishes
+  localStream = micStream;
   const composedStream = new MediaStream();
   const context = new AudioContext();
   const audioDestination = context.createMediaStreamDestination();
@@ -94,18 +100,18 @@ export const finishRecording = async (
   const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-      await uploadAudio(
-        audioBlob,
-        apikey,
-        success,
-        error,
-        specialty,
-        metadata,
-        onEvent,
-        professional,
-      );
+        await uploadAudio(
+          audioBlob,
+          apikey,
+          success,
+          error,
+          specialty,
+          metadata,
+          onEvent,
+          professional,
+        );
     } catch (error) {
-      console.error("Erro ao salvar ou recuperar áudio:", error);
+      console.error("Não foi possível enviar o áudio", error);
     }
   };
   const audioChunks: Blob[] = [];
@@ -115,12 +121,42 @@ export const finishRecording = async (
       audioChunks.push(event.data);
     }
   };
-  mediaRecorder.onstop = () => handleRecordingStop(audioChunks);
- mediaRecorder.stop();
-  state.status = "finished";
+  mediaRecorder.onstop = () => {
+    // Stop all tracks to remove browser recording indicator
+    if (mediaRecorder.stream) {
+      mediaRecorder.stream.getTracks().forEach(track => {
+        track.stop();
+      });
+    }
+    // Clean up localStream tracks
+    if (localStream) {
+      localStream.getTracks().forEach(track => {
+        track.stop();
+      });
+      localStream = null;
+    }
+    // Clean up screen sharing if active
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => {
+        track.stop();
+      });
+      screenStream = null;
+    }
+    // Set mediaRecorder to null to prevent reuse
+    mediaRecorder = null;
+    handleRecordingStop(audioChunks);
+  };
+  // Ensure we're in a valid state to stop recording
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+    state.status = "finished";
+  } else {
+    console.warn('MediaRecorder not in recording state, cannot stop');
+    state.status = "finished";
+  }
 };
 export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
-  console.log(professional,'professional')
+
   const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
   const url =
     mode === "dev"
@@ -135,6 +171,8 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
   if (metadata) {
     formData.append("metadata", metadata);
   }
+
+  formData.append("professionalId",professional)
 
   try {
     const response = await fetch(url, {

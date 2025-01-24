@@ -1,8 +1,6 @@
 @import '../../theme.css';
 
 :host {
-  display: block;
-  --logo-url: url('');
   --recorder-primary-color: var(--primary-color);
   --recorder-secondary-color: var(--secondary-color);
   --recorder-success-color: var(--success-color);
@@ -17,7 +15,7 @@
   --recorder-text-color: var(--text-default-color);
   --recorder-border-button-color: var(--border-button-color);
   --recorder-animation-recording-color: var(--animation-recorder-color);
-  --recorder-animation-paused-color: var(--animation-recorder-color);
+  --recorder-animation-paused-color: var(--animation-paused-color);
   --recorder-tutorial-image: url('https://storage.googleapis.com/landpage-prd/tutorial.png');
   --recorder-daai-logo-icon: url('https://storage.googleapis.com/landpage-prd/logo.svg');
 }
@@ -25,7 +23,6 @@
 daai-button-with-icon {
   max-height: 40px;
   min-height: 40px;
-  padding: 8px 8px;
   gap: 8px;
   display: flex;
   align-items: center;
@@ -37,18 +34,19 @@ daai-button-with-icon {
 
 
 #daai-consultation-recorder {
-  max-width: 680px;
-  font-family: "Inter", sans-serif;
+  max-width: 525px;
+  min-width: 525px;
+  font-family: "Open Sans", serif;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: var(--recorder-background-color);
   border-radius: var(--recorder-border-radius);
   border: 1px solid var(--recorder-border-color);
-  box-shadow: 2px 2px 1px 1px rgb(201, 201, 201);
+  /* box-shadow: 2px 2px 1px 1px rgb(201, 201, 201); */
   padding: 8px;
   gap: 4px;
-  height: 60px;
+  height: 52px;
 
   @media (min-width: 100px) and (max-width: 499px) {
   max-width: 400px;
@@ -62,7 +60,11 @@ daai-button-with-icon {
 
 daai-recording-animation {
   --animation-recording-color: var(--recorder-animation-recording-color);
-  --animation-paused-color: var(--recorder-animation-paused-color);
+  --animation-pause-color:var(--recorder-animation-paused-color);
+}
+
+daai-mic-animation {
+  background-color: transparent !important;
 }
 
 
@@ -74,10 +76,6 @@ daai-recording-animation {
   background-repeat: no-repeat;
 }
 
-
-daai-mic {
-  background-color: var(--recorder-background-color);
-}
 
 #animation-recording {
   color: brown
@@ -129,6 +127,7 @@ daai-mic {
 }
 
 #start-recording {
+  max-width: 132px;
   flex-direction: row;
   font-size: 12px;
   display: flex;
@@ -137,6 +136,20 @@ daai-mic {
   padding: 8px 16px;
   border-radius: var(--recorder-button-radius);
   background-color: var(--recorder-primary-color);
+  color: var(--recorder-text-color);
+  color: white;
+}
+
+#start-recording-disabled {
+  max-width: 132px;
+  flex-direction: row;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: var(--recorder-button-radius);
+  background-color: var(--recorder-disable-color);
   color: var(--recorder-text-color);
   color: white;
 }
@@ -150,7 +163,7 @@ daai-mic {
   justify-content: center;
   padding: 8px 16px;
   border-radius: var(--recorder-button-radius);
-  border: 2px solid var(--recorder-primary-color);
+  border: 1px solid var(--recorder-primary-color);
   color: var(--recorder-text-color);
   color: var(--recorder-primary-color);
 }
@@ -159,7 +172,6 @@ daai-mic {
   color: var(--recorder-error-color);
   font-weight: bold;
   margin-left: 4px;
-
 }
 
 #choosen-mode {
@@ -177,7 +189,7 @@ daai-mic {
   justify-content: center;
   border-radius: var(--recorder-button-radius);
   color: var(--recorder-support-color);
-  border: 1.5px solid var(--recorder-border-button-color)
+  border: 1.0px solid var(--recorder-border-button-color)
 }
 
 #button-support {
@@ -196,6 +208,7 @@ daai-mic {
   margin-top: 4px;
 }
 
+
 #button-resume {
   width: 40px;
   height: 40px;
@@ -204,9 +217,8 @@ daai-mic {
   justify-content: center;
   padding: 4px;
   border-radius: var(--recorder-button-radius);
-  border: 2px solid var(--recorder-border-button-color);
   color: var(--recorder-text-color);
-  border: 2px solid var(--recorder-border-button-color)
+  border: 1px solid var(--recorder-border-button-color)
 }
 
 
@@ -223,7 +235,7 @@ daai-mic {
   font-size: 12px;
   color: var(--recorder-primary-color);
   flex-direction: row;
-  border: 2px solid var(--recorder-primary-color);
+  border: 1px solid var(--recorder-primary-color);
   /* background-color: var(--recorder-primary-color); */
   border-radius: var(--recorder-button-radius);
 }
@@ -333,6 +345,6 @@ daai-mic {
 
 
 #initial-text {
-  color: var(--primary-color);
+  color: var(--recorder-primary-color);
   font-weight: 600;
 }

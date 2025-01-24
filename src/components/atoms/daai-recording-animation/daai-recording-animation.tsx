@@ -3,14 +3,14 @@ import { Component, Element, h, Prop, State, Watch } from "@stencil/core";
 @Component({
   tag: "daai-recording-animation",
   styleUrl: "daai-recording-animation.css",
-  shadow: true,
+  shadow: false,
 })
 export class DaaiRecordingAnimation {
   @Element() el: HTMLElement;
 
   @Prop() status: string;
-  @Prop() animationRecordingColor: string = "#F43F5E";
-  @Prop() animationPausedColor: string = "#009CB1";
+  @Prop() animationRecordingColor: string = "";
+  @Prop() animationPausedColor: string = "";
 
   @State() canvasElement!: HTMLCanvasElement;
 
@@ -18,9 +18,28 @@ export class DaaiRecordingAnimation {
   private dataArray!: Uint8Array;
   private bufferLength!: number;
   private audioContext!: AudioContext;
+  private currentStream: MediaStream | null = null;
+  private animationFrameId: number | null = null;
 
   constructor() {
     this.audioContext = new window.AudioContext();
+  }
+
+  disconnectedCallback() {
+    // Clean up resources when component is destroyed
+    if (this.currentStream) {
+      this.currentStream.getTracks().forEach((track) => {
+        track.stop();
+      });
+      this.currentStream = null;
+    }
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+    if (this.audioContext) {
+      this.audioContext.close();
+    }
   }
 
   @Watch("status")
@@ -30,14 +49,24 @@ export class DaaiRecordingAnimation {
   }
 
   async initializeAudio() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // Store stream reference for cleanup
+    this.currentStream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+    });
 
-    const source = this.audioContext.createMediaStreamSource(stream);
+    const source = this.audioContext.createMediaStreamSource(
+      this.currentStream
+    );
     this.analyser = this.audioContext.createAnalyser();
     source.connect(this.analyser);
     this.analyser.fftSize = 256;
     this.bufferLength = this.analyser.frequencyBinCount;
     this.dataArray = new Uint8Array(this.bufferLength);
+  }
+
+  private getCssVariable(variableName: string): string {
+    const style = getComputedStyle(this.el);
+    return style.getPropertyValue(variableName).trim() || "#000";
   }
 
   startAnimationRecording() {
@@ -48,8 +77,8 @@ export class DaaiRecordingAnimation {
 
     const ctx = this.canvasElement.getContext("2d");
 
-    const defaultCanvWidth = 120;
-    const defaultCanvHeight = 50;
+    const defaultCanvWidth = 70;
+    const defaultCanvHeight = 40;
     const lineWidth = 0.5;
     const frequLnum = 50;
 
@@ -67,7 +96,7 @@ export class DaaiRecordingAnimation {
         this.status === "micTest" ||
         this.status === "upload"
       ) {
-        requestAnimationFrame(draw);
+        this.animationFrameId = requestAnimationFrame(draw);
 
         this.analyser.getByteFrequencyData(this.dataArray);
 
@@ -76,7 +105,7 @@ export class DaaiRecordingAnimation {
         ctx.fillStyle = "#FFF";
         ctx.fillRect(0, 0, defaultCanvWidth, defaultCanvHeight);
 
-        ctx.strokeStyle = this.animationRecordingColor;
+        ctx.strokeStyle = this.getCssVariable("--animation-recording-color");
         ctx.lineWidth = lineWidth;
 
         const h = defaultCanvHeight;
@@ -112,7 +141,7 @@ export class DaaiRecordingAnimation {
 
         const centerY = defaultCanvHeight / 2;
 
-        ctx.strokeStyle = this.animationPausedColor;
+        ctx.strokeStyle = this.getCssVariable("--animation-pause-color");
         ctx.lineWidth = lineWidth;
 
         ctx.beginPath();
@@ -120,6 +149,11 @@ export class DaaiRecordingAnimation {
         ctx.lineTo(defaultCanvWidth, centerY);
         ctx.stroke();
       } else {
+        // Clean up animation and audio resources when not recording
+        if (this.animationFrameId !== null) {
+          cancelAnimationFrame(this.animationFrameId);
+          this.animationFrameId = null;
+        }
         ctx.clearRect(0, 0, defaultCanvWidth, defaultCanvHeight);
         this.canvasElement.width = 0;
         this.canvasElement.height = 0;

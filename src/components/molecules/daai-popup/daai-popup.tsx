@@ -5,7 +5,7 @@ import state from "../../../store";
 @Component({
   tag: "daai-popup",
   styleUrl: "daai-popup.css",
-  shadow: true,
+  shadow: false,
 })
 export class DaaiPopup {
   handleClose() {

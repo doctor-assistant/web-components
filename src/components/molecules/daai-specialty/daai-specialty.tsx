@@ -1,5 +1,6 @@
-import { Component, h, State } from "@stencil/core";
+import { Component, h, Prop, State } from "@stencil/core";
 import state from "../../../store";
+import { saveSpecialtyByProfessionalId } from "../../../utils/indexDb";
 
 @Component({
   tag: "daai-specialty",
@@ -7,6 +8,8 @@ import state from "../../../store";
   shadow: true,
 })
 export class DaaiSpecialty {
+  @Prop() professional: string;
+
   @State() specialtyList: Array<{ title: string; id: string }> = [];
 
   @State() chooseSpecialty: string = state.chooseSpecialty || "generic";
@@ -19,12 +22,11 @@ export class DaaiSpecialty {
   }
 
   handleChooseSpecialty() {
-    console.log(this.chooseSpecialty, "his.chooseSpecialty");
     if (this.chooseSpecialty) {
-      console.log(this.chooseSpecialty, "this.chooseSpecialty");
       state.chooseSpecialty = this.chooseSpecialty;
       state.specialtyTitle = this.chooseSpecialtyTitle;
       state.openModalSpecialty = false;
+      saveSpecialtyByProfessionalId(this.professional, this.chooseSpecialty);
     } else {
       console.warn("Nenhuma especialidade foi selecionada.");
     }

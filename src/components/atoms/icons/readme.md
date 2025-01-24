@@ -18,12 +18,12 @@
 
 ### Used by
 
- - [daai-consultation-actions](../../organisms/daai-consultation-actions)
+ - [daai-config](../../molecules/daai-config)
 
 ### Graph
 ```mermaid
 graph TD;
-  daai-consultation-actions --> daai-support-icon
+  daai-config --> daai-support-icon
   style daai-support-icon fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

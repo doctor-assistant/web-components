@@ -16,7 +16,7 @@ export class DaaiConsultationRecorder {
   @Prop() specialty: string = state.chooseSpecialty;
   @Prop() metadata: string;
   @Prop() telemedicine: boolean;
-  @Prop() professionalId: string;
+  @Prop() professional: string;
 
   async componentDidLoad() {
     const mode =
@@ -34,7 +34,7 @@ export class DaaiConsultationRecorder {
         <slot>
           <div id="daai-consultation-recorder">
             <div>
-              <div class="items-center flex gap-6">
+              <div class="items-center flex gap-3">
                 <daai-mic></daai-mic>
                 {state.status === "recording" ||
                 state.status === "paused" ||
@@ -70,7 +70,7 @@ export class DaaiConsultationRecorder {
                 error={this.onError}
                 telemedicine={this.telemedicine}
                 event={this.onEvent}
-                professional={this.professionalId}
+                professional={this.professional}
               ></daai-consultation-actions>
             </div>
           </div>
@@ -84,7 +84,9 @@ export class DaaiConsultationRecorder {
 
         {state.openTutorialPopup && <daai-popup class="popup"></daai-popup>}
 
-        {state.openModalSpecialty && <daai-specialty />}
+        {state.openModalSpecialty && (
+          <daai-specialty professional={this.professional} />
+        )}
       </Host>
     );
   }

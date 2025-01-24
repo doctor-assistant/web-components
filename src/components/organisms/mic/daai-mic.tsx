@@ -14,39 +14,46 @@ export class DaaiMic {
   }
 
   async requestMicrophonePermission() {
-    console.log("Solicitando permissão do microfone...");
+    let tempStream: MediaStream | null = null;
     try {
-      const stream: MediaStream = await navigator.mediaDevices.getUserMedia({
+      // Create a temporary stream just for permission check and device enumeration
+      // This stream will be stopped immediately after getting the device list
+      tempStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-      console.log("Permissão concedida, stream:", stream);
 
       state.microphonePermission = true;
 
-      console.log("state.microphonePermission", state.microphonePermission);
-
+      // Get the list of available audio devices
       const devices = await navigator.mediaDevices.enumerateDevices();
-      console.log("Dispositivos disponíveis:", devices);
 
       const microphones = devices
         .filter((device) => device.kind === "audioinput")
         .map((device) => device.label || "Microfone sem nome");
 
-      console.log("Microfones encontrados:", microphones);
-
       state.availableMicrophones = microphones;
 
-      stream.getTracks().forEach((track) => track.stop());
+      // Always stop the temporary stream immediately after getting permissions and device list
+      // This ensures we don't keep any lingering streams that could affect the recording indicator
+      if (tempStream) {
+        tempStream.getTracks().forEach((track) => track.stop());
+        tempStream = null;
+      }
     } catch (error) {
-      console.log("Erro ao solicitar permissão do microfone");
       console.error("Erro:", error);
       state.microphonePermission = false;
+    } finally {
+      // Ensure stream is always cleaned up, even if an error occurred
+      if (tempStream) {
+        tempStream.getTracks().forEach((track) => track.stop());
+        tempStream = null;
+      }
     }
   }
 
   render() {
     return (
-      <div class="flex items-center justify-center bg-white gap-2">
+      <div class="flex items-center justify-center gap-2">
         <div id="daai-logo-icon"></div>
         <div class="flex items-center justify-center">
           {state.microphonePermission === false ? (
@@ -55,7 +62,7 @@ export class DaaiMic {
               id="error-msg"
             />
           ) : state.status === "initial" ? (
-            <daai-text text="Registro por IA" id="initial-text"></daai-text>
+            <daai-text text="Assistente de IA" id="initial-text"></daai-text>
           ) : state.status === "paused" ? (
             <div class="flex items-center justify-center">
               <daai-text text="Pausado" id="initial-text"></daai-text>

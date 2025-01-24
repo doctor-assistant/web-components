@@ -3,3 +3,13 @@
   text-align: center;
   width: 100%;
 }
+
+
+canvas {
+  background-color: transparent !important; /* Força a transparência */
+  display: block;
+}
+
+#teste{
+  background-color: transparent;
+}

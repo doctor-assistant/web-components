@@ -14,6 +14,7 @@
 | `onError`      | --             |             | `(err: Error) => void`         | `undefined`             |
 | `onEvent`      | --             |             | `(response: Response) => void` | `undefined`             |
 | `onSuccess`    | --             |             | `(response: Response) => void` | `undefined`             |
+| `professional` | `professional` |             | `string`                       | `undefined`             |
 | `specialty`    | `specialty`    |             | `string`                       | `state.chooseSpecialty` |
 | `telemedicine` | `telemedicine` |             | `boolean`                      | `undefined`             |
 
@@ -43,12 +44,17 @@ graph TD;
   daai-mic --> daai-text
   daai-mic --> daai-recording-animation
   daai-consultation-actions --> daai-button-with-icon
-  daai-consultation-actions --> daai-config-mic-icon
-  daai-consultation-actions --> daai-stethoscope-icon
-  daai-consultation-actions --> daai-support-icon
+  daai-consultation-actions --> daai-mic-icon
+  daai-consultation-actions --> daai-text
+  daai-consultation-actions --> daai-menu-icon
+  daai-consultation-actions --> daai-config
   daai-consultation-actions --> daai-resume-recording-icon
   daai-consultation-actions --> daai-pause-icon
   daai-button-with-icon --> daai-button
+  daai-config --> daai-button-with-icon
+  daai-config --> daai-config-mic-icon
+  daai-config --> daai-text
+  daai-config --> daai-support-icon
   daai-modal --> daai-button
   daai-popup --> daai-text
   daai-popup --> daai-checkbox

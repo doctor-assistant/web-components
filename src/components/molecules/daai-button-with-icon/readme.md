@@ -16,6 +16,7 @@
 
 ### Used by
 
+ - [daai-config](../daai-config)
  - [daai-consultation-actions](../../organisms/daai-consultation-actions)
 
 ### Depends on
@@ -26,6 +27,7 @@
 ```mermaid
 graph TD;
   daai-button-with-icon --> daai-button
+  daai-config --> daai-button-with-icon
   daai-consultation-actions --> daai-button-with-icon
   style daai-button-with-icon fill:#f9f,stroke:#333,stroke-width:4px
 ```

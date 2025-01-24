@@ -17,6 +17,8 @@
 
 ### Used by
 
+ - [daai-config](../../molecules/daai-config)
+ - [daai-consultation-actions](../../organisms/daai-consultation-actions)
  - [daai-consultation-recorder](../../templates/daai-consultation-recorder)
  - [daai-mic](../../organisms/mic)
  - [daai-popup](../../molecules/daai-popup)
@@ -24,6 +26,8 @@
 ### Graph
 ```mermaid
 graph TD;
+  daai-config --> daai-text
+  daai-consultation-actions --> daai-text
   daai-consultation-recorder --> daai-text
   daai-mic --> daai-text
   daai-popup --> daai-text
