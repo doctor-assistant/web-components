@@ -15,6 +15,12 @@ export const StartTutorial = () => {
 
 
 export const startRecording = async (isRemote: boolean) => {
+  // Check for MediaRecorder API support (some older Safari versions don't support it)
+  if (typeof MediaRecorder === 'undefined') {
+    console.error('MediaRecorder API is not supported in this browser version.');
+    return (state.status = "initial");
+  }
+
   state.chooseModality = true;
 
   const constraints = {
@@ -25,12 +31,23 @@ export const startRecording = async (isRemote: boolean) => {
     },
   };
   if (isRemote) {
-    state.telemedicine = true
+    state.telemedicine = true;
     try {
+      // Check if screen sharing is supported (Safari 13 and below don't support it)
+      if (!navigator.mediaDevices.getDisplayMedia) {
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        if (isSafari) {
+          console.error('Screen sharing is not supported in this version of Safari.');
+        }
+        return (state.status = "initial");
+      }
+
       screenStream = await navigator.mediaDevices.getDisplayMedia({
         audio: true,
       });
     } catch (error) {
+      // Handle permission denied or other errors
+      console.error('Error accessing screen sharing:', error);
       return (state.status = "initial");
     }
   }
@@ -64,7 +81,12 @@ export const startRecording = async (isRemote: boolean) => {
     .getAudioTracks()
     .forEach((track) => composedStream.addTrack(track));
 
-  mediaRecorder = new MediaRecorder(composedStream);
+  // Detect Safari browser for MIME type compatibility
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const mimeType = isSafari ? 'audio/mp4; codecs=mp4a.40.2' : 'audio/webm';
+
+  // Initialize MediaRecorder with browser-specific MIME type
+  mediaRecorder = new MediaRecorder(composedStream, { mimeType });
 
   mediaRecorder.onstart = () => {};
   mediaRecorder.start();
@@ -99,8 +121,11 @@ export const finishRecording = async (
   metadata, onEvent, professional) => {
   const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
-      const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        await uploadAudio(
+      // Use consistent MIME type for Safari compatibility
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      const mimeType = isSafari ? 'audio/mp4; codecs=mp4a.40.2' : 'audio/webm';
+      const audioBlob = new Blob(audioChunks, { type: mimeType });
+      await uploadAudio(
           audioBlob,
           apikey,
           success,
