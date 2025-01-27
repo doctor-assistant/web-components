@@ -1,5 +1,10 @@
+import pkg from '../../package.json';
+
 import state from "../store";
 import { EventSourceManager } from "../utils/sse";
+
+// Package version for metadata
+const VERSION = pkg.version;
 
 // Main MediaRecorder instance for handling the recording process
 let mediaRecorder: MediaRecorder | null = null;
@@ -168,9 +173,10 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
   if (specialty) {
     formData.append("specialty", specialty);
   }
-  if (metadata) {
-    formData.append("metadata", metadata);
-  }
+  // Ensure metadata exists and add version
+  const metadataObj = metadata ? JSON.parse(metadata) : {};
+  metadataObj.daai  = {version:VERSION, origin:'consultation-recorder-component'};
+  formData.append("metadata", JSON.stringify(metadataObj));
 
   formData.append("professionalId",professional)
 
