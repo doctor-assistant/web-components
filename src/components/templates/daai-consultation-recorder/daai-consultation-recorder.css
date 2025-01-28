@@ -81,11 +81,6 @@ daai-mic-animation {
   background-repeat: no-repeat;
 }
 
-
-#animation-recording {
-  color: brown
-}
-
 #close-icon {
   display: flex;
   align-items: center;
