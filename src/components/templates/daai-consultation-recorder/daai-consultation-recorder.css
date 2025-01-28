@@ -18,7 +18,8 @@
   --recorder-animation-paused-color: var(--animation-paused-color);
   --recorder-tutorial-image: url('https://storage.googleapis.com/landpage-prd/tutorial.png');
   --recorder-daai-logo-icon: url('https://storage.googleapis.com/landpage-prd/logo.svg');
-  --recorder-large-device-width: 525px;
+  --recorder-large-device-max-width: 525px;
+  --recorder-large-device-min-width: 525px;
   --recorder-small-device-max-width: 400px;
   --recorder-small-device-min-width: 300px;
   --recorder-large-device-height: 52px;
@@ -40,8 +41,8 @@ daai-button-with-icon {
 
 
 #daai-consultation-recorder {
-  max-width: var(--recorder-large-device-width);
-  min-width: var(--recorder-large-device-width);
+  max-width: var(--recorder-large-device-max-width);
+  min-width: var(--recorder-large-device-min-width);
   font-family: "Open Sans", serif;
   display: flex;
   align-items: center;
