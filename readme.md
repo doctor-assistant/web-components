@@ -119,7 +119,7 @@ daai-consultation-recorder {
   --recorder-animation-recording-color: green;
   --recorder-animation-paused-color: green;
   --recorder-tutorial-image: "image_url";
-  --recorder-tutorial-image: "image_url";
+  --recorder-daai-logo-icon: "image_url";
 }
 ```
 
