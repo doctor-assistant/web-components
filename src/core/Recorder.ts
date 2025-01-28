@@ -1,6 +1,183 @@
 import state from "../store";
 import { EventSourceManager } from "../utils/sse";
 
+const isNetworkError = (error: any): boolean => {
+  return !window.navigator.onLine || 
+         error instanceof TypeError || 
+         error.message?.toLowerCase().includes('failed to fetch') ||
+         error.message?.toLowerCase().includes('network');
+};
+
+const sleep = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+
+interface FailedUpload {
+  audioBlob: Blob;
+  apiKey: string;
+  specialty?: string;
+  metadata?: string;
+  professional?: string;
+  timestamp: number;
+  attempts: number;
+}
+
+interface FailedUpload {
+  audioBlob: Blob;
+  apiKey: string;
+  specialty?: string;
+  metadata?: string;
+  professional?: string;
+  timestamp: number;
+  attempts: number;
+}
+
+const failedUploads: FailedUpload[] = [];
+
+const storeFailedUpload = async (upload: FailedUpload): Promise<void> => {
+  failedUploads.push(upload);
+};
+
+const getNextFailedUpload = async (): Promise<FailedUpload | null> => {
+  if (failedUploads.length === 0) {
+    return null;
+  }
+  return failedUploads.shift() || null;
+};
+
+const processFailedUploads = async (): Promise<void> => {
+  let failedUpload = await getNextFailedUpload();
+  
+  while (failedUpload !== null) {
+    try {
+      await uploadAudioWithRetry(
+        failedUpload.audioBlob,
+        failedUpload.apiKey,
+        undefined,
+        undefined,
+        failedUpload.specialty,
+        failedUpload.metadata,
+        undefined,
+        failedUpload.professional,
+        3,
+        2000
+      );
+      console.log('Áudio pendente enviado com sucesso.');
+    } catch (err) {
+      console.error('Não foi possível reenviar o áudio pendente:', err);
+      if (isNetworkError(err)) {
+        await storeFailedUpload({
+          ...failedUpload,
+          timestamp: Date.now(),
+          attempts: (failedUpload.attempts || 0) + 1
+        });
+      }
+    }
+    failedUpload = await getNextFailedUpload();
+  }
+};
+
+const uploadAudioWithRetry = async (
+  audioBlob: Blob,
+  apiKey: string,
+  success?: (response: any) => void,
+  error?: (error: any) => void,
+  specialty?: string,
+  metadata?: string,
+  event?: (event: any) => void,
+  professional?: string,
+  maxAttempts: number = 3,
+  baseDelay: number = 1000
+): Promise<void> => {
+  let attempt = 0;
+  
+  while (attempt < maxAttempts) {
+    try {
+      const mode = apiKey?.startsWith("PRODUCTION") ? "prod" : "dev";
+      const url = mode === "dev"
+        ? "https://apim.doctorassistant.ai/api/sandbox/consultations"
+        : "https://apim.doctorassistant.ai/api/production/consultations";
+
+      const formData = new FormData();
+      formData.append("recording", audioBlob);
+      if (specialty) {
+        formData.append("specialty", specialty);
+      }
+      if (metadata) {
+        formData.append("metadata", metadata);
+      }
+      formData.append("professionalId", professional);
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "x-daai-api-key": apiKey,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        if (typeof error === "function") {
+          error(errorResponse);
+        }
+        throw new Error(JSON.stringify(errorResponse));
+      }
+
+      const jsonResponse = await response.json();
+      const consultationId = jsonResponse.id;
+
+      state.status = "upload-ok";
+      if (typeof success === "function") {
+        success(response);
+      }
+      if (typeof event === "function") {
+        const sseUrl = `${url}/${consultationId}/events`;
+        let eventSourceManager = new EventSourceManager(apiKey, sseUrl, event);
+        eventSourceManager.connect();
+      }
+      
+      return;
+    } catch (err) {
+      attempt++;
+      
+      if (attempt >= maxAttempts || !isNetworkError(err)) {
+        const isNetwork = isNetworkError(err);
+        const errorMessage = isNetwork
+          ? `Não foi possível enviar o áudio após ${maxAttempts} tentativas. Verifique sua conexão com a internet.`
+          : 'Ocorreu um erro ao enviar o áudio. Por favor, tente novamente.';
+        
+        console.error(`${errorMessage} Detalhes:`, err);
+        
+        if (isNetwork) {
+          await storeFailedUpload({
+            audioBlob,
+            apiKey,
+            specialty,
+            metadata,
+            professional,
+            timestamp: Date.now(),
+            attempts: attempt
+          });
+          console.log('Áudio armazenado para reenvio quando a conexão for restaurada.');
+        }
+        
+        if (typeof error === "function") {
+          error({
+            message: errorMessage,
+            originalError: err,
+            isNetworkError: isNetwork,
+            attempts: attempt
+          });
+        }
+        throw new Error(errorMessage);
+      }
+
+      const delay = baseDelay * Math.pow(2, attempt - 1);
+      console.log(`Tentativa ${attempt} de ${maxAttempts} falhou. Tentando novamente em ${delay/1000} segundos...`);
+      await sleep(delay);
+    }
+  }
+};
+
 // Main MediaRecorder instance for handling the recording process
 let mediaRecorder: MediaRecorder | null = null;
 // Primary MediaStream for recording - this is the single source of truth for active recording
@@ -155,56 +332,28 @@ export const finishRecording = async (
     state.status = "finished";
   }
 };
-export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
-
-  const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
-  const url =
-    mode === "dev"
-      ? "https://apim.doctorassistant.ai/api/sandbox/consultations"
-      : "https://apim.doctorassistant.ai/api/production/consultations";
-
-  const formData = new FormData();
-  formData.append("recording", audioBlob);
-  if (specialty) {
-    formData.append("specialty", specialty);
-  }
-  if (metadata) {
-    formData.append("metadata", metadata);
-  }
-
-  formData.append("professionalId",professional)
-
+export const uploadAudio = async (
+  audioBlob: Blob,
+  apiKey: string,
+  success?: (response: any) => void,
+  error?: (error: any) => void,
+  specialty?: string,
+  metadata?: string,
+  event?: (event: any) => void,
+  professional?: string
+): Promise<void> => {
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "x-daai-api-key": apiKey,
-      },
-      body: formData,
-    });
-
-
-    if (!response.ok) {
-      const errorResponse = await response.json();
-      if (typeof error === "function") {
-        error(errorResponse);
-      }
-    }
-
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      const consultationId = jsonResponse.id;
-
-      state.status = "upload-ok";
-      if (typeof success === "function") {
-        success(response);
-      }
-      if (typeof event === "function") {
-        const sseUrl = `${url}/${consultationId}/events`;
-        let eventSourceManager = new EventSourceManager(apiKey, sseUrl, event);
-        eventSourceManager.connect();
-      }
-    }
+    await uploadAudioWithRetry(
+      audioBlob,
+      apiKey,
+      success,
+      error,
+      specialty,
+      metadata,
+      event,
+      professional
+    );
+    await processFailedUploads();
   } catch (err) {
     console.error("Erro ao enviar o áudio:", err);
     if (typeof error === "function") {
@@ -212,7 +361,6 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
     }
   }
 };
-
 
 export const openConfigModal = () => {
   state.openModalConfig = true;
