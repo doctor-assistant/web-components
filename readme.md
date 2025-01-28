@@ -34,7 +34,7 @@ Para instalar o `daai-consultation-recorder` no seu projeto, basta rodar no term
 💻 Execute:
 
 ```bash
-npm i @doctorassistant/daai-component@2.0.0-rc
+npm i @doctorassistant/daai-component@2.0.1-rc
 ```
 
 ### Como usar após a instalação:
@@ -99,7 +99,7 @@ o componente é customizado por meio de variáveis css, então para você custom
 
 ### 🖌️ Exemplo de uso da customização:
 
-Na da versão 2.0.0 temos a estilização por meio de variáveis css:
+Na da versão 2.0.1-rc temos a estilização por meio de variáveis css:
 
 ```css
 daai-consultation-recorder {
@@ -120,6 +120,12 @@ daai-consultation-recorder {
   --recorder-animation-paused-color: green;
   --recorder-tutorial-image: "image_url";
   --recorder-daai-logo-icon: "image_url";
+  --recorder-large-device-max-width: 100%;
+  --recorder-large-device-min-width: 100%;
+  --recorder-small-device-max-width: 500px;
+  --recorder-small-device-min-width: 300px;
+  --recorder-large-device-height: 52px;
+  --recorder-small-device-height: 120px;
 }
 ```
 
@@ -151,7 +157,7 @@ Para utilizar o componente via CDN, adicione o seguinte script ao seu HTML:
 <html>
   <head>
     <script
-      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@2.0.0-rc/dist/web-components/web-components.esm.js"
+      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@2.0.1-rc/dist/web-components/web-components.esm.js"
       type="module"
     ></script>
     <script>

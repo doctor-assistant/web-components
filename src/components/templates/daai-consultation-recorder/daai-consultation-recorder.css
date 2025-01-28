@@ -18,6 +18,13 @@
   --recorder-animation-paused-color: var(--animation-paused-color);
   --recorder-tutorial-image: url('https://storage.googleapis.com/landpage-prd/tutorial.png');
   --recorder-daai-logo-icon: url('https://storage.googleapis.com/landpage-prd/logo.svg');
+  --recorder-large-device-max-width: 525px;
+  --recorder-large-device-min-width: 525px;
+  --recorder-small-device-max-width: 400px;
+  --recorder-small-device-min-width: 300px;
+  --recorder-large-device-height: 52px;
+  --recorder-small-device-height: 120px;
+
 }
 
 daai-button-with-icon {
@@ -34,8 +41,8 @@ daai-button-with-icon {
 
 
 #daai-consultation-recorder {
-  max-width: 525px;
-  min-width: 525px;
+  max-width: var(--recorder-large-device-max-width);
+  min-width: var(--recorder-large-device-min-width);
   font-family: "Open Sans", serif;
   display: flex;
   align-items: center;
@@ -43,18 +50,16 @@ daai-button-with-icon {
   background-color: var(--recorder-background-color);
   border-radius: var(--recorder-border-radius);
   border: 1px solid var(--recorder-border-color);
-  /* box-shadow: 2px 2px 1px 1px rgb(201, 201, 201); */
   padding: 8px;
   gap: 4px;
-  height: 52px;
+  height: var(--recorder-large-device-height);
 
   @media (min-width: 100px) and (max-width: 499px) {
-  max-width: 400px;
-  min-width: 300px;
-
-    display: flex;
-    flex-direction: column;
-    height: 120px;
+  max-width: var(--recorder-small-device-max-width);
+  min-width:var(--recorder-small-device-min-width);
+  display: flex;
+  flex-direction: column;
+  height: var(--recorder-small-device-height);
   }
 }
 
@@ -74,11 +79,6 @@ daai-mic-animation {
   background-size: cover;
   background-image: var(--recorder-daai-logo-icon);
   background-repeat: no-repeat;
-}
-
-
-#animation-recording {
-  color: brown
 }
 
 #close-icon {
