@@ -203,7 +203,7 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
 
       state.status = "upload-ok";
       if (typeof success === "function") {
-        success(response);
+        success(jsonResponse);
       }
       if (typeof event === "function") {
         const sseUrl = `${url}/${consultationId}/events`;
