@@ -120,8 +120,9 @@ daai-consultation-recorder {
   --recorder-animation-paused-color: green;
   --recorder-tutorial-image: "image_url";
   --recorder-daai-logo-icon: "image_url";
-  --recorder-large-device-width: 100%;
-  --recorder-small-device-max-width: 400px;
+  --recorder-large-device-max-width: 100%;
+  --recorder-large-device-min-width: 100%;
+  --recorder-small-device-max-width: 500px;
   --recorder-small-device-min-width: 300px;
   --recorder-large-device-height: 52px;
   --recorder-small-device-height: 120px;
