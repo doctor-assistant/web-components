@@ -1,10 +1,10 @@
-import pkg from '../../package.json';
+import { version } from '../../package.json';
 
 import state from "../store";
 import { EventSourceManager } from "../utils/sse";
 
 // Package version for metadata
-const VERSION = pkg.version;
+const VERSION = version;
 
 // Main MediaRecorder instance for handling the recording process
 let mediaRecorder: MediaRecorder | null = null;
