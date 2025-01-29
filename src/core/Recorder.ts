@@ -14,7 +14,6 @@ let localStream: MediaStream | null = null;
 let screenStream: MediaStream | null = null;
 // Duration tracking variables
 let currentRecordingTime = 0;
-let durationTrackingInterval: number | null = null;
 
 
 export const StartTutorial = () => {
@@ -164,6 +163,7 @@ export const pauseRecording = () => {
     localStream
       .getAudioTracks()
       .forEach((track) => (track.enabled = false));
+    state.status = "paused";
   }
 }
 
@@ -194,10 +194,15 @@ export const finishRecording = async (
           onEvent,
           professional
         );
-    } catch (err) {
-      if (error) {
-        error(err);
-      }
+    } catch (error) {
+      console.error("Não foi possível enviar o áudio", error);
+    }
+  };
+  const audioChunks: Blob[] = [];
+
+  mediaRecorder.ondataavailable = (event) => {
+    if (event.data.size > 0) {
+      audioChunks.push(event.data);
     }
   };
   mediaRecorder.onstop = () => {
@@ -228,6 +233,10 @@ export const finishRecording = async (
   // Ensure we're in a valid state to stop recording
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     mediaRecorder.stop();
+    state.status = "finished";
+  } else {
+    console.warn('MediaRecorder not in recording state, cannot stop');
+    state.status = "finished";
   }
 };
 export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
