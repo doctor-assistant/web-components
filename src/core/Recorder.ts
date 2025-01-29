@@ -22,34 +22,46 @@ export const StartTutorial = () => {
 }
 
 
+/**
+ * Options for configuring recording behavior
+ */
 interface RecordingOptions {
+  /** Maximum duration of recording in seconds */
   maxDuration?: number;
+  /** Time in seconds before maxDuration to trigger warning callback. Defaults to 10% of maxDuration */
   remainingWarningTime?: number;
+  /** Callback triggered when remaining time equals remainingWarningTime */
   onRemainingWarning?: () => void;
 }
 
+/**
+ * Starts recording audio with optional duration limits and warnings
+ * @param isRemote Whether this is a remote/telemedicine recording
+ * @param options Configuration options for recording duration and warnings
+ * @throws {Error} If maxDuration or remainingWarningTime are invalid
+ */
 export const startRecording = async (isRemote: boolean, options?: RecordingOptions) => {
   state.chooseModality = true;
 
   // Validate duration parameters
   if (options?.maxDuration !== undefined) {
-    if (options.maxDuration <= 0) {
-      throw new Error('maxDuration must be a positive number');
+    if (!Number.isFinite(options.maxDuration) || options.maxDuration <= 0) {
+      throw new Error('maxDuration deve ser um número positivo');
     }
     
     if (options.remainingWarningTime !== undefined) {
-      if (options.remainingWarningTime <= 0) {
-        throw new Error('remainingWarningTime must be a positive number');
+      if (!Number.isFinite(options.remainingWarningTime) || options.remainingWarningTime <= 0) {
+        throw new Error('remainingWarningTime deve ser um número positivo');
       }
       if (options.remainingWarningTime >= options.maxDuration) {
-        throw new Error('remainingWarningTime must be less than maxDuration');
+        throw new Error('remainingWarningTime deve ser menor que maxDuration');
       }
     }
   }
 
-  // Calculate warning time if maxDuration is set
+  // Calculate warning time if maxDuration is set (default to 10% of maxDuration)
   const warningTime = options?.maxDuration !== undefined
-    ? options.remainingWarningTime ?? (options.maxDuration * 0.1)
+    ? Math.floor(options.remainingWarningTime ?? (options.maxDuration * 0.1))
     : undefined;
 
   const constraints = {
@@ -104,8 +116,8 @@ export const startRecording = async (isRemote: boolean, options?: RecordingOptio
   mediaRecorder.onstart = () => {};
   
   // Use timeslice to get regular ondataavailable events for accurate time tracking
-  // Array to store audio chunks
   const audioChunks: Blob[] = [];
+  let warningFired = false;
   
   mediaRecorder.ondataavailable = (event) => {
     if (event.data.size > 0) {
@@ -116,13 +128,14 @@ export const startRecording = async (isRemote: boolean, options?: RecordingOptio
         state.recordingTime = currentRecordingTime;
         
         if (options?.maxDuration) {
-          // Check if we need to fire onRemainingWarning
-          if (warningTime && currentRecordingTime === (options.maxDuration - warningTime)) {
+          const timeRemaining = options.maxDuration - currentRecordingTime;
+          
+          if (!warningFired && warningTime && timeRemaining <= warningTime) {
+            warningFired = true;
             options.onRemainingWarning?.();
           }
 
-          // Check if we've hit maxDuration
-          if (currentRecordingTime >= options.maxDuration) {
+          if (timeRemaining <= 0) {
             finishRecording(
               state.apiKey,
               state.onSuccess,
