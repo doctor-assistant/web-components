@@ -180,22 +180,34 @@ export const resumeRecording = () => {
 }
 
 
+/**
+ * Finalizes the recording, cleans up resources, and uploads the audio
+ * @param apikey API key for authentication
+ * @param success Callback function called on successful upload
+ * @param error Callback function called on upload error
+ * @param specialty Medical specialty for the recording
+ * @param metadata Additional metadata for the recording
+ * @param onEvent Event callback for SSE updates
+ * @param professional Professional ID associated with the recording
+ */
 export const finishRecording = async (
-  apikey,
-  success,
-  error,
-  specialty,
-  metadata,
-  onEvent,
-  professional
+  apikey: string,
+  success?: (response: any) => void,
+  error?: (error: any) => void,
+  specialty?: string,
+  metadata?: string,
+  onEvent?: (event: any) => void,
+  professional?: string
 ) => {
-  // Clear duration tracking interval if it exists
-  if (durationTrackingInterval) {
-    clearInterval(durationTrackingInterval);
-    durationTrackingInterval = null;
+  try {
+    // Reset recording time tracking
     currentRecordingTime = 0;
-  }
-  const handleRecordingStop = async (audioChunks: Blob[]) => {
+    if (durationTrackingInterval) {
+      clearInterval(durationTrackingInterval);
+      durationTrackingInterval = null;
+    }
+
+    const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
         await uploadAudio(
@@ -220,29 +232,34 @@ export const finishRecording = async (
     }
   };
   mediaRecorder.onstop = () => {
-    // Stop all tracks to remove browser recording indicator
-    if (mediaRecorder.stream) {
-      mediaRecorder.stream.getTracks().forEach(track => {
-        track.stop();
-      });
+    try {
+      // Stop all tracks to remove browser recording indicator
+      if (mediaRecorder?.stream) {
+        mediaRecorder.stream.getTracks().forEach(track => {
+          track.stop();
+        });
+      }
+      // Clean up localStream tracks
+      if (localStream) {
+        localStream.getTracks().forEach(track => {
+          track.stop();
+        });
+        localStream = null;
+      }
+      // Clean up screen sharing if active
+      if (screenStream) {
+        screenStream.getTracks().forEach(track => {
+          track.stop();
+        });
+        screenStream = null;
+      }
+      // Set mediaRecorder to null to prevent reuse
+      mediaRecorder = null;
+      handleRecordingStop(audioChunks);
+    } catch (err) {
+      console.error("Erro ao finalizar gravação:", err);
+      if (error) error(err);
     }
-    // Clean up localStream tracks
-    if (localStream) {
-      localStream.getTracks().forEach(track => {
-        track.stop();
-      });
-      localStream = null;
-    }
-    // Clean up screen sharing if active
-    if (screenStream) {
-      screenStream.getTracks().forEach(track => {
-        track.stop();
-      });
-      screenStream = null;
-    }
-    // Set mediaRecorder to null to prevent reuse
-    mediaRecorder = null;
-    handleRecordingStop(audioChunks);
   };
   // Ensure we're in a valid state to stop recording
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
