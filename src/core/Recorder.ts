@@ -12,6 +12,9 @@ let mediaRecorder: MediaRecorder | null = null;
 let localStream: MediaStream | null = null;
 // Stream for screen sharing in remote/telemedicine mode
 let screenStream: MediaStream | null = null;
+// Duration tracking variables
+let currentRecordingTime = 0;
+let durationTrackingInterval: number | null = null;
 
 
 export const StartTutorial = () => {
@@ -19,8 +22,35 @@ export const StartTutorial = () => {
 }
 
 
-export const startRecording = async (isRemote: boolean) => {
+interface RecordingOptions {
+  maxDuration?: number;
+  remainingWarningTime?: number;
+  onRemainingWarning?: () => void;
+}
+
+export const startRecording = async (isRemote: boolean, options?: RecordingOptions) => {
   state.chooseModality = true;
+
+  // Validate duration parameters
+  if (options?.maxDuration !== undefined) {
+    if (options.maxDuration <= 0) {
+      throw new Error('maxDuration must be a positive number');
+    }
+    
+    if (options.remainingWarningTime !== undefined) {
+      if (options.remainingWarningTime <= 0) {
+        throw new Error('remainingWarningTime must be a positive number');
+      }
+      if (options.remainingWarningTime >= options.maxDuration) {
+        throw new Error('remainingWarningTime must be less than maxDuration');
+      }
+    }
+  }
+
+  // Calculate warning time if maxDuration is set
+  const warningTime = options?.maxDuration !== undefined
+    ? options.remainingWarningTime ?? (options.maxDuration * 0.1)
+    : undefined;
 
   const constraints = {
     audio: {
@@ -72,7 +102,44 @@ export const startRecording = async (isRemote: boolean) => {
   mediaRecorder = new MediaRecorder(composedStream);
 
   mediaRecorder.onstart = () => {};
-  mediaRecorder.start();
+  
+  // Use timeslice to get regular ondataavailable events for accurate time tracking
+  // Array to store audio chunks
+  const audioChunks: Blob[] = [];
+  
+  mediaRecorder.ondataavailable = (event) => {
+    if (event.data.size > 0) {
+      audioChunks.push(event.data);
+      
+      if (mediaRecorder?.state === "recording") {
+        currentRecordingTime++;
+        state.recordingTime = currentRecordingTime;
+        
+        if (options?.maxDuration) {
+          // Check if we need to fire onRemainingWarning
+          if (warningTime && currentRecordingTime === (options.maxDuration - warningTime)) {
+            options.onRemainingWarning?.();
+          }
+
+          // Check if we've hit maxDuration
+          if (currentRecordingTime >= options.maxDuration) {
+            finishRecording(
+              state.apiKey,
+              state.onSuccess,
+              state.onError,
+              state.specialty,
+              state.metadata,
+              state.onEvent,
+              state.professionalId
+            );
+          }
+        }
+      }
+    }
+  };
+  
+  // Start recording with 1-second timeslices for accurate time tracking
+  mediaRecorder.start(1000);
 };
 
 export const pauseRecording = () => {
@@ -84,14 +151,18 @@ export const pauseRecording = () => {
     localStream
       .getAudioTracks()
       .forEach((track) => (track.enabled = false));
-    state.status = "paused";
   }
 }
 
 export const resumeRecording = () => {
   if (mediaRecorder?.state === "paused") {
     mediaRecorder.resume();
-    state.status = "resume";
+    state.status = "recording";
+    if (localStream) {
+      localStream
+        .getAudioTracks()
+        .forEach((track) => (track.enabled = true));
+    }
   }
 }
 
@@ -101,7 +172,16 @@ export const finishRecording = async (
   success,
   error,
   specialty,
-  metadata, onEvent, professional) => {
+  metadata,
+  onEvent,
+  professional
+) => {
+  // Clear duration tracking interval if it exists
+  if (durationTrackingInterval) {
+    clearInterval(durationTrackingInterval);
+    durationTrackingInterval = null;
+    currentRecordingTime = 0;
+  }
   const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
