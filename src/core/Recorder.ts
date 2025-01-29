@@ -170,44 +170,18 @@ export const pauseRecording = () => {
 export const resumeRecording = () => {
   if (mediaRecorder?.state === "paused") {
     mediaRecorder.resume();
-    state.status = "recording";
-    if (localStream) {
-      localStream
-        .getAudioTracks()
-        .forEach((track) => (track.enabled = true));
-    }
+    state.status = "resume";
   }
 }
 
 
-/**
- * Finalizes the recording, cleans up resources, and uploads the audio
- * @param apikey API key for authentication
- * @param success Callback function called on successful upload
- * @param error Callback function called on upload error
- * @param specialty Medical specialty for the recording
- * @param metadata Additional metadata for the recording
- * @param onEvent Event callback for SSE updates
- * @param professional Professional ID associated with the recording
- */
 export const finishRecording = async (
-  apikey: string,
-  success?: (response: any) => void,
-  error?: (error: any) => void,
-  specialty?: string,
-  metadata?: string,
-  onEvent?: (event: any) => void,
-  professional?: string
-) => {
-  try {
-    // Reset recording time tracking
-    currentRecordingTime = 0;
-    if (durationTrackingInterval) {
-      clearInterval(durationTrackingInterval);
-      durationTrackingInterval = null;
-    }
-
-    const handleRecordingStop = async (audioChunks: Blob[]) => {
+  apikey,
+  success,
+  error,
+  specialty,
+  metadata, onEvent, professional) => {
+  const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
         await uploadAudio(
@@ -218,56 +192,42 @@ export const finishRecording = async (
           specialty,
           metadata,
           onEvent,
-          professional,
+          professional
         );
-    } catch (error) {
-      console.error("Não foi possível enviar o áudio", error);
-    }
-  };
-  const audioChunks: Blob[] = [];
-
-  mediaRecorder.ondataavailable = (event) => {
-    if (event.data.size > 0) {
-      audioChunks.push(event.data);
+    } catch (err) {
+      if (error) {
+        error(err);
+      }
     }
   };
   mediaRecorder.onstop = () => {
-    try {
-      // Stop all tracks to remove browser recording indicator
-      if (mediaRecorder?.stream) {
-        mediaRecorder.stream.getTracks().forEach(track => {
-          track.stop();
-        });
-      }
-      // Clean up localStream tracks
-      if (localStream) {
-        localStream.getTracks().forEach(track => {
-          track.stop();
-        });
-        localStream = null;
-      }
-      // Clean up screen sharing if active
-      if (screenStream) {
-        screenStream.getTracks().forEach(track => {
-          track.stop();
-        });
-        screenStream = null;
-      }
-      // Set mediaRecorder to null to prevent reuse
-      mediaRecorder = null;
-      handleRecordingStop(audioChunks);
-    } catch (err) {
-      console.error("Erro ao finalizar gravação:", err);
-      if (error) error(err);
+    // Stop all tracks to remove browser recording indicator
+    if (mediaRecorder.stream) {
+      mediaRecorder.stream.getTracks().forEach(track => {
+        track.stop();
+      });
     }
+    // Clean up localStream tracks
+    if (localStream) {
+      localStream.getTracks().forEach(track => {
+        track.stop();
+      });
+      localStream = null;
+    }
+    // Clean up screen sharing if active
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => {
+        track.stop();
+      });
+      screenStream = null;
+    }
+    // Set mediaRecorder to null to prevent reuse
+    mediaRecorder = null;
+    handleRecordingStop(audioChunks);
   };
   // Ensure we're in a valid state to stop recording
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     mediaRecorder.stop();
-    state.status = "finished";
-  } else {
-    console.warn('MediaRecorder not in recording state, cannot stop');
-    state.status = "finished";
   }
 };
 export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
