@@ -6,7 +6,7 @@ class EventSourceManager {
   public onMessage: (data: any) => void;
   public eventSource: any;
   public retryDelay: number;
-  public reconnectTimeout:  any;
+  public reconnectTimeout: any;
   public retryCount: number;
   public maxRetries: number;
 
@@ -20,7 +20,7 @@ class EventSourceManager {
 
     this.reconnectTimeout = null;
     this.retryCount = 0;
-    this.maxRetries = 10;
+    this.maxRetries = 5;
 
     this.handleOpen = this.handleOpen.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
@@ -28,8 +28,7 @@ class EventSourceManager {
 
     window.addEventListener('beforeunload', () => this.close());
   }
-   async connect() {
-
+  async connect() {
     if (this.eventSource) {
       console.warn('EventSource is already connected.');
       return;
@@ -48,7 +47,6 @@ class EventSourceManager {
 
   handleOpen() {
     console.info('SSE connection opened.');
-    this.retryCount = 0;
   }
 
   handleMessage(event) {
@@ -72,6 +70,7 @@ class EventSourceManager {
     this.retryCount++;
     if (this.retryCount > this.maxRetries) {
       console.error(`Maximum retry attempts (${this.maxRetries}) reached. Stopping reconnection.`);
+      this.close();
       return;
     }
 
@@ -81,7 +80,6 @@ class EventSourceManager {
     }
     this.reconnectTimeout = setTimeout(() => this.connect(), this.retryDelay);
     console.info(`Reconnecting in ${this.retryDelay / 1000} seconds...`);
-    setTimeout(() => this.connect(), this.retryDelay);
   }
 
   close() {
@@ -94,6 +92,7 @@ class EventSourceManager {
       this.eventSource.close();
       this.eventSource = null;
     }
+    this.retryCount = 0;
   }
 }
 
