@@ -24,9 +24,17 @@ export class DaaiConsultationActions {
   @Prop() error: any;
   @Prop() metadata: string;
   @Prop() event: any;
+  @Prop() duration: any;
+  @Prop() warningtime: any;
+  @Prop() onRemainingWarning: any;
 
   @State() title: string = "";
+
   @State() stopAnimation: string = "";
+
+  convertToNumber(value: any): number {
+    return typeof value === "string" ? parseFloat(value) || 0 : value;
+  }
 
   newRecording() {
     state.status = "initial";
@@ -48,6 +56,7 @@ export class DaaiConsultationActions {
     const specialtyByProfessionalId = await getSpecialtiesByProfessionalId(
       this.professional
     );
+
     if (
       specialtyByProfessionalId.mostRecentSpecialty &&
       specialtyByProfessionalId.specialtiesAsStrings
@@ -104,7 +113,23 @@ export class DaaiConsultationActions {
                 ) {
                   this.telemedicine
                     ? this.choosenMode()
-                    : startRecording(false);
+                    : startRecording(
+                        false,
+                        {
+                          maxDuration: this.convertToNumber(this.duration),
+                          remainingWarningTime: this.convertToNumber(
+                            this.warningtime
+                          ),
+                          onRemainingWarning: this.onRemainingWarning,
+                        },
+                        this.apikey,
+                        this.success,
+                        this.error,
+                        this.specialty,
+                        this.metadata,
+                        this.event,
+                        this.professional
+                      );
                 }
               }}
               disabled={
@@ -141,14 +166,50 @@ export class DaaiConsultationActions {
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
               id="choose-local-consultation"
-              onClick={() => startRecording(false)}
+              onClick={() =>
+                startRecording(
+                  false,
+                  {
+                    maxDuration: this.convertToNumber(this.duration),
+                    remainingWarningTime: this.convertToNumber(
+                      this.warningtime
+                    ),
+                    onRemainingWarning: this.onRemainingWarning,
+                  },
+                  this.apikey,
+                  this.success,
+                  this.error,
+                  this.specialty,
+                  this.metadata,
+                  this.event,
+                  this.professional
+                )
+              }
             >
               <div class="flex items-center justify-center p-2">Presencial</div>
             </daai-button-with-icon>
             <daai-button-with-icon
               id="choose-telemedicine-consultation"
               onClick={() =>
-                state.isChecked ? startRecording(true) : StartTutorial()
+                state.isChecked
+                  ? startRecording(
+                      true,
+                      {
+                        maxDuration: this.convertToNumber(this.duration),
+                        remainingWarningTime: this.convertToNumber(
+                          this.warningtime
+                        ),
+                        onRemainingWarning: this.onRemainingWarning,
+                      },
+                      this.apikey,
+                      this.success,
+                      this.error,
+                      this.specialty,
+                      this.metadata,
+                      this.event,
+                      this.professional
+                    )
+                  : StartTutorial()
               }
             >
               Telemedicina

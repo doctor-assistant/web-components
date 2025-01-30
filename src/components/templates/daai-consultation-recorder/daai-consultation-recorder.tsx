@@ -11,14 +11,18 @@ export class DaaiConsultationRecorder {
   @Prop() onSuccess: (response: Response) => void;
   @Prop() onError: (err: Error) => void;
   @Prop() onEvent: (response: Response) => void;
+  @Prop() onRemainingWarning: (response: Response) => void;
 
   @Prop() apikey: string;
   @Prop() specialty: string = state.chooseSpecialty;
   @Prop() metadata: string;
   @Prop() telemedicine: boolean;
   @Prop() professional: string;
+  @Prop() duration: any;
+  @Prop() warningtime: any;
 
   async componentDidLoad() {
+    console.log(this.duration, "RecordingOptions");
     const mode =
       this.apikey && this.apikey.startsWith("PRODUCTION") ? "prod" : "dev";
     if (this.specialty) {
@@ -71,6 +75,9 @@ export class DaaiConsultationRecorder {
                 telemedicine={this.telemedicine}
                 event={this.onEvent}
                 professional={this.professional}
+                duration={this.duration}
+                warningtime={this.warningtime}
+                onRemainingWarning={this.onRemainingWarning}
               ></daai-consultation-actions>
             </div>
           </div>

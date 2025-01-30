@@ -3,15 +3,16 @@ import { version } from '../../package.json';
 import state from "../store";
 import { EventSourceManager } from "../utils/sse";
 
-// Package version for metadata
 const VERSION = version;
 
-// Main MediaRecorder instance for handling the recording process
+
 let mediaRecorder: MediaRecorder | null = null;
-// Primary MediaStream for recording - this is the single source of truth for active recording
+
 let localStream: MediaStream | null = null;
-// Stream for screen sharing in remote/telemedicine mode
+
 let screenStream: MediaStream | null = null;
+
+let currentRecordingTime = 0;
 
 
 export const StartTutorial = () => {
@@ -19,8 +20,41 @@ export const StartTutorial = () => {
 }
 
 
-export const startRecording = async (isRemote: boolean) => {
+
+interface RecordingOptions {
+  maxDuration?: number;
+  remainingWarningTime?: number;
+  onRemainingWarning?: () => void;
+}
+
+export const startRecording = async (isRemote: boolean, options?: RecordingOptions, apikey?:string, onSuccess?:any, onError?:any,    specialty?:any,
+  metadata?:any,
+  onEvent?:any,
+  professional?:any,) => {
   state.chooseModality = true;
+
+
+  // Validate duration parameters
+  if (options?.maxDuration !== undefined) {
+    console.log(options?.maxDuration,'options?.maxDuration', typeof options?.maxDuration)
+    if (!Number.isFinite(options.maxDuration) || options.maxDuration <= 0) {
+      throw new Error('maxDuration deve ser um número positivo');
+    }
+
+    if (options.remainingWarningTime !== undefined) {
+      if (!Number.isFinite(options.remainingWarningTime) || options.remainingWarningTime <= 0) {
+        throw new Error('remainingWarningTime deve ser um número positivo');
+      }
+      if (options.remainingWarningTime >= options.maxDuration) {
+        throw new Error('remainingWarningTime deve ser menor que maxDuration');
+      }
+    }
+  }
+
+  // Calculate warning time if maxDuration is set (default to 10% of maxDuration)
+  const warningTime = options?.maxDuration !== undefined
+    ? Math.floor(options.remainingWarningTime ?? (options.maxDuration * 0.1))
+    : undefined;
 
   const constraints = {
     audio: {
@@ -51,6 +85,7 @@ export const startRecording = async (isRemote: boolean) => {
   const context = new AudioContext();
   const audioDestination = context.createMediaStreamDestination();
 
+
   if (isRemote && screenStream?.getAudioTracks().length > 0) {
     const systemSource = context.createMediaStreamSource(screenStream);
     const systemGain = context.createGain();
@@ -72,7 +107,44 @@ export const startRecording = async (isRemote: boolean) => {
   mediaRecorder = new MediaRecorder(composedStream);
 
   mediaRecorder.onstart = () => {};
-  mediaRecorder.start();
+
+  // Use timeslice to get regular ondataavailable events for accurate time tracking
+  let warningFired = false;
+
+  mediaRecorder.ondataavailable = (event) => {
+    console.log(event,'event')
+    if (event.data.size > 0) {
+      if (mediaRecorder?.state === "recording") {
+        currentRecordingTime++;
+       state.recordingTime = currentRecordingTime;
+        console.log(options?.maxDuration,'options?.maxDuration')
+        if (options?.maxDuration) {
+          const timeRemaining = options.maxDuration - currentRecordingTime;
+
+          if (!warningFired && warningTime && timeRemaining <= warningTime) {
+            warningFired = true;
+            options.onRemainingWarning?.();
+          }
+
+          console.log(timeRemaining,'timeRemaining')
+          console.log(timeRemaining <= 0, 'timeRemaining <= 0')
+          if (timeRemaining <= 0) {
+
+            finishRecording(
+              apikey,
+              onSuccess,
+              onError,
+              specialty,
+              metadata,
+              onEvent,
+              professional,
+            );
+          }
+        }
+      }
+    }
+  };
+  mediaRecorder.start(1000);
 };
 
 export const pauseRecording = () => {
@@ -94,7 +166,6 @@ export const resumeRecording = () => {
     state.status = "resume";
   }
 }
-
 
 export const finishRecording = async (
   apikey,
@@ -160,7 +231,10 @@ export const finishRecording = async (
     state.status = "finished";
   }
 };
+
 export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
+
+  console.log(audioBlob,'audioBlob')
 
   const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
   const url =

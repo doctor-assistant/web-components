@@ -29,23 +29,29 @@ export namespace Components {
     }
     interface DaaiConsultationActions {
         "apikey": any;
+        "duration": any;
         "error": any;
         "event": any;
         "metadata": string;
+        "onRemainingWarning": any;
         "professional": string;
         "specialty": any;
         "success": any;
         "telemedicine": boolean;
+        "warningtime": any;
     }
     interface DaaiConsultationRecorder {
         "apikey": string;
+        "duration": any;
         "metadata": string;
         "onError": (err: Error) => void;
         "onEvent": (response: Response) => void;
+        "onRemainingWarning": (response: Response) => void;
         "onSuccess": (response: Response) => void;
         "professional": string;
         "specialty": string;
         "telemedicine": boolean;
+        "warningtime": any;
     }
     interface DaaiFinishRecordingIcon {
         "color": string;
@@ -410,23 +416,29 @@ declare namespace LocalJSX {
     }
     interface DaaiConsultationActions {
         "apikey"?: any;
+        "duration"?: any;
         "error"?: any;
         "event"?: any;
         "metadata"?: string;
+        "onRemainingWarning"?: any;
         "professional"?: string;
         "specialty"?: any;
         "success"?: any;
         "telemedicine"?: boolean;
+        "warningtime"?: any;
     }
     interface DaaiConsultationRecorder {
         "apikey"?: string;
+        "duration"?: any;
         "metadata"?: string;
         "onError"?: (err: Error) => void;
         "onEvent"?: (response: Response) => void;
+        "onRemainingWarning"?: (response: Response) => void;
         "onSuccess"?: (response: Response) => void;
         "professional"?: string;
         "specialty"?: string;
         "telemedicine"?: boolean;
+        "warningtime"?: any;
     }
     interface DaaiFinishRecordingIcon {
         "color"?: string;
