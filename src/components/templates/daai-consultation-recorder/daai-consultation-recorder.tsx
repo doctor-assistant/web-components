@@ -23,6 +23,8 @@ export class DaaiConsultationRecorder {
   @Prop() warningRecordingTime: number = 0;
   @Prop() maxRecordingTime: number = Infinity;
 
+  @Prop() hideTutorial: boolean = false;
+
   handleRecordingTimeUpdated(event: CustomEvent) {
     this.recordingTime = event.detail;
   }
@@ -86,6 +88,7 @@ export class DaaiConsultationRecorder {
                   warningRecordingTime: this.warningRecordingTime,
                   maxRecordingTime: this.maxRecordingTime
                 }}
+                hideTutorial={this.hideTutorial}
               ></daai-consultation-actions>
             </div>
           </div>
@@ -97,7 +100,7 @@ export class DaaiConsultationRecorder {
           />
         )}
 
-        {state.openTutorialPopup && <daai-popup class="popup"></daai-popup>}
+        {state.openTutorialPopup && !this.hideTutorial && <daai-popup class="popup"></daai-popup>}
 
         {state.openModalSpecialty && (
           <daai-specialty professional={this.professional} />

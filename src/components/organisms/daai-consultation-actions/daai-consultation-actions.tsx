@@ -35,6 +35,8 @@ export class DaaiConsultationActions {
     warningRecordingTime: number;
   };
 
+  @Prop() hideTutorial: boolean = false;
+
   newRecording() {
     state.status = "initial";
   }
@@ -67,10 +69,6 @@ export class DaaiConsultationActions {
     const storedValue = localStorage.getItem("checkboxState");
     state.isChecked = storedValue !== null ? JSON.parse(storedValue) : "";
     this.title = `Especialidade`;
-
-    // if (!this.warningRecordingTime || this.warningRecordingTime > this.maxRecordingTime) {
-    //   this.warningRecordingTime = this.maxRecordingTime;
-    // }
   }
 
   @Watch('recordingTime')
@@ -178,7 +176,7 @@ export class DaaiConsultationActions {
             <daai-button-with-icon
               id="choose-telemedicine-consultation"
               onClick={() =>
-                state.isChecked ? startRecording(true) : StartTutorial()
+                state.isChecked || this.hideTutorial ? startRecording(true) : StartTutorial()
               }
             >
               Telemedicina

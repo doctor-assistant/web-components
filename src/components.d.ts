@@ -31,6 +31,7 @@ export namespace Components {
         "apikey": any;
         "error": any;
         "event": any;
+        "hideTutorial": boolean;
         "metadata": string;
         "professional": string;
         "recordingConfig": {
@@ -45,6 +46,7 @@ export namespace Components {
     }
     interface DaaiConsultationRecorder {
         "apikey": string;
+        "hideTutorial": boolean;
         "maxRecordingTime": number;
         "metadata": string;
         "onError": (err: Error) => void;
@@ -437,6 +439,7 @@ declare namespace LocalJSX {
         "apikey"?: any;
         "error"?: any;
         "event"?: any;
+        "hideTutorial"?: boolean;
         "metadata"?: string;
         "professional"?: string;
         "recordingConfig"?: {
@@ -451,6 +454,7 @@ declare namespace LocalJSX {
     }
     interface DaaiConsultationRecorder {
         "apikey"?: string;
+        "hideTutorial"?: boolean;
         "maxRecordingTime"?: number;
         "metadata"?: string;
         "onError"?: (err: Error) => void;
