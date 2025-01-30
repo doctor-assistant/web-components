@@ -3,8 +3,6 @@ import { version } from '../../package.json';
 import state from "../store";
 import { EventSourceManager } from "../utils/sse";
 
-// Package version for metadata
-const VERSION = version;
 
 // Main MediaRecorder instance for handling the recording process
 let mediaRecorder: MediaRecorder | null = null;
@@ -71,7 +69,7 @@ export const startRecording = async (isRemote: boolean) => {
 
   mediaRecorder = new MediaRecorder(composedStream);
 
-  mediaRecorder.onstart = () => {};
+  mediaRecorder.onstart = () => { };
   mediaRecorder.start();
 };
 
@@ -105,16 +103,16 @@ export const finishRecording = async (
   const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        await uploadAudio(
-          audioBlob,
-          apikey,
-          success,
-          error,
-          specialty,
-          metadata,
-          onEvent,
-          professional,
-        );
+      await uploadAudio(
+        audioBlob,
+        apikey,
+        success,
+        error,
+        specialty,
+        metadata,
+        onEvent,
+        professional,
+      );
     } catch (error) {
       console.error("Não foi possível enviar o áudio", error);
     }
@@ -175,10 +173,10 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
   }
   // Ensure metadata exists and add version
   const metadataObj = metadata ? JSON.parse(metadata) : {};
-  metadataObj.daai  = {version:VERSION, origin:'consultation-recorder-component'};
+  metadataObj.daai = { version, origin: 'consultation-recorder-component' };
   formData.append("metadata", JSON.stringify(metadataObj));
 
-  formData.append("professionalId",professional)
+  formData.append("professionalId", professional)
 
   try {
     const response = await fetch(url, {
