@@ -35,13 +35,22 @@ export class DaaiConfig {
   }
 
   render() {
+    const recorderElement = document.querySelector('daai-consultation-recorder');
+    const yPosition = recorderElement ? recorderElement.getBoundingClientRect().top : 0;
+    const xPosition = recorderElement ? recorderElement.getBoundingClientRect().right : 0;
+    const screenWidth = window.innerWidth;
+
+    const showTop = yPosition > 200;
+    const showLeft = screenWidth - xPosition < 150;
+
     if (!state.openMenu) {
       return null;
     }
 
     return (
       <div
-        class="absolute bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-lg text-gray-500"
+        class={`absolute bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-lg text-gray-500 z-50 
+          ${showLeft && '-ml-[150px]'} ${showTop && !showLeft && '-mt-[100px]'} ${showTop && showLeft && '-mt-[120px]'}`}
         ref={(el) => (this.popupRef = el)}
       >
         <div class="flex flex-col gap-4 p-4 rounded-md border-2 border-gray-200 bg-white shadow-md rounded-lg">
