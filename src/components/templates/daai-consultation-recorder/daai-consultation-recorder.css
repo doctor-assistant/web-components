@@ -18,9 +18,9 @@
   --recorder-animation-paused-color: var(--animation-paused-color);
   --recorder-tutorial-image: url('https://storage.googleapis.com/landpage-prd/tutorial.png');
   --recorder-daai-logo-icon: url('https://storage.googleapis.com/landpage-prd/logo.svg');
-  --recorder-large-device-max-width: 525px;
+  --recorder-large-device-max-width: none;
   --recorder-large-device-min-width: 525px;
-  --recorder-small-device-max-width: 400px;
+  --recorder-small-device-max-width: none;
   --recorder-small-device-min-width: 300px;
   --recorder-large-device-height: 52px;
   --recorder-small-device-height: 120px;
@@ -55,17 +55,17 @@ daai-button-with-icon {
   height: var(--recorder-large-device-height);
 
   @media (min-width: 100px) and (max-width: 499px) {
-  max-width: var(--recorder-small-device-max-width);
-  min-width:var(--recorder-small-device-min-width);
-  display: flex;
-  flex-direction: column;
-  height: var(--recorder-small-device-height);
+    max-width: var(--recorder-small-device-max-width);
+    min-width: var(--recorder-small-device-min-width);
+    display: flex;
+    flex-direction: column;
+    height: var(--recorder-small-device-height);
   }
 }
 
 daai-recording-animation {
   --animation-recording-color: var(--recorder-animation-recording-color);
-  --animation-pause-color:var(--recorder-animation-paused-color);
+  --animation-pause-color: var(--recorder-animation-paused-color);
 }
 
 daai-mic-animation {
@@ -127,7 +127,6 @@ daai-mic-animation {
 }
 
 #start-recording {
-  max-width: 132px;
   flex-direction: row;
   font-size: 12px;
   display: flex;
@@ -204,7 +203,7 @@ daai-mic-animation {
   border: 1.5px solid var(--recorder-border-button-color);
 }
 
-#button-menu{
+#button-menu {
   margin-top: 4px;
 }
 

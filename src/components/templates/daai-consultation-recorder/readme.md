@@ -7,16 +7,17 @@
 
 ## Properties
 
-| Property       | Attribute      | Description | Type                           | Default                 |
-| -------------- | -------------- | ----------- | ------------------------------ | ----------------------- |
-| `apikey`       | `apikey`       |             | `string`                       | `undefined`             |
-| `metadata`     | `metadata`     |             | `string`                       | `undefined`             |
-| `onError`      | --             |             | `(err: Error) => void`         | `undefined`             |
-| `onEvent`      | --             |             | `(response: Response) => void` | `undefined`             |
-| `onSuccess`    | --             |             | `(response: Response) => void` | `undefined`             |
-| `professional` | `professional` |             | `string`                       | `undefined`             |
-| `specialty`    | `specialty`    |             | `string`                       | `state.chooseSpecialty` |
-| `telemedicine` | `telemedicine` |             | `boolean`                      | `undefined`             |
+| Property           | Attribute            | Description | Type                           | Default                 |
+| ------------------ | -------------------- | ----------- | ------------------------------ | ----------------------- |
+| `apikey`           | `apikey`             |             | `string`                       | `undefined`             |
+| `maxRecordingTime` | `max-recording-time` |             | `number`                       | `undefined`             |
+| `metadata`         | `metadata`           |             | `string`                       | `undefined`             |
+| `onError`          | --                   |             | `(err: Error) => void`         | `undefined`             |
+| `onEvent`          | --                   |             | `(response: Response) => void` | `undefined`             |
+| `onSuccess`        | --                   |             | `(response: Response) => void` | `undefined`             |
+| `professional`     | `professional`       |             | `string`                       | `undefined`             |
+| `specialty`        | `specialty`          |             | `string`                       | `state.chooseSpecialty` |
+| `telemedicine`     | `telemedicine`       |             | `boolean`                      | `undefined`             |
 
 
 ## Dependencies

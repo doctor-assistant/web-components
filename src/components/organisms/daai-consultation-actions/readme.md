@@ -7,16 +7,18 @@
 
 ## Properties
 
-| Property       | Attribute      | Description | Type      | Default     |
-| -------------- | -------------- | ----------- | --------- | ----------- |
-| `apikey`       | `apikey`       |             | `any`     | `""`        |
-| `error`        | `error`        |             | `any`     | `undefined` |
-| `event`        | `event`        |             | `any`     | `undefined` |
-| `metadata`     | `metadata`     |             | `string`  | `undefined` |
-| `professional` | `professional` |             | `string`  | `""`        |
-| `specialty`    | `specialty`    |             | `any`     | `undefined` |
-| `success`      | `success`      |             | `any`     | `undefined` |
-| `telemedicine` | `telemedicine` |             | `boolean` | `undefined` |
+| Property           | Attribute            | Description | Type      | Default     |
+| ------------------ | -------------------- | ----------- | --------- | ----------- |
+| `apikey`           | `apikey`             |             | `any`     | `""`        |
+| `error`            | `error`              |             | `any`     | `undefined` |
+| `event`            | `event`              |             | `any`     | `undefined` |
+| `maxRecordingTime` | `max-recording-time` |             | `number`  | `undefined` |
+| `metadata`         | `metadata`           |             | `string`  | `undefined` |
+| `professional`     | `professional`       |             | `string`  | `""`        |
+| `recordingTime`    | `recording-time`     |             | `number`  | `0`         |
+| `specialty`        | `specialty`          |             | `any`     | `undefined` |
+| `success`          | `success`            |             | `any`     | `undefined` |
+| `telemedicine`     | `telemedicine`       |             | `boolean` | `undefined` |
 
 
 ## Dependencies

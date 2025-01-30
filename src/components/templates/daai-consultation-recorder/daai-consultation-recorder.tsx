@@ -1,4 +1,4 @@
-import { Component, h, Host, Prop } from "@stencil/core";
+import { Component, h, Host, Prop, State } from "@stencil/core";
 import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
@@ -11,16 +11,25 @@ export class DaaiConsultationRecorder {
   @Prop() onSuccess: (response: Response) => void;
   @Prop() onError: (err: Error) => void;
   @Prop() onEvent: (response: Response) => void;
+  @Prop() onWarningRecordingTime: () => void;
 
   @Prop() apikey: string;
   @Prop() specialty: string = state.chooseSpecialty;
   @Prop() metadata: string;
   @Prop() telemedicine: boolean;
   @Prop() professional: string;
+  @State() recordingTime: number = 0;
+
+  @Prop() warningRecordingTime: number = 0;
+  @Prop() maxRecordingTime: number = Infinity;
+
+  handleRecordingTimeUpdated(event: CustomEvent) {
+    this.recordingTime = event.detail;
+  }
 
   async componentDidLoad() {
     const mode =
-      this.apikey && this.apikey.startsWith("PRODUCTION") ? "prod" : "dev";
+      this.apikey && /PRODUCTION/i.test(this.apikey) ? "prod" : "dev";
     if (this.specialty) {
       state.defaultSpecialty = this.specialty;
     }
@@ -37,9 +46,9 @@ export class DaaiConsultationRecorder {
               <div class="items-center flex gap-3">
                 <daai-mic></daai-mic>
                 {state.status === "recording" ||
-                state.status === "paused" ||
-                state.status === "resume" ? (
-                  <daai-clock status={state.status} />
+                  state.status === "paused" ||
+                  state.status === "resume" ? (
+                  <daai-clock onRecordingTimeUpdated={this.handleRecordingTimeUpdated.bind(this)} status={state.status} />
                 ) : (
                   ""
                 )}
@@ -71,6 +80,12 @@ export class DaaiConsultationRecorder {
                 telemedicine={this.telemedicine}
                 event={this.onEvent}
                 professional={this.professional}
+                recordingTime={this.recordingTime}
+                recordingConfig={{
+                  onWarningRecordingTime: this.onWarningRecordingTime,
+                  warningRecordingTime: this.warningRecordingTime,
+                  maxRecordingTime: this.maxRecordingTime
+                }}
               ></daai-consultation-actions>
             </div>
           </div>

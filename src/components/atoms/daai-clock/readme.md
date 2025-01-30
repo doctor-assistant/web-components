@@ -12,6 +12,13 @@
 | `status` | `status`  |             | `string` | `"recording"` |
 
 
+## Events
+
+| Event                  | Description | Type                  |
+| ---------------------- | ----------- | --------------------- |
+| `recordingTimeUpdated` |             | `CustomEvent<number>` |
+
+
 ## Dependencies
 
 ### Used by

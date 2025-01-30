@@ -33,19 +33,28 @@ export namespace Components {
         "event": any;
         "metadata": string;
         "professional": string;
+        "recordingConfig": {
+    onWarningRecordingTime: () => void;
+    maxRecordingTime: number;
+    warningRecordingTime: number;
+  };
+        "recordingTime": number;
         "specialty": any;
         "success": any;
         "telemedicine": boolean;
     }
     interface DaaiConsultationRecorder {
         "apikey": string;
+        "maxRecordingTime": number;
         "metadata": string;
         "onError": (err: Error) => void;
         "onEvent": (response: Response) => void;
         "onSuccess": (response: Response) => void;
+        "onWarningRecordingTime": () => void;
         "professional": string;
         "specialty": string;
         "telemedicine": boolean;
+        "warningRecordingTime": number;
     }
     interface DaaiFinishRecordingIcon {
         "color": string;
@@ -142,6 +151,10 @@ export interface DaaiCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDaaiCheckboxElement;
 }
+export interface DaaiClockCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDaaiClockElement;
+}
 export interface DaaiMicCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDaaiMicElement;
@@ -198,7 +211,18 @@ declare global {
         prototype: HTMLDaaiCheckboxElement;
         new (): HTMLDaaiCheckboxElement;
     };
+    interface HTMLDaaiClockElementEventMap {
+        "recordingTimeUpdated": number;
+    }
     interface HTMLDaaiClockElement extends Components.DaaiClock, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDaaiClockElementEventMap>(type: K, listener: (this: HTMLDaaiClockElement, ev: DaaiClockCustomEvent<HTMLDaaiClockElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDaaiClockElementEventMap>(type: K, listener: (this: HTMLDaaiClockElement, ev: DaaiClockCustomEvent<HTMLDaaiClockElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDaaiClockElement: {
         prototype: HTMLDaaiClockElement;
@@ -399,6 +423,7 @@ declare namespace LocalJSX {
         "onChange"?: (event: DaaiCheckboxCustomEvent<boolean>) => void;
     }
     interface DaaiClock {
+        "onRecordingTimeUpdated"?: (event: DaaiClockCustomEvent<number>) => void;
         "status"?: string;
     }
     interface DaaiConfig {
@@ -414,19 +439,28 @@ declare namespace LocalJSX {
         "event"?: any;
         "metadata"?: string;
         "professional"?: string;
+        "recordingConfig"?: {
+    onWarningRecordingTime: () => void;
+    maxRecordingTime: number;
+    warningRecordingTime: number;
+  };
+        "recordingTime"?: number;
         "specialty"?: any;
         "success"?: any;
         "telemedicine"?: boolean;
     }
     interface DaaiConsultationRecorder {
         "apikey"?: string;
+        "maxRecordingTime"?: number;
         "metadata"?: string;
         "onError"?: (err: Error) => void;
         "onEvent"?: (response: Response) => void;
         "onSuccess"?: (response: Response) => void;
+        "onWarningRecordingTime"?: () => void;
         "professional"?: string;
         "specialty"?: string;
         "telemedicine"?: boolean;
+        "warningRecordingTime"?: number;
     }
     interface DaaiFinishRecordingIcon {
         "color"?: string;

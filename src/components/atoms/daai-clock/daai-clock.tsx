@@ -1,4 +1,4 @@
-import { Component, h, Host, Prop, State, Watch } from "@stencil/core";
+import { Component, h, Host, Prop, State, Watch, Event, EventEmitter } from "@stencil/core";
 import state from "../../../store";
 
 @Component({
@@ -12,6 +12,8 @@ export class DaaiClock {
 
   @Prop() status: string = "recording";
   @State() canvasElement!: HTMLCanvasElement;
+
+  @Event() recordingTimeUpdated: EventEmitter<number>;
 
   @Watch("status")
   handleStatusChange(newValue: string, _oldValue: string) {
@@ -38,21 +40,8 @@ export class DaaiClock {
   startTimer(reset: boolean = false) {
     if (reset) {
       state.recordingTime = 0;
-      if (this.timerElement) {
-        this.timerElement.innerText = this.getFormattedRecordingTime(0);
-      }
     }
-
-    if (!this.intervalId) {
-      this.intervalId = setInterval(() => {
-        state.recordingTime++;
-        if (this.timerElement) {
-          this.timerElement.innerText = this.getFormattedRecordingTime(
-            state.recordingTime
-          );
-        }
-      }, 1000);
-    }
+    this.resumeTimer();
   }
 
   pauseTimer() {
@@ -63,21 +52,20 @@ export class DaaiClock {
   }
 
   resumeTimer() {
-    if (!this.intervalId) {
-      this.intervalId = setInterval(() => {
-        state.recordingTime++;
-        if (this.timerElement) {
-          this.timerElement.innerText = this.getFormattedRecordingTime(
-            state.recordingTime
-          );
-        }
-      }, 1000);
-    }
+    this.pauseTimer();
+    this.intervalId = setInterval(() => {
+      state.recordingTime++;
+      this.recordingTimeUpdated.emit(state.recordingTime);
+      if (this.timerElement) {
+        this.timerElement.innerText = this.getFormattedRecordingTime(state.recordingTime);
+      }
+    }, 1000);
   }
 
   stopTimer() {
     this.pauseTimer();
     state.recordingTime = 0;
+    this.recordingTimeUpdated.emit(state.recordingTime);
     if (this.timerElement) {
       this.timerElement.innerText = this.getFormattedRecordingTime(0);
     }
@@ -94,6 +82,10 @@ export class DaaiClock {
 
   componentDidLoad() {
     this.handleStatusChange(this.status, "");
+  }
+
+  disconnectedCallback() {
+    this.stopTimer();
   }
 
   render() {
