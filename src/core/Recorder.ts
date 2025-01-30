@@ -3,16 +3,15 @@ import { version } from '../../package.json';
 import state from "../store";
 import { EventSourceManager } from "../utils/sse";
 
-// Package version for metadata
 const VERSION = version;
 
-// Main MediaRecorder instance for handling the recording process
+
 let mediaRecorder: MediaRecorder | null = null;
-// Primary MediaStream for recording - this is the single source of truth for active recording
+
 let localStream: MediaStream | null = null;
-// Stream for screen sharing in remote/telemedicine mode
+
 let screenStream: MediaStream | null = null;
-// Duration tracking variables
+
 let currentRecordingTime = 0;
 
 
@@ -21,33 +20,27 @@ export const StartTutorial = () => {
 }
 
 
-/**
- * Options for configuring recording behavior
- */
+
 interface RecordingOptions {
-  /** Maximum duration of recording in seconds */
   maxDuration?: number;
-  /** Time in seconds before maxDuration to trigger warning callback. Defaults to 10% of maxDuration */
   remainingWarningTime?: number;
-  /** Callback triggered when remaining time equals remainingWarningTime */
   onRemainingWarning?: () => void;
 }
 
-/**
- * Starts recording audio with optional duration limits and warnings
- * @param isRemote Whether this is a remote/telemedicine recording
- * @param options Configuration options for recording duration and warnings
- * @throws {Error} If maxDuration or remainingWarningTime are invalid
- */
-export const startRecording = async (isRemote: boolean, options?: RecordingOptions) => {
+export const startRecording = async (isRemote: boolean, options?: RecordingOptions, apikey?:string, onSuccess?:any, onError?:any,    specialty?:any,
+  metadata?:any,
+  onEvent?:any,
+  professional?:any,) => {
   state.chooseModality = true;
+
 
   // Validate duration parameters
   if (options?.maxDuration !== undefined) {
+    console.log(options?.maxDuration,'options?.maxDuration', typeof options?.maxDuration)
     if (!Number.isFinite(options.maxDuration) || options.maxDuration <= 0) {
       throw new Error('maxDuration deve ser um número positivo');
     }
-    
+
     if (options.remainingWarningTime !== undefined) {
       if (!Number.isFinite(options.remainingWarningTime) || options.remainingWarningTime <= 0) {
         throw new Error('remainingWarningTime deve ser um número positivo');
@@ -92,6 +85,7 @@ export const startRecording = async (isRemote: boolean, options?: RecordingOptio
   const context = new AudioContext();
   const audioDestination = context.createMediaStreamDestination();
 
+
   if (isRemote && screenStream?.getAudioTracks().length > 0) {
     const systemSource = context.createMediaStreamSource(screenStream);
     const systemGain = context.createGain();
@@ -113,44 +107,43 @@ export const startRecording = async (isRemote: boolean, options?: RecordingOptio
   mediaRecorder = new MediaRecorder(composedStream);
 
   mediaRecorder.onstart = () => {};
-  
+
   // Use timeslice to get regular ondataavailable events for accurate time tracking
-  const audioChunks: Blob[] = [];
   let warningFired = false;
-  
+
   mediaRecorder.ondataavailable = (event) => {
+    console.log(event,'event')
     if (event.data.size > 0) {
-      audioChunks.push(event.data);
-      
       if (mediaRecorder?.state === "recording") {
         currentRecordingTime++;
-        state.recordingTime = currentRecordingTime;
-        
+       state.recordingTime = currentRecordingTime;
+        console.log(options?.maxDuration,'options?.maxDuration')
         if (options?.maxDuration) {
           const timeRemaining = options.maxDuration - currentRecordingTime;
-          
+
           if (!warningFired && warningTime && timeRemaining <= warningTime) {
             warningFired = true;
             options.onRemainingWarning?.();
           }
 
+          console.log(timeRemaining,'timeRemaining')
+          console.log(timeRemaining <= 0, 'timeRemaining <= 0')
           if (timeRemaining <= 0) {
+
             finishRecording(
-              state.apiKey,
-              state.onSuccess,
-              state.onError,
-              state.specialty,
-              state.metadata,
-              state.onEvent,
-              state.professionalId
+              apikey,
+              onSuccess,
+              onError,
+              specialty,
+              metadata,
+              onEvent,
+              professional,
             );
           }
         }
       }
     }
   };
-  
-  // Start recording with 1-second timeslices for accurate time tracking
   mediaRecorder.start(1000);
 };
 
@@ -174,7 +167,6 @@ export const resumeRecording = () => {
   }
 }
 
-
 export const finishRecording = async (
   apikey,
   success,
@@ -192,7 +184,7 @@ export const finishRecording = async (
           specialty,
           metadata,
           onEvent,
-          professional
+          professional,
         );
     } catch (error) {
       console.error("Não foi possível enviar o áudio", error);
@@ -239,7 +231,10 @@ export const finishRecording = async (
     state.status = "finished";
   }
 };
+
 export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
+
+  console.log(audioBlob,'audioBlob')
 
   const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
   const url =
