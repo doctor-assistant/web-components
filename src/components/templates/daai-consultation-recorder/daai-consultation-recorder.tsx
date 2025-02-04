@@ -1,4 +1,5 @@
 import { Component, h, Host, Prop, State } from "@stencil/core";
+import { retryOldConsultations } from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
@@ -29,6 +30,12 @@ export class DaaiConsultationRecorder {
     this.recordingTime = event.detail;
   }
 
+  get showClock() {
+    const allowedStates = ["recording", "paused", "resume"];
+    return allowedStates.includes(state.status);
+  }
+
+  // verifiicar o professiaonal e o IndexDB ( data e hora )
   async componentDidLoad() {
     const mode =
       this.apikey && /PRODUCTION/i.test(this.apikey) ? "prod" : "dev";
@@ -37,6 +44,7 @@ export class DaaiConsultationRecorder {
     }
     const spec = await getSpecialty(mode);
     await saveSpecialties(spec);
+    await retryOldConsultations(this.apikey);
   }
 
   render() {
@@ -47,13 +55,14 @@ export class DaaiConsultationRecorder {
             <div>
               <div class="items-center flex gap-3">
                 <daai-mic></daai-mic>
-                {state.status === "recording" ||
-                  state.status === "paused" ||
-                  state.status === "resume" ? (
-                  <daai-clock onRecordingTimeUpdated={this.handleRecordingTimeUpdated.bind(this)} status={state.status} />
-                ) : (
-                  ""
-                )}
+
+                <daai-clock
+                  class={!this.showClock && "hidden"}
+                  onRecordingTimeUpdated={this.handleRecordingTimeUpdated.bind(
+                    this
+                  )}
+                  status={state.status}
+                />
               </div>
             </div>
             {state.status === "choosen" ? (
@@ -86,7 +95,7 @@ export class DaaiConsultationRecorder {
                 recordingConfig={{
                   onWarningRecordingTime: this.onWarningRecordingTime,
                   warningRecordingTime: this.warningRecordingTime,
-                  maxRecordingTime: this.maxRecordingTime
+                  maxRecordingTime: this.maxRecordingTime,
                 }}
                 hideTutorial={this.hideTutorial}
               ></daai-consultation-actions>
@@ -100,7 +109,9 @@ export class DaaiConsultationRecorder {
           />
         )}
 
-        {state.openTutorialPopup && !this.hideTutorial && <daai-popup class="popup"></daai-popup>}
+        {state.openTutorialPopup && !this.hideTutorial && (
+          <daai-popup class="popup"></daai-popup>
+        )}
 
         {state.openModalSpecialty && (
           <daai-specialty professional={this.professional} />

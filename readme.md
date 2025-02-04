@@ -7,9 +7,58 @@
 5. [Uso do componente via CDN](#uso-do-componente-via-cdn)
 6. [Especialidades](#especialidades)
 7. [Eventos](#eventos)
+8. [Limite de tempo de registro](#limite-de-tempo-de-registro)
 
 ## Introdução
 
+Apatir da versão 2.0.0-rc lançamos uma versão nova do componente de registro da consulta, nessa versão ele é equipado com uma nova mecânica de telemedicina e um novo design.
+
+Vamos comparar as propriedades que foram adicionadas e removidas:
+
+<details>
+  <summary>Propriedades de funcionamento</summary>
+  Novas propriedades da apartir da 2.0.1-rc :
+  Nessa versão retiramos o modeApi e agora o professionalId é professional
+
+```js
+// ⚠️ A propriedade professional é obrigatória, sem ela o componente não irá iniciar o registro.
+professional =
+  "aqui você deve passar um identificador único do usuário que irá utilizar o componente";
+// A propriedade telemedicine não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para ativar a funcionalidade de telemedicina no componente.
+telemedicine =
+  "aqui você deve passar um valor booleano de true caso queira usar a funcionalidade de telemedicina do componente";
+
+// A propriedade hide-tutorial não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para destivar o modal de tutorial da telemedicina.
+
+hide-tutorial =
+"Aqui você deve passar um valor booleano  de true para não mostar o popup de tutorial da telemedicina"
+
+// A propriedade max-recording-time não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para limitar o tempo do gravação.
+max-recording-time =
+"aqui você deve passar um valor em segundos do tempo total que voccê quer que dure a gravação"
+
+// A propriedade warning-recording-time não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para determina em quantos segundos antes do limite você deseja receber um aviso.
+warning-recording-time=
+"Aqui você determina em quantos segundos antes do limite você deseja receber um aviso"
+```
+
+</details>
+
+<details>
+  <summary>Propriedades de estilização</summary>
+Na versão anterior do componente que foi até a 1.2.6 a estilização funcionava dessa forma:
+
+```html
+theme='{ "icon": "path/to/icon.png", "buttonStartRecordingColor": "#0600b1",
+"buttonRecordingColor": "#0600b1", "buttonPauseColor": "#0600b1",
+"buttonResumeColor": "#0600b1", "buttonUploadColor":"#0600b1", "borderColor":
+"#0600b1", "animationRecordingColor":"#0600b1", "animationPausedColor":
+"#0600b1", "textBadgeColor": "#0600b1", "buttonHelpColor":"#0600b1" }'
+```
+
+Na versão nova apartir da 2.0.0-rc
+
+</details>
 ## Daai Components
 
 O Daai Components é uma biblioteca de componentes web especializados para sistemas de saúde, incluindo o Consultation Recorder para gravação de consultas médicas. Desenvolvido para facilitar a integração em sistemas de saúde, clínicas e plataformas médicas, oferecendo componentes reutilizáveis e personalizáveis.
@@ -34,7 +83,7 @@ Para instalar o `daai-consultation-recorder` no seu projeto, basta rodar no term
 💻 Execute:
 
 ```bash
-npm i @doctorassistant/daai-component@2.0.1-rc
+npm i @doctorassistant/daai-component@2.0.2-rc
 ```
 
 ### Como usar após a instalação:
@@ -75,6 +124,19 @@ metadata =
 // A propriedade telemedicine não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para ativar a funcionalidade de telemedicina no componente.
 telemedicine =
   "aqui você deve passar um valor booleano de true caso queira usar a funcionalidade de telemedicina do componente";
+
+// A propriedade hide-tutorial não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para destivar o modal de tutorial da telemedicina.
+
+hide-tutorial =
+"Aqui você deve passar um valor booleano  de true para não mostar o popup de tutorial da telemedicina"
+
+// A propriedade max-recording-time não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para limitar o tempo do gravação.
+max-recording-time =
+"aqui você deve passar um valor em segundos do tempo total que voccê quer que dure a gravação"
+
+// A propriedade warning-recording-time não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para determina em quantos segundos antes do limite você deseja receber um aviso.
+warning-recording-time=
+"Aqui você determina em quantos segundos antes do limite você deseja receber um aviso"
 ```
 
 ⚠️ A propriedade ~~modeApi~~ não é mais necessária. A partir da versão 1.2.0, identificamos o ambiente de execução através da apiKey
@@ -99,7 +161,7 @@ o componente é customizado por meio de variáveis css, então para você custom
 
 ### 🖌️ Exemplo de uso da customização:
 
-Na da versão 2.0.1-rc temos a estilização por meio de variáveis css:
+Na da versão 2.0.2-rc temos a estilização por meio de variáveis css:
 
 ```css
 daai-consultation-recorder {
@@ -146,6 +208,11 @@ onError = (error) => {
 onEvent = (event) => {
   console.log("Evento:", event);
 };
+
+// Função chamada quando o tempo restante de gravação atingir o valor definido em warning-recording-time.
+onWarningRecordingTime = () => {
+  console.log("Essa função vai ser chamada quando faltar 5 segundos");
+};
 ```
 
 ## Uso do componente via CDN
@@ -157,7 +224,7 @@ Para utilizar o componente via CDN, adicione o seguinte script ao seu HTML:
 <html>
   <head>
     <script
-      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@2.0.1-rc/dist/web-components/web-components.esm.js"
+      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@2.0.2-rc/dist/web-components/web-components.esm.js"
       type="module"
     ></script>
     <script>
@@ -254,4 +321,55 @@ Eventos de processamento em tempo real disponíveis que serão recebidos pelo `o
 
 ```json
 { "event": "consultation.integrated" }
+```
+
+## Limite de tempo de registro
+
+A partir da versão 2.0.2-rc, foram adicionados novos mecanismos que permitem limitar o tempo de gravação da consulta.
+
+## Propriedades
+
+### max-recording-time:
+
+Define o tempo máximo de gravação, em segundos.
+
+### warning-recording-time:
+
+Determina em quantos segundos antes do limite você deseja receber um aviso.
+
+### onWarningRecordingTime
+
+Função acionada quando o tempo restante de gravação atingir o valor definido em warning-recording-time.
+
+### exemplo:
+
+Quero que o registro tenha um limite de 20 segundos, quero que o componente me avise quando faltar 5 segundos, então vamos definir assim:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@2.0.2-rc/dist/web-components/web-components.esm.js"
+      type="module"
+    ></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const recorder = document.getElementById("recorder");
+        recorder.onWarningRecordingTime = () => {
+          console.log("Essa função vai ser chamada quando faltar 5 segundos");
+        };
+      });
+    </script>
+  </head>
+  <body>
+    <daai-consultation-recorder
+      id="recorder"
+      apiKey="YOUR_API_KEY"
+      professional="YOUR_IDENTIFICATOR"
+      warning-recording-time="5"
+      max-recording-time="20"
+    ></daai-consultation-recorder>
+  </body>
+</html>
 ```

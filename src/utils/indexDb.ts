@@ -11,6 +11,15 @@ interface ProfessionalSpecialty {
   specialtyId: string;
 }
 
+
+interface Consultation {
+  id?:number;
+  professionalId: string;
+  specialty: string;
+  audioBlob:any;
+  metadata:any
+}
+
 class SpecialtiesDB extends Dexie {
   specialties: Dexie.Table<Specialty, string>;
 
@@ -116,6 +125,81 @@ export async function getSpecialtiesByProfessionalId(professionalId: string): Pr
       error
     );
     return { specialtiesAsStrings: [], mostRecentSpecialty: null };
+  }
+}
+
+
+class ConsusltationDb extends Dexie {
+  consultations: Dexie.Table<Consultation, string>;
+
+  constructor() {
+    super("consultationDb");
+    this.version(1).stores({
+      consultations: "++id,professionalId,specialty,audio,metadata",
+    });
+    this.consultations = this.table("consultations");
+  }
+}
+
+const consultationDb = new ConsusltationDb();
+
+export async function saveConsultation(professionalId:string, audioBlob: any, specialty: string, metadata:any) {
+  try {
+    await consultationDb.transaction(
+      "rw",
+      consultationDb.consultations,
+      async () => {
+        await consultationDb.consultations.add({
+          professionalId,
+          audioBlob,
+          specialty,
+          metadata,
+        });
+      }
+    );
+  } catch (error) {
+    console.error("Erro ao salvar a relação:", error);
+  }
+}
+
+export async function getConsultation() {
+  try {
+    return await consultationDb.consultations
+      .toArray();
+  } catch (error) {
+    console.error("Erro ao buscar as consultas:", error);
+    return [];
+  }
+}
+
+export async function getConsultationsByProfessional(professionalId: string) {
+  try {
+    return await consultationDb.consultations
+      .where("professionalId")
+      .equals(professionalId)
+      .toArray();
+  } catch (error) {
+    console.error("Erro ao buscar as consultas:", error);
+    return [];
+  }
+}
+
+
+export async function deleteConsultationById(professionalId: string, id: number) {
+  try {
+    await consultationDb.transaction("rw", consultationDb.consultations, async () => {
+      const deletedCount = await consultationDb.consultations
+        .where({ professionalId, id }) // Filtra pelo professionalId e id
+        .delete();
+
+      if (deletedCount > 0) {
+        console.log(`Consulta com ID ${id} do profissional ${professionalId} foi deletada.`);
+      } else {
+        console.warn(`Nenhuma consulta encontrada para o ID ${id} e profissional ${professionalId}.`);
+      }
+    });
+  } catch (error) {
+    console.error("Erro ao deletar a consulta:", error);
   }
 }
 

@@ -3,6 +3,7 @@ import {
   finishRecording,
   pauseRecording,
   resumeRecording,
+  retryUpload,
   startRecording,
   StartTutorial,
 } from "../../../core/Recorder";
@@ -71,11 +72,14 @@ export class DaaiConsultationActions {
     this.title = `Especialidade`;
   }
 
-  @Watch('recordingTime')
+  @Watch("recordingTime")
   handleRecordingTimeChange() {
     if (!this.recordingConfig) return;
-    const { maxRecordingTime, warningRecordingTime, onWarningRecordingTime } = this.recordingConfig;
-    const emitWarning = (maxRecordingTime - this.recordingTime == warningRecordingTime) && onWarningRecordingTime;
+    const { maxRecordingTime, warningRecordingTime, onWarningRecordingTime } =
+      this.recordingConfig;
+    const emitWarning =
+      maxRecordingTime - this.recordingTime == warningRecordingTime &&
+      onWarningRecordingTime;
 
     if (emitWarning) {
       onWarningRecordingTime();
@@ -110,7 +114,6 @@ export class DaaiConsultationActions {
       case "initial":
         return (
           <div class="flex items-center justify-center">
-
             <div class="flex items-center justify-center gap-x-2">
               {!state.defaultSpecialty && (
                 <daai-button-with-icon
@@ -159,9 +162,7 @@ export class DaaiConsultationActions {
                 <daai-menu-icon />
               </daai-button-with-icon>
             </div>
-            {state.openMenu && (
-              <daai-config />
-            )}
+            {state.openMenu && <daai-config />}
           </div>
         );
       case "choosen":
@@ -176,7 +177,9 @@ export class DaaiConsultationActions {
             <daai-button-with-icon
               id="choose-telemedicine-consultation"
               onClick={() =>
-                state.isChecked || this.hideTutorial ? startRecording(true) : StartTutorial()
+                state.isChecked || this.hideTutorial
+                  ? startRecording(true)
+                  : StartTutorial()
               }
             >
               Telemedicina
@@ -261,6 +264,26 @@ export class DaaiConsultationActions {
               onClick={() => this.newRecording()}
             >
               Novo Registro
+            </daai-button-with-icon>
+          </div>
+        );
+      case "upload-error":
+        return (
+          <div class="flex items-center justify-center gap-2">
+            <daai-button-with-icon
+              id="new-recording"
+              onClick={() =>
+                retryUpload(
+                  this.apikey,
+                  this.professional,
+                  this.success,
+                  this.error,
+                  this.event,
+                  true
+                )
+              }
+            >
+              Tentar Novamente
             </daai-button-with-icon>
           </div>
         );

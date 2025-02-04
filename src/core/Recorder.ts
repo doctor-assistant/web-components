@@ -1,6 +1,7 @@
 import { version } from '../../package.json';
 
 import state from "../store";
+import { deleteConsultationById, getConsultation, getConsultationsByProfessional, saveConsultation } from '../utils/indexDb';
 import { EventSourceManager } from "../utils/sse";
 
 
@@ -10,6 +11,11 @@ let mediaRecorder: MediaRecorder | null = null;
 let localStream: MediaStream | null = null;
 // Stream for screen sharing in remote/telemedicine mode
 let screenStream: MediaStream | null = null;
+
+let retryIdFromIndexDb: any
+
+let retryProfessionalFromIndexDb:any
+
 
 
 export const StartTutorial = () => {
@@ -158,7 +164,7 @@ export const finishRecording = async (
     state.status = "finished";
   }
 };
-export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional) => {
+export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional, isRetry?:boolean) => {
 
   const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
   const url =
@@ -196,9 +202,10 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
     }
 
     if (response.ok) {
+      console.log('aquiii')
       const jsonResponse = await response.json();
       const consultationId = jsonResponse.id;
-
+      deleteConsultationById(retryProfessionalFromIndexDb,retryIdFromIndexDb)
       state.status = "upload-ok";
       if (typeof success === "function") {
         success(jsonResponse);
@@ -210,13 +217,111 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
       }
     }
   } catch (err) {
+    state.status = 'upload-error'
     console.error("Erro ao enviar o áudio:", err);
+    if(!isRetry){
+      metadataObj.daai.fallback = {occurredAt: new Date()};
+      saveConsultation(professional,audioBlob,specialty,metadataObj)
+    }
     if (typeof error === "function") {
       error(err);
     }
   }
 };
 
+export const retryUpload = async (apikey:string, professional:string ,success:any, error:any, event:any, isRetry:boolean) => {
+  const consultations = await getConsultationsByProfessional(professional);
+  console.log('chamouu')
+  if (!consultations.length) {
+    console.warn("Nenhuma consulta encontrada para o profissional:", professional);
+    return;
+  }
+
+  const latestConsultation = consultations.reduce((latest, current) =>
+    !latest.id || current.id > latest.id ? current : latest
+  );
+
+  retryIdFromIndexDb = latestConsultation.id
+  retryProfessionalFromIndexDb = latestConsultation.professionalId
+
+try{
+  console.log(uploadAudio,'uploadAUDIO')
+  await uploadAudio(
+  latestConsultation.audioBlob,
+  apikey,
+  success,
+  error,
+  latestConsultation.specialty,
+  latestConsultation.metadata,
+  event,
+  professional,
+  isRetry
+);
+} catch {
+  state.status = 'upload-error'
+ }
+ };
+
+
+ export const retryOldConsultations = async (apiKey: string) => {
+  const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
+  const url =
+  mode === "dev"
+    ? "https://apim.doctorassistant.ai/api/sandbox/consultations"
+    : "https://apim.doctorassistant.ai/api/production/consultations";
+
+  const consultations = await getConsultation();
+
+  if (!consultations.length) {
+    return;
+  }
+
+  for (const consultation of consultations) {
+    try {
+      const formData = new FormData();
+      formData.append("recording", consultation.audioBlob);
+
+      formData.append("professionalId", consultation.professionalId);
+      if (consultation.specialty) {
+        formData.append("specialty", consultation.specialty);
+      }
+
+      formData.append("metadata", JSON.stringify(consultation.metadata));
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "x-daai-api-key": apiKey,
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log(`Consulta ${consultation.id} enviada com sucesso! Deletando...`);
+        await deleteConsultationById(consultation.professionalId, consultation.id);
+      } else {
+        console.error(`Erro ao enviar consulta ${consultation.id}:`, await response.text());
+      }
+    } catch (error) {
+      console.error(`Erro ao processar consulta ${consultation.id}:`, error);
+    }
+  }
+
+  console.log("Processo de envio finalizado.");
+};
+
+
+// // fallback true metadata
+// export const retryUpload = () => {
+//   // const response = await fetch(url, {
+//   //   method: "POST",
+//   //   headers: {
+//   //     "x-daai-api-key": apiKey,
+//   //   },
+//   //   body: formData,
+//   // });
+
+// }
 
 export const openConfigModal = () => {
   state.openModalConfig = true;
