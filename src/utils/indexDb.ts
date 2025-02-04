@@ -193,7 +193,7 @@ export async function deleteConsultationById(professionalId: string, id: number)
         .delete();
 
       if (deletedCount > 0) {
-        console.log(`Consulta com ID ${id} do profissional ${professionalId} foi deletada.`);
+        console.warn(`Consulta com ID ${id} do profissional ${professionalId} foi deletada.`);
       } else {
         console.warn(`Nenhuma consulta encontrada para o ID ${id} e profissional ${professionalId}.`);
       }

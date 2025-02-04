@@ -118,7 +118,6 @@ export const finishRecording = async (
   error,
   specialty,
   metadata, onEvent, professional}: FinishRecordingProps ) => {
-    console.log(mode,'mode')
   const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
@@ -205,8 +204,6 @@ type UploadAudioProps = {
     formData.append("specialty", specialty);
   }
 
-  console.log("Metadata recebido:", metadata);
-
   let metadataObj: any = {};
 
   if (!isRetry) {
@@ -241,7 +238,6 @@ type UploadAudioProps = {
     }
 
     if (response.ok) {
-      console.log("Upload concluído com sucesso");
       const jsonResponse = await response.json();
       const consultationId = jsonResponse.id;
       if (isRetry) {
@@ -274,7 +270,6 @@ type UploadAudioProps = {
 
 export const retryUpload = async (mode:string, apikey:string, professional:string ,success:any, error:any, event:any, isRetry:boolean) => {
   const consultations = await getConsultationsByProfessional(professional);
-  console.log('chamouu')
   if (!consultations.length) {
     console.warn("Nenhuma consulta encontrada para o profissional:", professional);
     return;
