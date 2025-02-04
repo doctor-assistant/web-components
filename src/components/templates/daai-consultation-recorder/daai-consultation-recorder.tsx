@@ -25,6 +25,7 @@ export class DaaiConsultationRecorder {
   @Prop() maxRecordingTime: number = Infinity;
 
   @Prop() hideTutorial: boolean = false;
+  @State() mode: string;
 
   handleRecordingTimeUpdated(event: CustomEvent) {
     this.recordingTime = event.detail;
@@ -37,14 +38,16 @@ export class DaaiConsultationRecorder {
 
   // verifiicar o professiaonal e o IndexDB ( data e hora )
   async componentDidLoad() {
-    const mode =
-      this.apikey && /PRODUCTION/i.test(this.apikey) ? "prod" : "dev";
     if (this.specialty) {
       state.defaultSpecialty = this.specialty;
     }
-    const spec = await getSpecialty(mode);
+  }
+
+  async componentWillLoad() {
+    this.mode = this.apikey && /PRODUCTION/i.test(this.apikey) ? "prod" : "dev";
+    const spec = await getSpecialty(this.mode);
     await saveSpecialties(spec);
-    await retryOldConsultations(this.apikey);
+    await retryOldConsultations(this.mode, this.apikey);
   }
 
   render() {
@@ -98,6 +101,7 @@ export class DaaiConsultationRecorder {
                   maxRecordingTime: this.maxRecordingTime,
                 }}
                 hideTutorial={this.hideTutorial}
+                mode={this.mode}
               ></daai-consultation-actions>
             </div>
           </div>

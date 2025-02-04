@@ -33,6 +33,7 @@ export namespace Components {
         "event": any;
         "hideTutorial": boolean;
         "metadata": string;
+        "mode": string;
         "professional": string;
         "recordingConfig": {
     onWarningRecordingTime: () => void;
@@ -441,6 +442,7 @@ declare namespace LocalJSX {
         "event"?: any;
         "hideTutorial"?: boolean;
         "metadata"?: string;
+        "mode"?: string;
         "professional"?: string;
         "recordingConfig"?: {
     onWarningRecordingTime: () => void;

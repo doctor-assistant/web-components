@@ -25,6 +25,7 @@ export class DaaiConsultationActions {
   @Prop() error: any;
   @Prop() metadata: string;
   @Prop() event: any;
+  @Prop() mode: string;
 
   @State() title: string = "";
   @State() stopAnimation: string = "";
@@ -86,15 +87,16 @@ export class DaaiConsultationActions {
     }
 
     if (this.recordingTime >= maxRecordingTime) {
-      finishRecording(
-        this.apikey,
-        this.success,
-        this.error,
-        this.specialty,
-        this.metadata,
-        this.event,
-        this.professional
-      );
+      finishRecording({
+        mode: this.mode,
+        apikey: this.apikey,
+        success: this.success,
+        error: this.error,
+        specialty: this.specialty,
+        metadata: this.metadata,
+        onEvent: this.event,
+        professional: this.professional,
+      });
     }
   }
 
@@ -205,15 +207,16 @@ export class DaaiConsultationActions {
             <daai-button-with-icon
               id="button-finish"
               onClick={() =>
-                finishRecording(
-                  this.apikey,
-                  this.success,
-                  this.error,
-                  this.specialty,
-                  this.metadata,
-                  this.event,
-                  this.professional
-                )
+                finishRecording({
+                  mode: this.mode,
+                  apikey: this.apikey,
+                  success: this.success,
+                  error: this.error,
+                  specialty: this.specialty,
+                  metadata: this.metadata,
+                  onEvent: this.event,
+                  professional: this.professional,
+                })
               }
             >
               Finalizar Registro
@@ -241,15 +244,16 @@ export class DaaiConsultationActions {
             <daai-button-with-icon
               id="button-finish"
               onClick={() =>
-                finishRecording(
-                  this.apikey,
-                  this.success,
-                  this.error,
-                  this.specialty,
-                  this.metadata,
-                  this.event,
-                  this.professional
-                )
+                finishRecording({
+                  mode: this.mode,
+                  apikey: this.apikey,
+                  success: this.success,
+                  error: this.error,
+                  specialty: this.specialty,
+                  metadata: this.metadata,
+                  onEvent: this.event,
+                  professional: this.professional,
+                })
               }
             >
               Finalizar Registro
@@ -274,6 +278,7 @@ export class DaaiConsultationActions {
               id="new-recording"
               onClick={() =>
                 retryUpload(
+                  this.mode,
                   this.apikey,
                   this.professional,
                   this.success,

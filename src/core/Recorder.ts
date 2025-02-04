@@ -100,24 +100,40 @@ export const resumeRecording = () => {
 }
 
 
+type FinishRecordingProps = {
+ mode: string,
+ apikey: string,
+ success: (event: Record<string,any>) => void,
+ error: (error: any) => void,
+ specialty: string,
+ metadata: string,
+ onEvent:(event:any) => void,
+ professional:string,
+}
+
 export const finishRecording = async (
+  {mode,
   apikey,
   success,
   error,
   specialty,
-  metadata, onEvent, professional) => {
+  metadata, onEvent, professional}: FinishRecordingProps ) => {
+    console.log(mode,'mode')
   const handleRecordingStop = async (audioChunks: Blob[]) => {
     try {
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
       await uploadAudio(
-        audioBlob,
-        apikey,
-        success,
-        error,
-        specialty,
-        metadata,
-        onEvent,
-        professional,
+      {
+        mode:mode,
+        audioBlob:audioBlob,
+        apiKey:apikey,
+        success:success,
+        error:error,
+        specialty:specialty,
+        metadata:metadata,
+        event:onEvent,
+        professional:professional,
+      }
       );
     } catch (error) {
       console.error("Não foi possível enviar o áudio", error);
@@ -164,9 +180,20 @@ export const finishRecording = async (
     state.status = "finished";
   }
 };
-export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, metadata, event, professional, isRetry?:boolean) => {
+type UploadAudioProps = {
+  mode: string,
+  audioBlob:Blob,
+  apiKey: string,
+  success: (event: Record<string,any>) => void,
+  error: (error: any) => void,
+  specialty: string,
+  metadata: string,
+  event:(event:any) => void,
+  professional:string,
+  isRetry?:boolean,
+ }
 
-  const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
+ export const uploadAudio = async ({ mode, audioBlob, apiKey, success, error, specialty, metadata, event, professional, isRetry }: UploadAudioProps) => {
   const url =
     mode === "dev"
       ? "https://apim.doctorassistant.ai/api/sandbox/consultations"
@@ -177,12 +204,25 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
   if (specialty) {
     formData.append("specialty", specialty);
   }
-  // Ensure metadata exists and add version
-  const metadataObj = metadata ? JSON.parse(metadata) : {};
-  metadataObj.daai = { version, origin: 'consultation-recorder-component' };
-  formData.append("metadata", JSON.stringify(metadataObj));
 
-  formData.append("professionalId", professional)
+  console.log("Metadata recebido:", metadata);
+
+  let metadataObj: any = {};
+
+  if (!isRetry) {
+    try {
+      metadataObj = typeof metadata === "string" ? JSON.parse(metadata) : metadata || {};
+      metadataObj.daai = { version, origin: "consultation-recorder-component" };
+    } catch (err) {
+      console.error("Erro ao fazer parse do metadata:", err, metadata);
+      metadataObj = {};
+    }
+    formData.append("metadata", JSON.stringify(metadataObj));
+  } else {
+    formData.append("metadata", typeof metadata === "string" ? metadata : JSON.stringify(metadata));
+  }
+
+  formData.append("professionalId", professional);
 
   try {
     const response = await fetch(url, {
@@ -193,7 +233,6 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
       body: formData,
     });
 
-
     if (!response.ok) {
       const errorResponse = await response.json();
       if (typeof error === "function") {
@@ -202,10 +241,12 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
     }
 
     if (response.ok) {
-      console.log('aquiii')
+      console.log("Upload concluído com sucesso");
       const jsonResponse = await response.json();
       const consultationId = jsonResponse.id;
-      deleteConsultationById(retryProfessionalFromIndexDb,retryIdFromIndexDb)
+      if (isRetry) {
+        deleteConsultationById(retryProfessionalFromIndexDb, retryIdFromIndexDb);
+      }
       state.status = "upload-ok";
       if (typeof success === "function") {
         success(jsonResponse);
@@ -217,11 +258,12 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
       }
     }
   } catch (err) {
-    state.status = 'upload-error'
+    state.status = "upload-error";
     console.error("Erro ao enviar o áudio:", err);
-    if(!isRetry){
-      metadataObj.daai.fallback = {occurredAt: new Date()};
-      saveConsultation(professional,audioBlob,specialty,metadataObj)
+    if (!isRetry) {
+      metadataObj.daai = metadataObj.daai || {}; // Garante que daai existe
+      metadataObj.daai.fallback = { occurredAt: new Date() };
+      saveConsultation(professional, audioBlob, specialty, metadataObj);
     }
     if (typeof error === "function") {
       error(err);
@@ -229,7 +271,8 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
   }
 };
 
-export const retryUpload = async (apikey:string, professional:string ,success:any, error:any, event:any, isRetry:boolean) => {
+
+export const retryUpload = async (mode:string, apikey:string, professional:string ,success:any, error:any, event:any, isRetry:boolean) => {
   const consultations = await getConsultationsByProfessional(professional);
   console.log('chamouu')
   if (!consultations.length) {
@@ -245,17 +288,19 @@ export const retryUpload = async (apikey:string, professional:string ,success:an
   retryProfessionalFromIndexDb = latestConsultation.professionalId
 
 try{
-  console.log(uploadAudio,'uploadAUDIO')
-  await uploadAudio(
-  latestConsultation.audioBlob,
-  apikey,
-  success,
-  error,
-  latestConsultation.specialty,
-  latestConsultation.metadata,
-  event,
-  professional,
-  isRetry
+ await uploadAudio(
+  {
+  mode: mode,
+  audioBlob:latestConsultation.audioBlob,
+  apiKey:apikey,
+  success:success,
+  error:error,
+  specialty:latestConsultation.specialty,
+  metadata:latestConsultation.metadata,
+  event:event,
+  professional:professional,
+  isRetry:isRetry,
+  }
 );
 } catch {
   state.status = 'upload-error'
@@ -263,8 +308,7 @@ try{
  };
 
 
- export const retryOldConsultations = async (apiKey: string) => {
-  const mode = apiKey && apiKey.startsWith("PRODUCTION") ? "prod" : "dev";
+ export const retryOldConsultations = async (mode:string, apiKey: string) => {
   const url =
   mode === "dev"
     ? "https://apim.doctorassistant.ai/api/sandbox/consultations"
@@ -297,7 +341,7 @@ try{
       });
 
       if (response.ok) {
-        console.log(`Consulta ${consultation.id} enviada com sucesso! Deletando...`);
+
         await deleteConsultationById(consultation.professionalId, consultation.id);
       } else {
         console.error(`Erro ao enviar consulta ${consultation.id}:`, await response.text());
@@ -306,22 +350,7 @@ try{
       console.error(`Erro ao processar consulta ${consultation.id}:`, error);
     }
   }
-
-  console.log("Processo de envio finalizado.");
 };
-
-
-// // fallback true metadata
-// export const retryUpload = () => {
-//   // const response = await fetch(url, {
-//   //   method: "POST",
-//   //   headers: {
-//   //     "x-daai-api-key": apiKey,
-//   //   },
-//   //   body: formData,
-//   // });
-
-// }
 
 export const openConfigModal = () => {
   state.openModalConfig = true;

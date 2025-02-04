@@ -14,6 +14,7 @@
 | `event`           | `event`          |             | `any`                                                                                             | `undefined` |
 | `hideTutorial`    | `hide-tutorial`  |             | `boolean`                                                                                         | `false`     |
 | `metadata`        | `metadata`       |             | `string`                                                                                          | `undefined` |
+| `mode`            | `mode`           |             | `string`                                                                                          | `undefined` |
 | `professional`    | `professional`   |             | `string`                                                                                          | `""`        |
 | `recordingConfig` | --               |             | `{ onWarningRecordingTime: () => void; maxRecordingTime: number; warningRecordingTime: number; }` | `undefined` |
 | `recordingTime`   | `recording-time` |             | `number`                                                                                          | `0`         |
