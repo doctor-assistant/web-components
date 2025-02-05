@@ -17,6 +17,7 @@ export class DaaiConsultationRecorder {
   @Prop() specialty: string = state.chooseSpecialty;
   @Prop() metadata: string;
   @Prop() telemedicine: boolean;
+  @Prop() videoElement?: HTMLVideoElement;
   @Prop() professional: string;
   @State() recordingTime: number = 0;
 
@@ -80,6 +81,7 @@ export class DaaiConsultationRecorder {
                 success={this.onSuccess}
                 error={this.onError}
                 telemedicine={this.telemedicine}
+                videoElement={this.videoElement}
                 event={this.onEvent}
                 professional={this.professional}
                 recordingTime={this.recordingTime}

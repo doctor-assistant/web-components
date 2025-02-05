@@ -18,6 +18,7 @@ export class DaaiConsultationActions {
   @Prop() apikey: any = "";
   @Prop() specialty: any;
   @Prop() telemedicine: boolean;
+  @Prop() videoElement?: HTMLVideoElement;
   @Prop() professional: string = "";
 
   @Prop() success: any;
@@ -176,7 +177,7 @@ export class DaaiConsultationActions {
             <daai-button-with-icon
               id="choose-telemedicine-consultation"
               onClick={() =>
-                state.isChecked || this.hideTutorial ? startRecording(true) : StartTutorial()
+                state.isChecked || this.hideTutorial ? startRecording(true, this.videoElement) : StartTutorial()
               }
             >
               Telemedicina
