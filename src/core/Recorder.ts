@@ -10,6 +10,8 @@ let mediaRecorder: MediaRecorder | null = null;
 let localStream: MediaStream | null = null;
 // Stream for screen sharing in remote/telemedicine mode
 let screenStream: MediaStream | null = null;
+// Stream for video element audio in telemedicine mode
+let videoElementStream: MediaStream | null = null;
 
 
 export const StartTutorial = () => {
@@ -17,7 +19,7 @@ export const StartTutorial = () => {
 }
 
 
-export const startRecording = async (isRemote: boolean) => {
+export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideoElement) => {
   state.chooseModality = true;
 
   const constraints = {
@@ -28,13 +30,33 @@ export const startRecording = async (isRemote: boolean) => {
     },
   };
   if (isRemote) {
-    state.telemedicine = true
-    try {
-      screenStream = await navigator.mediaDevices.getDisplayMedia({
-        audio: true,
-      });
-    } catch (error) {
-      return (state.status = "initial");
+    state.telemedicine = true;
+    if (videoElement) {
+      try {
+        const context = new AudioContext();
+        const source = context.createMediaElementSource(videoElement);
+        const destination = context.createMediaStreamDestination();
+        source.connect(destination);
+        videoElementStream = destination.stream;
+      } catch (error) {
+        console.error('Erro ao capturar áudio do vídeo:', error);
+        // Fallback to screen sharing
+        try {
+          screenStream = await navigator.mediaDevices.getDisplayMedia({
+            audio: true,
+          });
+        } catch (error) {
+          return (state.status = "initial");
+        }
+      }
+    } else {
+      try {
+        screenStream = await navigator.mediaDevices.getDisplayMedia({
+          audio: true,
+        });
+      } catch (error) {
+        return (state.status = "initial");
+      }
     }
   }
 
@@ -49,11 +71,18 @@ export const startRecording = async (isRemote: boolean) => {
   const context = new AudioContext();
   const audioDestination = context.createMediaStreamDestination();
 
-  if (isRemote && screenStream?.getAudioTracks().length > 0) {
-    const systemSource = context.createMediaStreamSource(screenStream);
-    const systemGain = context.createGain();
-    systemGain.gain.value = 1.0;
-    systemSource.connect(systemGain).connect(audioDestination);
+  if (isRemote) {
+    if (videoElementStream?.getAudioTracks().length > 0) {
+      const videoSource = context.createMediaStreamSource(videoElementStream);
+      const videoGain = context.createGain();
+      videoGain.gain.value = 1.0;
+      videoSource.connect(videoGain).connect(audioDestination);
+    } else if (screenStream?.getAudioTracks().length > 0) {
+      const systemSource = context.createMediaStreamSource(screenStream);
+      const systemGain = context.createGain();
+      systemGain.gain.value = 1.0;
+      systemSource.connect(systemGain).connect(audioDestination);
+    }
   }
 
   if (micStream?.getAudioTracks().length > 0) {
@@ -144,6 +173,12 @@ export const finishRecording = async (
         track.stop();
       });
       screenStream = null;
+    }
+    if (videoElementStream) {
+      videoElementStream.getTracks().forEach(track => {
+        track.stop();
+      });
+      videoElementStream = null;
     }
     // Set mediaRecorder to null to prevent reuse
     mediaRecorder = null;
