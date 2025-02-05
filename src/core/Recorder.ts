@@ -37,27 +37,42 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
     state.telemedicine = true;
     if (videoElement) {
       try {
-        // Create new AudioContext only if it doesn't exist or is closed
-        if (!audioContext || audioContext.state === 'closed') {
-          audioContext = new AudioContext();
+        // Ensure previous cleanup is complete
+        if (currentVideoSource) {
+          currentVideoSource.disconnect();
+          currentVideoSource = null;
         }
-        // Only create new source if we don't have one for this video element
-        if (!currentVideoSource) {
-          currentVideoSource = audioContext.createMediaElementSource(videoElement);
+        if (audioContext && audioContext.state !== 'closed') {
+          await audioContext.close();
+          audioContext = null;
         }
-        const destination = audioContext.createMediaStreamDestination();
-        currentVideoSource.connect(destination);
-        videoElementStream = destination.stream;
-      } catch (error) {
-        console.error('Erro ao capturar áudio do vídeo:', error);
-        // Fallback to screen sharing
+        
+        audioContext = new AudioContext();
         try {
-          screenStream = await navigator.mediaDevices.getDisplayMedia({
-            audio: true,
-          });
+          currentVideoSource = audioContext.createMediaElementSource(videoElement);
+          const destination = audioContext.createMediaStreamDestination();
+          currentVideoSource.connect(destination);
+          videoElementStream = destination.stream;
         } catch (error) {
-          return (state.status = "initial");
+          console.error('Erro ao capturar áudio do vídeo:', error);
+          // Clean up failed audio context
+          if (audioContext) {
+            await audioContext.close();
+            audioContext = null;
+          }
+          // Fallback to screen sharing
+          try {
+            screenStream = await navigator.mediaDevices.getDisplayMedia({
+              audio: true,
+            });
+          } catch (fallbackError) {
+            console.error('Erro ao compartilhar tela:', fallbackError);
+            return (state.status = "initial");
+          }
         }
+      } catch (error) {
+        console.error('Erro ao inicializar áudio:', error);
+        return (state.status = "initial");
       }
     } else {
       try {
@@ -78,26 +93,31 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
   // Store the stream for proper cleanup when recording finishes
   localStream = micStream;
   const composedStream = new MediaStream();
-  const context = new AudioContext();
-  const audioDestination = context.createMediaStreamDestination();
+  
+  // Reuse existing audioContext or create a new one if needed
+  if (!audioContext || audioContext.state === 'closed') {
+    audioContext = new AudioContext();
+  }
+  const audioDestination = audioContext.createMediaStreamDestination();
 
   if (isRemote) {
     if (videoElementStream?.getAudioTracks().length > 0) {
-      const videoSource = context.createMediaStreamSource(videoElementStream);
-      const videoGain = context.createGain();
+      // Reuse existing videoSource if possible
+      const videoSource = currentVideoSource || audioContext.createMediaStreamSource(videoElementStream);
+      const videoGain = audioContext.createGain();
       videoGain.gain.value = 1.0;
       videoSource.connect(videoGain).connect(audioDestination);
     } else if (screenStream?.getAudioTracks().length > 0) {
-      const systemSource = context.createMediaStreamSource(screenStream);
-      const systemGain = context.createGain();
+      const systemSource = audioContext.createMediaStreamSource(screenStream);
+      const systemGain = audioContext.createGain();
       systemGain.gain.value = 1.0;
       systemSource.connect(systemGain).connect(audioDestination);
     }
   }
 
   if (micStream?.getAudioTracks().length > 0) {
-    const micSource = context.createMediaStreamSource(micStream);
-    const micGain = context.createGain();
+    const micSource = audioContext.createMediaStreamSource(micStream);
+    const micGain = audioContext.createGain();
     micGain.gain.value = 1.0;
     micSource.connect(micGain).connect(audioDestination);
   }
@@ -163,45 +183,48 @@ export const finishRecording = async (
       audioChunks.push(event.data);
     }
   };
-  mediaRecorder.onstop = () => {
-    // Stop all tracks to remove browser recording indicator
-    if (mediaRecorder.stream) {
-      mediaRecorder.stream.getTracks().forEach(track => {
-        track.stop();
-      });
+  mediaRecorder.onstop = async () => {
+    // Ensure all cleanup happens before state changes
+    try {
+      // Stop all tracks to remove browser recording indicator
+      if (mediaRecorder.stream) {
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      }
+      // Clean up localStream tracks
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+      }
+      // Clean up screen sharing if active
+      if (screenStream) {
+        screenStream.getTracks().forEach(track => track.stop());
+        screenStream = null;
+      }
+      if (videoElementStream) {
+        videoElementStream.getTracks().forEach(track => track.stop());
+        videoElementStream = null;
+      }
+      // Clean up audio context and sources
+      if (currentVideoSource) {
+        currentVideoSource.disconnect();
+        currentVideoSource = null;
+      }
+      if (audioContext) {
+        await audioContext.close();
+        audioContext = null;
+      }
+      // Set mediaRecorder to null to prevent reuse
+      mediaRecorder = null;
+      
+      // Only change state after cleanup is complete
+      state.status = "finished";
+      
+      // Handle the recording data
+      await handleRecordingStop(audioChunks);
+    } catch (error) {
+      console.error('Error during cleanup:', error);
+      state.status = "finished";
     }
-    // Clean up localStream tracks
-    if (localStream) {
-      localStream.getTracks().forEach(track => {
-        track.stop();
-      });
-      localStream = null;
-    }
-    // Clean up screen sharing if active
-    if (screenStream) {
-      screenStream.getTracks().forEach(track => {
-        track.stop();
-      });
-      screenStream = null;
-    }
-    if (videoElementStream) {
-      videoElementStream.getTracks().forEach(track => {
-        track.stop();
-      });
-      videoElementStream = null;
-    }
-    // Clean up audio context and sources
-    if (currentVideoSource) {
-      currentVideoSource.disconnect();
-      currentVideoSource = null;
-    }
-    if (audioContext) {
-      audioContext.close();
-      audioContext = null;
-    }
-    // Set mediaRecorder to null to prevent reuse
-    mediaRecorder = null;
-    handleRecordingStop(audioChunks);
   };
   // Ensure we're in a valid state to stop recording
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
