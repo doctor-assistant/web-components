@@ -395,21 +395,7 @@ Quero que o registro tenha um limite de 20 segundos, quero que o componente me a
 ></daai-consultation-recorder>
 ```
 
-## 2. Instalação
-
-### Versão Antiga
-
-```bash
-npm i @doctorassistant/daai-component
-```
-
-### Versão Nova
-
-```bash
-npm i @doctorassistant/daai-component@x.x.x
-```
-
-## 3. Propriedades Obrigatórias
+## 2. Propriedades Obrigatórias
 
 ### Versão Antiga
 
@@ -420,7 +406,7 @@ npm i @doctorassistant/daai-component@x.x.x
 - `apiKey`: Chave de API necessária para realizar requisições
 - `professional`: Identificador único do profissional (substitui o antigo professionalId)
 
-## 4. Customização
+## 3. Customização
 
 ### Versão Antiga
 
@@ -474,7 +460,7 @@ daai-consultation-recorder {
 }
 ```
 
-## 5. Novas Funcionalidades
+## 4. Novas Funcionalidades
 
 ### Telemedicina
 
@@ -492,7 +478,7 @@ A versão nova adiciona suporte à telemedicina através da propriedade `telemed
 
 A nova versão oferece maior controle sobre as dimensões do componente através de variáveis CSS específicas para diferentes tamanhos de dispositivo.
 
-## 6. Integração via CDN
+## 5. Integração via CDN
 
 ### Versão Antiga
 
@@ -512,7 +498,7 @@ A nova versão oferece maior controle sobre as dimensões do componente através
 ></script>
 ```
 
-## 7. Eventos e Callbacks
+## 6. Eventos e Callbacks
 
 Os eventos e callbacks antigos permanecem mas na nova versão teremos o uma nova callback:
 
@@ -626,4 +612,66 @@ function App() {
 }
 
 export default App;
+```
+
+## Integração no Vue
+
+```js
+<template>
+  <div>
+    <daai-consultation-recorder
+      ref="recorder"
+      :apiKey="'SUA CHAVE AQUI'"
+      :professional="'SEU PROFESSIONAL AQUI'"
+    ></daai-consultation-recorder>
+  </div>
+</template>
+
+<script>
+import { onMounted, onBeforeUnmount, ref } from 'vue';
+import '@doctorassistant/daai-component';
+
+export default {
+  name: 'App',
+  setup() {
+    const recorder = ref(null);
+
+    onMounted(() => {
+      if (recorder.value) {
+        recorder.value.onSuccess = (response) => {
+          console.log('Sucesso na requisição:', response);
+        };
+
+        recorder.value.onError = (error) => {
+          console.error('Erro na requisição:', error);
+        };
+
+        recorder.value.onEvent = (event) => {
+          console.log('Eventos:', event);
+        };
+
+        recorder.value.onWarningRecordingTime = () => {
+          console.log('Tempo finalizando');
+        };
+      }
+    });
+
+    onBeforeUnmount(() => {
+      if (recorder.value) {
+        recorder.value.onSuccess = null;
+        recorder.value.onError = null;
+        recorder.value.onEvent = null;
+      }
+    });
+
+    return {
+      recorder,
+    };
+  },
+};
+</script>
+
+<style>
+/* Aqui você pode adicionar seu CSS, se necessário */
+</style>
 ```
