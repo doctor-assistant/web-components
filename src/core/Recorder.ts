@@ -15,7 +15,7 @@ let videoElementStream: MediaStream | null = null;
 // AudioContext instance for managing audio processing
 let audioContext: AudioContext | null = null;
 // Track the current MediaElementSourceNode to ensure proper cleanup
-let currentVideoSource: MediaStreamAudioSourceNode | null = null;
+let currentVideoSource: MediaElementAudioSourceNode | null = null;
 
 
 export const StartTutorial = () => {
