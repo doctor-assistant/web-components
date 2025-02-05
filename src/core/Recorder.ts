@@ -12,6 +12,10 @@ let localStream: MediaStream | null = null;
 let screenStream: MediaStream | null = null;
 // Stream for video element audio in telemedicine mode
 let videoElementStream: MediaStream | null = null;
+// AudioContext instance for managing audio processing
+let audioContext: AudioContext | null = null;
+// Track the current MediaElementSourceNode to ensure proper cleanup
+let currentVideoSource: MediaStreamAudioSourceNode | null = null;
 
 
 export const StartTutorial = () => {
@@ -33,10 +37,16 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
     state.telemedicine = true;
     if (videoElement) {
       try {
-        const context = new AudioContext();
-        const source = context.createMediaElementSource(videoElement);
-        const destination = context.createMediaStreamDestination();
-        source.connect(destination);
+        // Create new AudioContext only if it doesn't exist or is closed
+        if (!audioContext || audioContext.state === 'closed') {
+          audioContext = new AudioContext();
+        }
+        // Only create new source if we don't have one for this video element
+        if (!currentVideoSource) {
+          currentVideoSource = audioContext.createMediaElementSource(videoElement);
+        }
+        const destination = audioContext.createMediaStreamDestination();
+        currentVideoSource.connect(destination);
         videoElementStream = destination.stream;
       } catch (error) {
         console.error('Erro ao capturar áudio do vídeo:', error);
@@ -179,6 +189,15 @@ export const finishRecording = async (
         track.stop();
       });
       videoElementStream = null;
+    }
+    // Clean up audio context and sources
+    if (currentVideoSource) {
+      currentVideoSource.disconnect();
+      currentVideoSource = null;
+    }
+    if (audioContext) {
+      audioContext.close();
+      audioContext = null;
     }
     // Set mediaRecorder to null to prevent reuse
     mediaRecorder = null;
