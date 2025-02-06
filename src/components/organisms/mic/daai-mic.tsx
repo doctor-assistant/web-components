@@ -77,7 +77,7 @@ export class DaaiMic {
             <div>
               <daai-text text="Sua consulta não foi enviada!" id="error-text" />
               <daai-text
-                text="verifique sua conexão com a internet e tente enviar novamente."
+                text="Verifique sua conexão com a internet e tente enviar novamente."
                 id="secondary-text"
               />
             </div>
