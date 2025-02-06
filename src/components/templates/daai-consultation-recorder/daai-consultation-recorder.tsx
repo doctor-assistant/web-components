@@ -36,7 +36,6 @@ export class DaaiConsultationRecorder {
     return allowedStates.includes(state.status);
   }
 
-  // verifiicar o professiaonal e o IndexDB ( data e hora )
   async componentDidLoad() {
     if (this.specialty) {
       state.defaultSpecialty = this.specialty;
