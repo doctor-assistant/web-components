@@ -109,36 +109,30 @@ onde ele for chamado vai ser renderizado nesse modelo:
 ### propriedades de funcionamento
 
 ```js
-// ⚠️ A propriedade professional é obrigatória, sem ela o componente não irá iniciar o registro.
-professional =
-  "aqui você deve passar um identificador único do usuário que irá utilizar o componente";
+// ⚠️ A propriedade "professional" é obrigatória. Sem ela, o componente não iniciará o registro.
+professional = "Identificador único do usuário que utilizará o componente.";
 
-// ⚠️ A propriedade apiKey é obrigatória, sem ela o componente não irá fazer requisições a api,
-apikey = "aqui você deve passar a chave da api para realizar as requisições";
+// ⚠️ A propriedade "apiKey" é obrigatória. Sem ela, o componente não fará requisições à API.
+apiKey = "Chave da API para realizar as requisições.";
 
-// A propriedade specialty não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, caso ela não seja passada o usuário pode selecionar a especialidade desejada no select.
-specialty =
-  "aqui você deve passar a especialidade que você quer que o usuário use";
-// A propriedade metadata não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para enviar dados que você deseja recuperar posteriormente pela nossa API quando a gravação for finalizada, possibilitando a recuperação por meio do webhook.
+// A propriedade "specialty" não é obrigatória. Caso não seja informada, o usuário poderá selecionar a especialidade desejada no select.
+specialty = "Especialidade que o usuário deverá utilizar.";
+
+// A propriedade "metadata" não é obrigatória. Serve para armazenar dados que poderão ser recuperados posteriormente via webhook.
 metadata =
-  "aqui você deve passar o valor que deseja recuperar, se atente ao formato, descrevo no tópico abaixo.";
+  "Valor que deseja recuperar posteriormente, conforme o formato descrito abaixo.";
 
-// A propriedade telemedicine não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para ativar a funcionalidade de telemedicina no componente.
-telemedicine =
-  "aqui você deve passar um valor booleano de true caso queira usar a funcionalidade de telemedicina do componente";
+// A propriedade "telemedicine" não é obrigatória. Caso seja definida como `true`, ativará a funcionalidade de telemedicina no componente.
+telemedicine = true; // Defina como `true` para ativar a telemedicina.
 
-// A propriedade hide-tutorial não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para destivar o modal de tutorial da telemedicina.
+// A propriedade "hideTutorial" não é obrigatória. Caso seja definida como `true`, desativará o modal de tutorial da telemedicina.
+hideTutorial = true; // Defina como `true` para ocultar o tutorial.
 
-hide-tutorial =
-"Aqui você deve passar um valor booleano  de true para não mostar o popup de tutorial da telemedicina"
+// A propriedade "maxRecordingTime" não é obrigatória. Caso seja informada, define o tempo máximo de gravação (em segundos).
+maxRecordingTime = 300; // Exemplo: 300 segundos (5 minutos).
 
-// A propriedade max-recording-time não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para limitar o tempo do gravação.
-max-recording-time =
-"aqui você deve passar um valor em segundos do tempo total que voccê quer que dure a gravação"
-
-// A propriedade warning-recording-time não é obrigatória, o componente irá funcionar normalmente caso você não passe essa chave, no entanto, a chave serve para determina em quantos segundos antes do limite você deseja receber um aviso.
-warning-recording-time=
-"Aqui você determina em quantos segundos antes do limite você deseja receber um aviso"
+// A propriedade "warningRecordingTime" não é obrigatória. Define em quantos segundos antes do limite o usuário receberá um aviso.
+warningRecordingTime = 30; // Exemplo: Aviso 30 segundos antes do fim da gravação
 ```
 
 ⚠️ A propriedade ~~modeApi~~ não é mais necessária. A partir da versão 1.2.0, identificamos o ambiente de execução através da apiKey
