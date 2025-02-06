@@ -347,3 +347,13 @@ daai-mic-animation {
   color: var(--recorder-primary-color);
   font-weight: 600;
 }
+
+#secondary-text{
+  color: var(--recorder-text-color);
+  font-weight: 600;
+}
+
+#error-text {
+  color: var(--recorder-error-color);
+  font-weight: bold;
+}
