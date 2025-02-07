@@ -8,8 +8,7 @@
 6. [Especialidades](#especialidades)
 7. [Eventos](#eventos)
 8. [Limite de tempo de registro](#limite-de-tempo-de-registro)
-9. [Comparação entre Versões do Componente Doctor Assistant](#comparação-entre-versões-do-componente-doctor-assistant)
-10. [Exemplos de integração em diferentes ambientes](#exemplos-de-integração-em-diferentes-ambientes)
+9. [Exemplos de integração em diferentes stacks](#exemplos-de-integração-em-diferentes-stacks)
 
 ## Introdução
 
@@ -330,145 +329,9 @@ no x.x.x substitua pela versão vigente do pacote.
 </html>
 ```
 
-## Comparação entre Versões do Componente Doctor Assistant
+## Exemplos de integração em diferentes stacks
 
-## 1. Identificação dos Componentes
-
-### Versão Antiga (daai-component)
-
-```html
-<daai-component apiKey="YOUR_API_KEY"></daai-component>
-```
-
-### Versão Nova (web-components)
-
-```html
-<daai-consultation-recorder
-  apiKey="YOUR_API_KEY"
-  professional="YOUR_PROFESSIONAL_ID"
-></daai-consultation-recorder>
-```
-
-## 2. Propriedades Obrigatórias
-
-### Versão Antiga
-
-- `apiKey`: Chave de API necessária para realizar requisições
-
-### Versão Nova
-
-- `apiKey`: Chave de API necessária para realizar requisições
-- `professional`: Identificador único do profissional (substitui o antigo professionalId)
-
-## 3. Customização
-
-### Versão Antiga
-
-Utilizava um objeto theme com propriedades específicas:
-
-```javascript
-theme: {
-  icon,
-    buttonStartRecordingColor,
-    buttonRecordingColor,
-    buttonPauseColor,
-    buttonResumeColor,
-    buttonUploadColor,
-    borderColor,
-    animationRecordingColor,
-    animationPausedColor,
-    textBadgeColor,
-    buttonHelpColor;
-}
-```
-
-### Versão Nova
-
-Utiliza variáveis CSS para maior flexibilidade:
-
-```css
-daai-consultation-recorder {
-  --recorder-primary-color: red;
-  --recorder-secondary-color: gray;
-  --recorder-success-color: red;
-  --recorder-support-color: red;
-  --recorder-disable-color: red;
-  --recorder-error-color: red;
-  --recorder-transparent-color: red;
-  --recorder-background-color: red;
-  --recorder-border-color: red;
-  --recorder-button-radius: 1px;
-  --recorder-border-radius: 1px;
-  --recorder-text-color: yellow;
-  --recorder-border-button-color: red;
-  --recorder-animation-recording-color: green;
-  --recorder-animation-paused-color: green;
-  --recorder-tutorial-image: "image_url";
-  --recorder-daai-logo-icon: "image_url";
-  --recorder-large-device-max-width: 100%;
-  --recorder-large-device-min-width: 100%;
-  --recorder-small-device-max-width: 500px;
-  --recorder-small-device-min-width: 300px;
-  --recorder-large-device-height: 52px;
-  --recorder-small-device-height: 120px;
-}
-```
-
-## 4. Novas Funcionalidades
-
-### Telemedicina
-
-A versão nova adiciona suporte à telemedicina através da propriedade `telemedicine`:
-
-```html
-<daai-consultation-recorder
-  telemedicine="true"
-  ...outras
-  propriedades
-></daai-consultation-recorder>
-```
-
-### Controle de Dimensões
-
-A nova versão oferece maior controle sobre as dimensões do componente através de variáveis CSS específicas para diferentes tamanhos de dispositivo.
-
-## 5. Integração via CDN
-
-### Versão Antiga
-
-```html
-<script
-  src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@latest/dist/DaaiBadge.js"
-  type="module"
-></script>
-```
-
-### Versão Nova
-
-```html
-<script
-  src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@x.x.x/dist/web-components/web-components.esm.js"
-  type="module"
-></script>
-```
-
-## 6. Eventos e Callbacks
-
-Os eventos e callbacks antigos permanecem mas na nova versão teremos o uma nova callback:
-
-Antigas
-
-- onSuccess
-- onError
-- onEvent
-
-Nova Callback
-
-- onWarningRecordingTime
-
-## Exemplos de integração em diferentes ambientes
-
-Nessa seção vou mostrar como funciona a integração em diferentes ambientes:
+Nessa seção vou mostrar como funciona a integração em diferentes stacks:
 
 ### Usando diretamente no Html
 
