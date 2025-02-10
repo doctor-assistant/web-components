@@ -26,6 +26,16 @@ export const StartTutorial = () => {
 export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideoElement) => {
   state.chooseModality = true;
 
+  // Clean up any existing audio resources before starting new recording
+  if (currentVideoSource) {
+    currentVideoSource.disconnect();
+    currentVideoSource = null;
+  }
+  if (audioContext && audioContext.state !== 'closed') {
+    await audioContext.close();
+    audioContext = null;
+  }
+
   const constraints = {
     audio: {
       deviceId: state.chosenMicrophone
@@ -37,17 +47,20 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
     state.telemedicine = true;
     if (videoElement) {
       try {
-        // Create new AudioContext only if it doesn't exist or is closed
-        if (!audioContext || audioContext.state === 'closed') {
-          audioContext = new AudioContext();
-        }
-        // Only create new source if we don't have one for this video element
-        if (!currentVideoSource) {
+        audioContext = new AudioContext();
+        try {
           currentVideoSource = audioContext.createMediaElementSource(videoElement);
+          const destination = audioContext.createMediaStreamDestination();
+          currentVideoSource.connect(destination);
+          videoElementStream = destination.stream;
+        } catch (sourceError) {
+          // If we fail to create or connect the source, ensure we clean up the context
+          if (audioContext) {
+            await audioContext.close();
+            audioContext = null;
+          }
+          throw sourceError;
         }
-        const destination = audioContext.createMediaStreamDestination();
-        currentVideoSource.connect(destination);
-        videoElementStream = destination.stream;
       } catch (error) {
         console.error('Erro ao capturar áudio do vídeo:', error);
         // Fallback to screen sharing
@@ -163,7 +176,7 @@ export const finishRecording = async (
       audioChunks.push(event.data);
     }
   };
-  mediaRecorder.onstop = () => {
+  mediaRecorder.onstop = async () => {
     // Stop all tracks to remove browser recording indicator
     if (mediaRecorder.stream) {
       mediaRecorder.stream.getTracks().forEach(track => {
@@ -192,11 +205,19 @@ export const finishRecording = async (
     }
     // Clean up audio context and sources
     if (currentVideoSource) {
-      currentVideoSource.disconnect();
+      try {
+        currentVideoSource.disconnect();
+      } catch (error) {
+        console.warn('Error disconnecting video source:', error);
+      }
       currentVideoSource = null;
     }
-    if (audioContext) {
-      audioContext.close();
+    if (audioContext && audioContext.state !== 'closed') {
+      try {
+        await audioContext.close();
+      } catch (error) {
+        console.warn('Error closing audio context:', error);
+      }
       audioContext = null;
     }
     // Set mediaRecorder to null to prevent reuse
