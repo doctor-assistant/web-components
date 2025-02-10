@@ -3,6 +3,11 @@ import { version } from '../../package.json';
 import state from "../store";
 import { EventSourceManager } from "../utils/sse";
 
+// WeakMap to store audio contexts and sources for video elements
+const videoAudioContexts = new WeakMap<HTMLVideoElement, {
+  context: AudioContext;
+  source: MediaElementAudioSourceNode;
+}>();
 
 // Main MediaRecorder instance for handling the recording process
 let mediaRecorder: MediaRecorder | null = null;
@@ -17,6 +22,49 @@ let audioContext: AudioContext | null = null;
 // Track the current MediaElementSourceNode to ensure proper cleanup
 let currentVideoSource: MediaElementAudioSourceNode | null = null;
 
+// Function to clean up audio resources for a specific video element and global resources
+const cleanupAudioResources = async (videoElement?: HTMLVideoElement) => {
+  if (videoElement) {
+    const existing = videoAudioContexts.get(videoElement);
+    if (existing) {
+      try {
+        existing.source.disconnect();
+        if (existing.context.state !== 'closed') {
+          await existing.context.close();
+        }
+      } catch (error) {
+        console.warn('Error cleaning up audio resources:', error);
+      }
+      videoAudioContexts.delete(videoElement);
+    }
+  }
+  
+  // Clean up global resources
+  if (currentVideoSource) {
+    try {
+      currentVideoSource.disconnect();
+    } catch (error) {
+      console.warn('Error disconnecting current video source:', error);
+    }
+    currentVideoSource = null;
+  }
+  
+  if (audioContext && audioContext.state !== 'closed') {
+    try {
+      await audioContext.close();
+    } catch (error) {
+      console.warn('Error closing audio context:', error);
+    }
+    audioContext = null;
+  }
+  
+  // Reset stream
+  if (videoElementStream) {
+    videoElementStream.getTracks().forEach(track => track.stop());
+    videoElementStream = null;
+  }
+};
+
 
 export const StartTutorial = () => {
   state.openTutorialPopup = true;
@@ -27,48 +75,48 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
   state.chooseModality = true;
 
   // Clean up any existing audio resources before starting new recording
-  if (currentVideoSource) {
-    currentVideoSource.disconnect();
-    currentVideoSource = null;
-  }
-  if (audioContext && audioContext.state !== 'closed') {
-    await audioContext.close();
-    audioContext = null;
-  }
+  await cleanupAudioResources(videoElement);
 
-  const constraints = {
+  // Get microphone stream first
+  const micConstraints = {
     audio: {
       deviceId: state.chosenMicrophone
         ? { exact: state.defaultMicrophone }
         : undefined,
     },
   };
+
+  const micStream = await navigator.mediaDevices.getUserMedia(micConstraints);
+  localStream = micStream;
+
   if (isRemote) {
     state.telemedicine = true;
     if (videoElement) {
       try {
         audioContext = new AudioContext();
-        try {
-          currentVideoSource = audioContext.createMediaElementSource(videoElement);
-          const destination = audioContext.createMediaStreamDestination();
-          currentVideoSource.connect(destination);
-          videoElementStream = destination.stream;
-        } catch (sourceError) {
-          // If we fail to create or connect the source, ensure we clean up the context
-          if (audioContext) {
-            await audioContext.close();
-            audioContext = null;
-          }
-          throw sourceError;
-        }
+        currentVideoSource = audioContext.createMediaElementSource(videoElement);
+        const destination = audioContext.createMediaStreamDestination();
+        currentVideoSource.connect(destination);
+        videoElementStream = destination.stream;
+        
+        // Store references in WeakMap for cleanup
+        videoAudioContexts.set(videoElement, {
+          context: audioContext,
+          source: currentVideoSource
+        });
       } catch (error) {
         console.error('Erro ao capturar áudio do vídeo:', error);
+        // Clean up any partially created resources
+        await cleanupAudioResources(videoElement);
+        // Clean up mic stream
+        micStream.getTracks().forEach(track => track.stop());
+        localStream = null;
         // Fallback to screen sharing
         try {
           screenStream = await navigator.mediaDevices.getDisplayMedia({
             audio: true,
           });
-        } catch (error) {
+        } catch (screenError) {
           return (state.status = "initial");
         }
       }
@@ -78,6 +126,9 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
           audio: true,
         });
       } catch (error) {
+        // Clean up mic stream
+        micStream.getTracks().forEach(track => track.stop());
+        localStream = null;
         return (state.status = "initial");
       }
     }
@@ -86,41 +137,39 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
   state.openTutorialPopup = false;
   state.status = "recording";
 
-  // Get the main recording stream - this will be our single source of truth for the active recording
-  const micStream = await navigator.mediaDevices.getUserMedia(constraints);
-  // Store the stream for proper cleanup when recording finishes
-  localStream = micStream;
+  // Create final composed stream with all audio sources
   const composedStream = new MediaStream();
-  const context = new AudioContext();
-  const audioDestination = context.createMediaStreamDestination();
+  const mixingContext = new AudioContext();
+  const mixingDestination = mixingContext.createMediaStreamDestination();
 
+  // Add microphone audio
+  if (micStream?.getAudioTracks().length > 0) {
+    const micSource = mixingContext.createMediaStreamSource(micStream);
+    const micGain = mixingContext.createGain();
+    micGain.gain.value = 1.0;
+    micSource.connect(micGain).connect(mixingDestination);
+  }
+
+  // Add video or screen audio if available
   if (isRemote) {
     if (videoElementStream?.getAudioTracks().length > 0) {
-      const videoSource = context.createMediaStreamSource(videoElementStream);
-      const videoGain = context.createGain();
+      const videoSource = mixingContext.createMediaStreamSource(videoElementStream);
+      const videoGain = mixingContext.createGain();
       videoGain.gain.value = 1.0;
-      videoSource.connect(videoGain).connect(audioDestination);
+      videoSource.connect(videoGain).connect(mixingDestination);
     } else if (screenStream?.getAudioTracks().length > 0) {
-      const systemSource = context.createMediaStreamSource(screenStream);
-      const systemGain = context.createGain();
-      systemGain.gain.value = 1.0;
-      systemSource.connect(systemGain).connect(audioDestination);
+      const screenSource = mixingContext.createMediaStreamSource(screenStream);
+      const screenGain = mixingContext.createGain();
+      screenGain.gain.value = 1.0;
+      screenSource.connect(screenGain).connect(mixingDestination);
     }
   }
 
-  if (micStream?.getAudioTracks().length > 0) {
-    const micSource = context.createMediaStreamSource(micStream);
-    const micGain = context.createGain();
-    micGain.gain.value = 1.0;
-    micSource.connect(micGain).connect(audioDestination);
-  }
+  // Add all audio tracks to the final stream
+  mixingDestination.stream.getAudioTracks().forEach(track => composedStream.addTrack(track));
 
-  audioDestination.stream
-    .getAudioTracks()
-    .forEach((track) => composedStream.addTrack(track));
-
+  // Create and start MediaRecorder
   mediaRecorder = new MediaRecorder(composedStream);
-
   mediaRecorder.onstart = () => { };
   mediaRecorder.start();
 };
@@ -179,47 +228,31 @@ export const finishRecording = async (
   mediaRecorder.onstop = async () => {
     // Stop all tracks to remove browser recording indicator
     if (mediaRecorder.stream) {
-      mediaRecorder.stream.getTracks().forEach(track => {
-        track.stop();
-      });
+      mediaRecorder.stream.getTracks().forEach(track => track.stop());
     }
     // Clean up localStream tracks
     if (localStream) {
-      localStream.getTracks().forEach(track => {
-        track.stop();
-      });
+      localStream.getTracks().forEach(track => track.stop());
       localStream = null;
     }
     // Clean up screen sharing if active
     if (screenStream) {
-      screenStream.getTracks().forEach(track => {
-        track.stop();
-      });
+      screenStream.getTracks().forEach(track => track.stop());
       screenStream = null;
     }
     if (videoElementStream) {
-      videoElementStream.getTracks().forEach(track => {
-        track.stop();
-      });
+      videoElementStream.getTracks().forEach(track => track.stop());
       videoElementStream = null;
     }
-    // Clean up audio context and sources
-    if (currentVideoSource) {
-      try {
-        currentVideoSource.disconnect();
-      } catch (error) {
-        console.warn('Error disconnecting video source:', error);
-      }
-      currentVideoSource = null;
+
+    // Clean up audio resources using the cleanup function
+    // This will handle both WeakMap references and global resources
+    if (currentVideoSource?.mediaElement) {
+      await cleanupAudioResources(currentVideoSource.mediaElement as HTMLVideoElement);
+    } else {
+      await cleanupAudioResources();
     }
-    if (audioContext && audioContext.state !== 'closed') {
-      try {
-        await audioContext.close();
-      } catch (error) {
-        console.warn('Error closing audio context:', error);
-      }
-      audioContext = null;
-    }
+
     // Set mediaRecorder to null to prevent reuse
     mediaRecorder = null;
     handleRecordingStop(audioChunks);
