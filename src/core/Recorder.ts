@@ -37,10 +37,26 @@ export const startRecording = async (isRemote: boolean) => {
     state.telemedicine = true
     try {
       screenStream = await navigator.mediaDevices.getDisplayMedia({
-        audio: true,
+        audio: {
+          // Explicitly request system audio
+          autoGainControl: false,
+          echoCancellation: false,
+          noiseSuppression: false,
+        },
+        video: true, // Required for screen sharing
       });
     } catch (error) {
-      return (state.status = "initial");
+      console.error('Failed to capture system audio:', error);
+      // If system audio fails, try again with video-only sharing
+      try {
+        screenStream = await navigator.mediaDevices.getDisplayMedia({
+          audio: false,
+          video: true,
+        });
+      } catch (fallbackError) {
+        console.error('Screen sharing failed completely:', fallbackError);
+        return (state.status = "initial");
+      }
     }
   }
 
@@ -58,7 +74,8 @@ export const startRecording = async (isRemote: boolean) => {
   if (isRemote && screenStream?.getAudioTracks().length > 0) {
     const systemSource = context.createMediaStreamSource(screenStream);
     const systemGain = context.createGain();
-    systemGain.gain.value = 1.0;
+    // Adjust system audio gain to be slightly lower than mic
+    systemGain.gain.value = 0.7;
     systemSource.connect(systemGain).connect(audioDestination);
   }
 
