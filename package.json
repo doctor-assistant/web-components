@@ -1,6 +1,6 @@
 {
   "name": "@doctorassistant/daai-component",
-  "version": "2.0.5-rc",
+  "version": "2.0.6-rc",
   "description": "Stencil Component Starter",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -53,6 +53,7 @@
   "license": "MIT",
   "dependencies": {
     "dexie": "^4.0.10",
-    "extended-eventsource": "2.0.0"
+    "extended-eventsource": "2.0.0",
+    "@stencil/core": "^3.0.0"
   }
 }
