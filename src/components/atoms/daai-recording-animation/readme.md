@@ -12,6 +12,7 @@
 | `animationPausedColor`    | `animation-paused-color`    |             | `string` | `""`        |
 | `animationRecordingColor` | `animation-recording-color` |             | `string` | `""`        |
 | `status`                  | `status`                    |             | `string` | `undefined` |
+| `stream`                  | --                         | Optional external audio stream for telemedicine | `MediaStream` | `undefined` |
 
 
 ## Dependencies
