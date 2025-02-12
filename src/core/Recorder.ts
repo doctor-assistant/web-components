@@ -4,15 +4,17 @@ import state from "../store";
 import { EventSourceManager } from "../utils/sse";
 
 
-// Main MediaRecorder instance for handling the recording process
 let mediaRecorder: MediaRecorder | null = null;
-// Primary MediaStream for recording - this is the single source of truth for active recording
+
 let localStream: MediaStream | null = null;
-// Stream for screen sharing in remote/telemedicine mode
+
 let screenStream: MediaStream | null = null;
-// Stream for video element audio in telemedicine mode
+
 let videoElementStream: MediaStream | null = null;
 
+let videoElementSource:MediaElementAudioSourceNode | null = null;
+
+let audioContext: AudioContext | null = null
 
 export const StartTutorial = () => {
   state.openTutorialPopup = true;
@@ -29,18 +31,21 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
         : undefined,
     },
   };
+  if(!audioContext){
+    audioContext = new AudioContext()
+  }
   if (isRemote) {
     state.telemedicine = true;
     if (videoElement) {
       try {
-        const context = new AudioContext();
-        const source = context.createMediaElementSource(videoElement);
-        const destination = context.createMediaStreamDestination();
-        source.connect(destination);
+        if (!videoElementSource) {
+          videoElementSource = audioContext.createMediaElementSource(videoElement);
+        }
+        const destination = audioContext.createMediaStreamDestination();
+        videoElementSource.connect(destination);
         videoElementStream = destination.stream;
       } catch (error) {
         console.error('Erro ao capturar áudio do vídeo:', error);
-        // Fallback to screen sharing
         try {
           screenStream = await navigator.mediaDevices.getDisplayMedia({
             audio: true,
@@ -63,31 +68,30 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
   state.openTutorialPopup = false;
   state.status = "recording";
 
-  // Get the main recording stream - this will be our single source of truth for the active recording
   const micStream = await navigator.mediaDevices.getUserMedia(constraints);
-  // Store the stream for proper cleanup when recording finishes
+
   localStream = micStream;
   const composedStream = new MediaStream();
-  const context = new AudioContext();
-  const audioDestination = context.createMediaStreamDestination();
+  const audioDestination = audioContext.createMediaStreamDestination();
 
   if (isRemote) {
     if (videoElementStream?.getAudioTracks().length > 0) {
-      const videoSource = context.createMediaStreamSource(videoElementStream);
-      const videoGain = context.createGain();
+      const videoSource = audioContext.createMediaStreamSource(videoElementStream);
+      const videoGain = audioContext.createGain();
       videoGain.gain.value = 1.0;
       videoSource.connect(videoGain).connect(audioDestination);
+      videoGain.connect(audioContext.destination)
     } else if (screenStream?.getAudioTracks().length > 0) {
-      const systemSource = context.createMediaStreamSource(screenStream);
-      const systemGain = context.createGain();
+      const systemSource = audioContext.createMediaStreamSource(screenStream);
+      const systemGain = audioContext.createGain();
       systemGain.gain.value = 1.0;
       systemSource.connect(systemGain).connect(audioDestination);
     }
   }
 
   if (micStream?.getAudioTracks().length > 0) {
-    const micSource = context.createMediaStreamSource(micStream);
-    const micGain = context.createGain();
+    const micSource = audioContext.createMediaStreamSource(micStream);
+    const micGain = audioContext.createGain();
     micGain.gain.value = 1.0;
     micSource.connect(micGain).connect(audioDestination);
   }
@@ -122,7 +126,6 @@ export const resumeRecording = () => {
   }
 }
 
-
 export const finishRecording = async (
   apikey,
   success,
@@ -154,37 +157,29 @@ export const finishRecording = async (
     }
   };
   mediaRecorder.onstop = () => {
-    // Stop all tracks to remove browser recording indicator
     if (mediaRecorder.stream) {
       mediaRecorder.stream.getTracks().forEach(track => {
         track.stop();
       });
     }
-    // Clean up localStream tracks
     if (localStream) {
       localStream.getTracks().forEach(track => {
         track.stop();
       });
       localStream = null;
     }
-    // Clean up screen sharing if active
+
     if (screenStream) {
       screenStream.getTracks().forEach(track => {
         track.stop();
       });
       screenStream = null;
     }
-    if (videoElementStream) {
-      videoElementStream.getTracks().forEach(track => {
-        track.stop();
-      });
-      videoElementStream = null;
-    }
-    // Set mediaRecorder to null to prevent reuse
+
     mediaRecorder = null;
     handleRecordingStop(audioChunks);
   };
-  // Ensure we're in a valid state to stop recording
+
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     mediaRecorder.stop();
     state.status = "finished";
@@ -206,7 +201,7 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
   if (specialty) {
     formData.append("specialty", specialty);
   }
-  // Ensure metadata exists and add version
+
   const metadataObj = metadata ? JSON.parse(metadata) : {};
   metadataObj.daai = { version, origin: 'consultation-recorder-component' };
   formData.append("metadata", JSON.stringify(metadataObj));
@@ -251,7 +246,6 @@ export const uploadAudio = async (audioBlob, apiKey, success, error, specialty, 
     }
   }
 };
-
 
 export const openConfigModal = () => {
   state.openModalConfig = true;
