@@ -73,6 +73,14 @@ export class DaaiMic {
                 />
               </div>
             </div>
+          ) : state.status === "upload-error" ? (
+            <div>
+              <daai-text text="Sua consulta não foi enviada!" id="error-text" />
+              <daai-text
+                text="Verifique sua conexão com a internet e tente enviar novamente."
+                id="secondary-text"
+              />
+            </div>
           ) : null}
 
           {state.status === "recording" || state.status === "resume" ? (

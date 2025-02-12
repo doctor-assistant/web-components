@@ -1,4 +1,4 @@
-import { Component, Element, h, Prop, State, Watch } from "@stencil/core";
+import { Component, Element, h, Prop, Watch } from "@stencil/core";
 
 @Component({
   tag: "daai-recording-animation",
@@ -12,7 +12,7 @@ export class DaaiRecordingAnimation {
   @Prop() animationRecordingColor: string = "";
   @Prop() animationPausedColor: string = "";
 
-  @State() canvasElement!: HTMLCanvasElement;
+  private canvasElement!: HTMLCanvasElement;
 
   private analyser!: AnalyserNode;
   private dataArray!: Uint8Array;

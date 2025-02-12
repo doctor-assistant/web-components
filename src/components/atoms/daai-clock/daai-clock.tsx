@@ -1,4 +1,13 @@
-import { Component, h, Host, Prop, State, Watch, Event, EventEmitter } from "@stencil/core";
+import {
+  Component,
+  Event,
+  EventEmitter,
+  h,
+  Host,
+  Prop,
+  State,
+  Watch,
+} from "@stencil/core";
 import state from "../../../store";
 
 @Component({
@@ -57,7 +66,9 @@ export class DaaiClock {
       state.recordingTime++;
       this.recordingTimeUpdated.emit(state.recordingTime);
       if (this.timerElement) {
-        this.timerElement.innerText = this.getFormattedRecordingTime(state.recordingTime);
+        this.timerElement.innerText = this.getFormattedRecordingTime(
+          state.recordingTime
+        );
       }
     }, 1000);
   }
@@ -92,9 +103,11 @@ export class DaaiClock {
     return (
       <Host>
         <div class="text-sm font-bold text-slate-500">
-          <span ref={(el) => (this.timerElement = el as HTMLElement)}>
-            {this.getFormattedRecordingTime(0)}
-          </span>
+          {state.status === "choosen" ? null : (
+            <span ref={(el) => (this.timerElement = el as HTMLElement)}>
+              {this.getFormattedRecordingTime(0)}
+            </span>
+          )}
         </div>
       </Host>
     );
