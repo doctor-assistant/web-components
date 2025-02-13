@@ -57,6 +57,9 @@ let videoElementSource: MediaElementAudioSourceNode | null = null;
 
 let audioContext: AudioContext | null = null
 
+// Track chunks being uploaded for the first time
+const pendingFirstUploads = new Set<number>();
+
 let retryIdFromIndexDb: any
 
 let retryProfessionalFromIndexDb: any
@@ -280,6 +283,7 @@ export const startRecording = async (
   } catch (error) {
     console.error('Error starting recording:', error);
     state.status = "initial";
+    pendingFirstUploads.clear(); // Clear pending uploads on error
     if (mediaRecorder) {
       try {
         mediaRecorder.stop();
@@ -369,9 +373,6 @@ export const finishRecording = async ({
   mediaRecorder = null;
 
   state.status = "finishing";
-
-  // Track chunks being uploaded for the first time
-  const pendingFirstUploads = new Set<number>();
 
   // Wait for all chunks to upload
   const waitForChunks = async (maxAttempts = 10) => {
