@@ -5,8 +5,8 @@ import { deleteConsultationById, getConsultation, getConsultationsByProfessional
 import { EventSourceManager } from "../utils/sse";
 
 const CHUNK_CONFIG = {
-  MIN_DURATION: 3, // seconds
-  MAX_DURATION: 5, // seconds
+  MIN_DURATION: 270, // seconds
+  MAX_DURATION: 300, // seconds
   SILENCE_THRESHOLD: -50, // dB
   SILENCE_DURATION: 0.5, // seconds of silence needed for chunk split
   RETRY_INTERVAL: 200, // ms
@@ -353,8 +353,8 @@ export const finishRecording = async ({
   error,
   specialty,
 }: FinishRecordingProps) => {
-  state.status = "finishing";
-  
+  state.status = "finished";
+
   // Stop recording first
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     currentChunkIndex++; // Increment index before final chunk
@@ -394,9 +394,8 @@ export const finishRecording = async ({
     if (!allUploaded) {
       throw new Error('Failed to upload all chunks after multiple attempts');
     }
-    
+
     pendingFirstUploads.clear(); // Clean up after all chunks are uploaded
-    state.status = "finished";
 
     // Finalize consultation
     const baseUrl = mode === "dev"
