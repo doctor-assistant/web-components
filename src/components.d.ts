@@ -44,6 +44,7 @@ export namespace Components {
         "specialty": any;
         "success": any;
         "telemedicine": boolean;
+        "videoElement"?: HTMLVideoElement;
     }
     interface DaaiConsultationRecorder {
         "apikey": string;
@@ -57,6 +58,7 @@ export namespace Components {
         "professional": string;
         "specialty": string;
         "telemedicine": boolean;
+        "videoElement"?: HTMLVideoElement;
         "warningRecordingTime": number;
     }
     interface DaaiFinishRecordingIcon {
@@ -453,6 +455,7 @@ declare namespace LocalJSX {
         "specialty"?: any;
         "success"?: any;
         "telemedicine"?: boolean;
+        "videoElement"?: HTMLVideoElement;
     }
     interface DaaiConsultationRecorder {
         "apikey"?: string;
@@ -466,6 +469,7 @@ declare namespace LocalJSX {
         "professional"?: string;
         "specialty"?: string;
         "telemedicine"?: boolean;
+        "videoElement"?: HTMLVideoElement;
         "warningRecordingTime"?: number;
     }
     interface DaaiFinishRecordingIcon {
