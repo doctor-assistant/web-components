@@ -467,7 +467,7 @@ export const uploadChunk = async (chunk: ChunkData, mode: string, apiKey: string
 };
 
 // Start background retry process
-let retryInterval: NodeJS.Timer | null = null;
+let retryInterval: ReturnType<typeof setInterval> | null = null;
 
 export const startRetryProcess = (mode: string, apiKey: string) => {
   // Clear any existing retry process
