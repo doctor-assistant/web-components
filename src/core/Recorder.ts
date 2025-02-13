@@ -45,6 +45,10 @@ let analyserNode: AnalyserNode | null = null;
 
 let localStream: MediaStream | null = null;
 
+// Move consultation state from store to class variables
+let currentConsultation: ConsultationResponse | null = null;
+let currentChunkIndex: number = -1;
+
 let screenStream: MediaStream | null = null;
 
 let videoElementStream: MediaStream | null = null;
@@ -103,8 +107,8 @@ export const startRecording = async (
     }
 
     const consultation: ConsultationResponse = await response.json();
-    state.currentConsultation = consultation;
-    state.currentChunkIndex = -1; // Will be incremented to 0 before first chunk
+    currentConsultation = consultation;
+    currentChunkIndex = -1; // Will be incremented to 0 before first chunk
     state.chooseModality = true;
 
     // Start the retry process for this recording session
@@ -166,7 +170,6 @@ export const startRecording = async (
         const videoGain = audioContext.createGain();
         videoGain.gain.value = 1.0;
         videoSource.connect(videoGain).connect(audioDestination);
-        videoGain.connect(audioContext.destination)
       } else if (screenStream?.getAudioTracks().length > 0) {
         const systemSource = audioContext.createMediaStreamSource(screenStream);
         const systemGain = audioContext.createGain();
@@ -186,6 +189,7 @@ export const startRecording = async (
       .getAudioTracks()
       .forEach((track) => composedStream.addTrack(track));
 
+    // Setup silence detection without feedback
     analyserNode = audioContext.createAnalyser();
     analyserNode.fftSize = 2048;
     const bufferLength = analyserNode.frequencyBinCount;
@@ -193,14 +197,13 @@ export const startRecording = async (
     let silenceStart = 0;
     let chunkStartTime = Date.now();
 
-    // Connect analyser to audio graph
-    const micSource = audioContext.createMediaStreamSource(composedStream);
-    micSource.connect(analyserNode);
-    analyserNode.connect(audioContext.destination);
+    // Create a separate audio path for silence detection
+    const silenceSource = audioContext.createMediaStreamSource(composedStream);
+    silenceSource.connect(analyserNode);
 
     silenceDetectorNode = audioContext.createScriptProcessor(2048, 1, 1);
     analyserNode.connect(silenceDetectorNode);
-    silenceDetectorNode.connect(audioContext.destination);
+    silenceDetectorNode.connect(audioContext.destination); // Required for processing to work
     silenceDetectorNode.onaudioprocess = () => {
       analyserNode.getFloatTimeDomainData(dataArray);
 
@@ -225,7 +228,7 @@ export const startRecording = async (
 
           chunkStartTime = now;
           silenceStart = 0;
-          state.currentChunkIndex++;
+          currentChunkIndex++;
         }
       } else {
         silenceStart = 0;
@@ -240,20 +243,24 @@ export const startRecording = async (
         mediaRecorder.start();
 
         chunkStartTime = now;
-        state.currentChunkIndex++;
+        currentChunkIndex++;
       }
     };
 
     const setupMediaRecorder = (mode: string, apikey: string) => {
       mediaRecorder.ondataavailable = async (event) => {
-        if (event.data.size > 0 && state.currentConsultation) {
-          const duration = Math.ceil(event.data.size / (48000 * 2)); // Assuming 48kHz stereo audio, rounded up
+        if (event.data.size > 0 && currentConsultation) {
+          // Calculate duration from blob size (48kHz stereo audio)
+          const sampleRate = 48000;
+          const channels = 2;
+          const bytesPerSample = 2; // 16-bit audio
+          const duration = Math.ceil(event.data.size / (sampleRate * channels * bytesPerSample));
           const chunk: ChunkData = {
-            consultationId: state.currentConsultation.id,
-            recordingId: state.currentConsultation.recording.id,
+            consultationId: currentConsultation.id,
+            recordingId: currentConsultation.recording.id,
             chunk: event.data,
             duration: duration,
-            index: state.currentChunkIndex,
+            index: currentChunkIndex,
             retryCount: 0,
             timestamp: Date.now()
           };
@@ -362,16 +369,24 @@ export const finishRecording = async ({
   state.status = "finishing";
 
   // Wait for all chunks to upload
-  const waitForChunks = async () => {
-    const failedChunks = await getFailedChunks();
-    if (failedChunks.length > 0) {
+  const waitForChunks = async (maxAttempts = 10) => {
+    let attempts = 0;
+    while (attempts < maxAttempts) {
+      const failedChunks = await getFailedChunks();
+      if (failedChunks.length === 0) {
+        return true;
+      }
+      attempts++;
       await new Promise(resolve => setTimeout(resolve, CHUNK_CONFIG.RETRY_INTERVAL));
-      return waitForChunks();
     }
+    return false;
   };
 
   try {
-    await waitForChunks();
+    const allUploaded = await waitForChunks();
+    if (!allUploaded) {
+      throw new Error('Failed to upload all chunks after multiple attempts');
+    }
     state.status = "finished";
 
     // Finalize consultation
@@ -380,8 +395,8 @@ export const finishRecording = async ({
       : "https://apim.doctorassistant.ai/api/production";
 
     const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_FINISH(
-      state.currentConsultation.id,
-      state.currentConsultation.recording.id
+      currentConsultation.id,
+      currentConsultation.recording.id
     ), {
       method: 'POST',
       headers: {
