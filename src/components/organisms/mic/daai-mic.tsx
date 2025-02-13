@@ -70,6 +70,7 @@ export class DaaiMic {
                 <daai-recording-animation
                   id="animation-recording"
                   status={state.status}
+                  stream={state.composedStream}
                 />
               </div>
             </div>
@@ -90,6 +91,7 @@ export class DaaiMic {
                 <daai-recording-animation
                   id="animation-recording"
                   status={state.status}
+                  stream={state.composedStream}
                 />
               </div>
             </div>

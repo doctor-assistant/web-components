@@ -11,6 +11,7 @@ export class DaaiRecordingAnimation {
   @Prop() status: string;
   @Prop() animationRecordingColor: string = "";
   @Prop() animationPausedColor: string = "";
+  @Prop() stream?: MediaStream; // Optional external stream for telemedicine
 
   private canvasElement!: HTMLCanvasElement;
 
@@ -28,9 +29,12 @@ export class DaaiRecordingAnimation {
   disconnectedCallback() {
     // Clean up resources when component is destroyed
     if (this.currentStream) {
-      this.currentStream.getTracks().forEach((track) => {
-        track.stop();
-      });
+      // Don't stop tracks if using external stream
+      if (!this.stream) {
+        this.currentStream.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
       this.currentStream = null;
     }
     if (this.animationFrameId !== null) {
@@ -49,10 +53,15 @@ export class DaaiRecordingAnimation {
   }
 
   async initializeAudio() {
-    // Store stream reference for cleanup
-    this.currentStream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-    });
+    if (this.stream) {
+      // Use provided stream (e.g. from telemedicine)
+      this.currentStream = this.stream;
+    } else {
+      // Fallback to getting microphone stream directly
+      this.currentStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+    }
 
     const source = this.audioContext.createMediaStreamSource(
       this.currentStream
