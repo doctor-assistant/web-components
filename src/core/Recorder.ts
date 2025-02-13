@@ -48,6 +48,8 @@ let localStream: MediaStream | null = null;
 // Move consultation state from store to class variables
 let currentConsultation: ConsultationResponse | null = null;
 let currentChunkIndex: number = -1;
+let chunkStartTime: number = 0;
+let audioContextStartTime: number = 0;
 
 let screenStream: MediaStream | null = null;
 
@@ -127,6 +129,8 @@ export const startRecording = async (
     if (!audioContext) {
       audioContext = new AudioContext()
     }
+    audioContextStartTime = audioContext.currentTime;
+    chunkStartTime = audioContextStartTime;
     if (isRemote) {
       state.telemedicine = true;
       if (videoElement) {
@@ -229,7 +233,7 @@ export const startRecording = async (
           oldMediaRecorder.stop();
           mediaRecorder.start();
 
-          chunkStartTime = now;
+          chunkStartTime = audioContext.currentTime;
           silenceStart = 0;
           currentChunkIndex++;
         }
@@ -245,7 +249,7 @@ export const startRecording = async (
         oldMediaRecorder.stop();
         mediaRecorder.start();
 
-        chunkStartTime = now;
+        chunkStartTime = audioContext.currentTime;
         currentChunkIndex++;
       }
     };
@@ -253,11 +257,8 @@ export const startRecording = async (
     const setupMediaRecorder = (mode: string, apikey: string) => {
       mediaRecorder.ondataavailable = async (event) => {
         if (event.data.size > 0 && currentConsultation) {
-          // Calculate duration from blob size (48kHz stereo audio)
-          const sampleRate = 48000;
-          const channels = 2;
-          const bytesPerSample = 2; // 16-bit audio
-          const duration = Math.ceil(event.data.size / (sampleRate * channels * bytesPerSample));
+          // Calculate duration using AudioContext timing
+          const chunkDuration = Math.ceil(audioContext.currentTime - chunkStartTime);
           const chunk: ChunkData = {
             consultationId: currentConsultation.id,
             recordingId: currentConsultation.recording.id,
