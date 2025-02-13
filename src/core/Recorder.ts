@@ -46,8 +46,8 @@ let analyserNode: AnalyserNode | null = null;
 let localStream: MediaStream | null = null;
 
 // Move consultation state from store to class variables
-let audioContextStartTime: number = 0;
 let chunkStartTime: number = 0;
+let audioContextStartTime: number = 0;
 let currentConsultation: ConsultationResponse | null = null;
 let currentChunkIndex: number = -1;
 
