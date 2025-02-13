@@ -264,10 +264,12 @@ export const startRecording = async (
             retryCount: 0,
             timestamp: Date.now()
           };
+          addPendingUpload(currentChunkIndex);
           const uploaded = await uploadChunk(chunk, mode, apikey);
           if (!uploaded) {
             await saveChunk(chunk);
           }
+          removePendingUpload(currentChunkIndex);
         }
       };
     };
@@ -368,12 +370,23 @@ export const finishRecording = async ({
 
   state.status = "finishing";
 
+  // Track chunks being uploaded for the first time
+  let pendingFirstUploads = new Set<number>();
+
+  const addPendingUpload = (index: number) => {
+    pendingFirstUploads.add(index);
+  };
+
+  const removePendingUpload = (index: number) => {
+    pendingFirstUploads.delete(index);
+  };
+
   // Wait for all chunks to upload
   const waitForChunks = async (maxAttempts = 10) => {
     let attempts = 0;
     while (attempts < maxAttempts) {
       const failedChunks = await getFailedChunks();
-      if (failedChunks.length === 0) {
+      if (failedChunks.length === 0 && pendingFirstUploads.size === 0) {
         return true;
       }
       attempts++;
