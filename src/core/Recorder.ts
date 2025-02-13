@@ -202,7 +202,8 @@ export const startRecording = async (
     const bufferLength = analyserNode.frequencyBinCount;
     const dataArray = new Float32Array(bufferLength);
     let silenceStart = 0;
-    let chunkStartTime = Date.now();
+    // Use module-level chunkStartTime initialized with AudioContext time
+    chunkStartTime = audioContext.currentTime;
 
     // Create a separate audio path for silence detection
     const silenceSource = audioContext.createMediaStreamSource(composedStream);
@@ -217,23 +218,24 @@ export const startRecording = async (
       const rms = Math.sqrt(dataArray.reduce((acc, val) => acc + val * val, 0) / dataArray.length);
       const db = 20 * Math.log10(rms);
 
-      const now = Date.now();
-      const chunkDuration = (now - chunkStartTime) / 1000;
+      const currentTime = audioContext.currentTime;
+      const chunkDuration = currentTime - chunkStartTime;
 
       if (db <= CHUNK_CONFIG.SILENCE_THRESHOLD) {
-        if (!silenceStart) silenceStart = now;
-        const silenceDuration = (now - silenceStart) / 1000;
+        if (!silenceStart) silenceStart = currentTime;
+        const silenceDuration = currentTime - silenceStart;
 
         if (silenceDuration >= CHUNK_CONFIG.SILENCE_DURATION &&
           chunkDuration >= CHUNK_CONFIG.MIN_DURATION) {
           // Stop current recording and start new one
           const oldMediaRecorder = mediaRecorder;
+          const newChunkStartTime = audioContext.currentTime;
           mediaRecorder = new MediaRecorder(composedStream);
           setupMediaRecorder(mode, apikey);
           oldMediaRecorder.stop();
           mediaRecorder.start();
 
-          chunkStartTime = audioContext.currentTime;
+          chunkStartTime = newChunkStartTime;
           silenceStart = 0;
           currentChunkIndex++;
         }
@@ -244,12 +246,13 @@ export const startRecording = async (
       // Force split if max duration reached
       if (chunkDuration >= CHUNK_CONFIG.MAX_DURATION) {
         const oldMediaRecorder = mediaRecorder;
+        const newChunkStartTime = audioContext.currentTime;
         mediaRecorder = new MediaRecorder(composedStream);
         setupMediaRecorder(mode, apikey);
         oldMediaRecorder.stop();
         mediaRecorder.start();
 
-        chunkStartTime = audioContext.currentTime;
+        chunkStartTime = newChunkStartTime;
         currentChunkIndex++;
       }
     };
@@ -259,12 +262,12 @@ export const startRecording = async (
         if (event.data.size > 0 && currentConsultation) {
           // Calculate duration using AudioContext timing (in seconds)
           const currentTime = audioContext.currentTime;
-          const chunkDuration = Math.ceil(Math.max(0, currentTime - chunkStartTime));
+          const duration = Math.max(1, Math.ceil(currentTime - chunkStartTime));
           const chunk: ChunkData = {
             consultationId: currentConsultation.id,
             recordingId: currentConsultation.recording.id,
             chunk: event.data,
-            duration: chunkDuration,
+            duration,
             index: currentChunkIndex,
             retryCount: 0,
             timestamp: Date.now()
@@ -360,6 +363,7 @@ export const finishRecording = async ({
   // Stop recording first
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     currentChunkIndex++; // Increment index before final chunk
+    chunkStartTime = audioContext.currentTime; // Update for the final chunk
     mediaRecorder.stop();
   }
 
