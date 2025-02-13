@@ -1,11 +1,48 @@
 import { version } from '../../package.json';
 
 import state from "../store";
-import { deleteConsultationById, getConsultation, getConsultationsByProfessional, saveConsultation } from '../utils/indexDb';
+import { deleteConsultationById, getConsultation, getConsultationsByProfessional, saveConsultation, saveChunk, getFailedChunks, deleteChunk } from '../utils/indexDb';
 import { EventSourceManager } from "../utils/sse";
+
+const CHUNK_CONFIG = {
+  MIN_DURATION: 270, // seconds
+  MAX_DURATION: 300, // seconds
+  SILENCE_THRESHOLD: -50, // dB
+  SILENCE_DURATION: 0.5, // seconds of silence needed for chunk split
+  RETRY_INTERVAL: 5000, // ms
+  MAX_RETRIES: 3
+};
+
+const API_ENDPOINTS = {
+  CONSULTATION_INIT: '/integration/consultations/v2',
+  CONSULTATION_CHUNK: (consultationId: string, recordingId: string) => 
+    `/integration/consultations/${consultationId}/recordings/${recordingId}/chunks`,
+  CONSULTATION_FINISH: (consultationId: string, recordingId: string) => 
+    `/integration/consultations/${consultationId}/recordings/${recordingId}/finish`
+};
+
+interface ConsultationResponse {
+  id: string;
+  recording: {
+    id: string;
+  };
+}
+
+interface ChunkData {
+  id?: number;
+  consultationId: string;
+  recordingId: string;
+  chunk: Blob;
+  duration: number;
+  index: number;
+  retryCount: number;
+  timestamp: number;
+}
 
 
 let mediaRecorder: MediaRecorder | null = null;
+let silenceDetectorNode: ScriptProcessorNode | null = null;
+let analyserNode: AnalyserNode | null = null;
 
 let localStream: MediaStream | null = null;
 
@@ -28,10 +65,53 @@ export const StartTutorial = () => {
 }
 
 
-export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideoElement) => {
-  state.chooseModality = true;
+export const startRecording = async (
+  isRemote: boolean,
+  videoElement?: HTMLVideoElement,
+  mode?: string,
+  apikey?: string,
+  professional?: string,
+  metadata?: string
+) => {
+  if (!mode || !apikey || !professional) {
+    console.error('Missing required parameters for recording');
+    state.status = "initial";
+    return;
+  }
 
-  const constraints = {
+  try {
+    const baseUrl = mode === "dev"
+      ? "https://apim.doctorassistant.ai/api/sandbox"
+      : "https://apim.doctorassistant.ai/api/production";
+
+    const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_INIT, {
+      method: 'POST',
+      headers: {
+        'x-daai-api-key': apikey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        professionalId: professional,
+        metadata: typeof metadata === 'string' ? JSON.parse(metadata) : metadata
+      })
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('Failed to initialize consultation:', error);
+      state.status = "initial";
+      return;
+    }
+    
+    const consultation: ConsultationResponse = await response.json();
+    state.currentConsultation = consultation;
+    state.currentChunkIndex = 0;
+    state.chooseModality = true;
+    
+    // Start the retry process for this recording session
+    startRetryProcess(mode, apikey);
+
+    const constraints = {
     audio: {
       deviceId: state.chosenMicrophone
         ? { exact: state.defaultMicrophone }
@@ -107,10 +187,116 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
     .getAudioTracks()
     .forEach((track) => composedStream.addTrack(track));
 
-  mediaRecorder = new MediaRecorder(composedStream);
+  analyserNode = audioContext.createAnalyser();
+  analyserNode.fftSize = 2048;
+  const bufferLength = analyserNode.frequencyBinCount;
+  const dataArray = new Float32Array(bufferLength);
+  let silenceStart = 0;
+  let chunkStartTime = Date.now();
 
-  mediaRecorder.onstart = () => { };
+  // Connect analyser to audio graph
+  const micSource = audioContext.createMediaStreamSource(composedStream);
+  micSource.connect(analyserNode);
+  analyserNode.connect(audioContext.destination);
+
+  silenceDetectorNode = audioContext.createScriptProcessor(2048, 1, 1);
+  analyserNode.connect(silenceDetectorNode);
+  silenceDetectorNode.connect(audioContext.destination);
+  silenceDetectorNode.onaudioprocess = () => {
+    analyserNode.getFloatTimeDomainData(dataArray);
+    
+    const rms = Math.sqrt(dataArray.reduce((acc, val) => acc + val * val, 0) / dataArray.length);
+    const db = 20 * Math.log10(rms);
+    
+    const now = Date.now();
+    const chunkDuration = (now - chunkStartTime) / 1000;
+    
+    if (db <= CHUNK_CONFIG.SILENCE_THRESHOLD) {
+      if (!silenceStart) silenceStart = now;
+      const silenceDuration = (now - silenceStart) / 1000;
+      
+      if (silenceDuration >= CHUNK_CONFIG.SILENCE_DURATION && 
+          chunkDuration >= CHUNK_CONFIG.MIN_DURATION) {
+        // Stop current recording and start new one
+        const oldMediaRecorder = mediaRecorder;
+        mediaRecorder = new MediaRecorder(composedStream);
+        setupMediaRecorder(mode, apikey);
+        oldMediaRecorder.stop();
+        mediaRecorder.start();
+        
+        chunkStartTime = now;
+        silenceStart = 0;
+        state.currentChunkIndex++;
+      }
+    } else {
+      silenceStart = 0;
+    }
+    
+    // Force split if max duration reached
+    if (chunkDuration >= CHUNK_CONFIG.MAX_DURATION) {
+      const oldMediaRecorder = mediaRecorder;
+      mediaRecorder = new MediaRecorder(composedStream);
+      setupMediaRecorder(mode, apikey);
+      oldMediaRecorder.stop();
+      mediaRecorder.start();
+      
+      chunkStartTime = now;
+      state.currentChunkIndex++;
+    }
+  };
+
+  const setupMediaRecorder = (mode: string, apikey: string) => {
+    mediaRecorder.ondataavailable = async (event) => {
+      if (event.data.size > 0 && state.currentConsultation) {
+        const chunk: ChunkData = {
+          consultationId: state.currentConsultation.id,
+          recordingId: state.currentConsultation.recording.id,
+          chunk: event.data,
+          duration: (Date.now() - chunkStartTime) / 1000,
+          index: state.currentChunkIndex,
+          retryCount: 0,
+          timestamp: Date.now()
+        };
+        await saveChunk(chunk);
+        await uploadChunk(chunk, mode, apikey);
+      }
+    };
+  };
+
+  mediaRecorder = new MediaRecorder(composedStream);
+  setupMediaRecorder(mode, apikey);
   mediaRecorder.start();
+  } catch (error) {
+    console.error('Error starting recording:', error);
+    state.status = "initial";
+    if (mediaRecorder) {
+      try {
+        mediaRecorder.stop();
+      } catch (e) {
+        // Ignore stop errors
+      }
+    }
+    if (localStream) {
+      localStream.getTracks().forEach(track => track.stop());
+      localStream = null;
+    }
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => track.stop());
+      screenStream = null;
+    }
+    if (silenceDetectorNode) {
+      silenceDetectorNode.disconnect();
+      silenceDetectorNode = null;
+    }
+    if (analyserNode) {
+      analyserNode.disconnect();
+      analyserNode = null;
+    }
+    if (retryInterval) {
+      clearInterval(retryInterval);
+      retryInterval = null;
+    }
+  }
 };
 
 export const pauseRecording = () => {
@@ -145,70 +331,78 @@ type FinishRecordingProps = {
  professional:string,
 }
 
-export const finishRecording = async (
-  {mode,
+export const finishRecording = async ({
+  mode,
   apikey,
   success,
   error,
   specialty,
-  metadata, onEvent, professional}: FinishRecordingProps ) => {
-  const handleRecordingStop = async (audioChunks: Blob[]) => {
-    try {
-      const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-      await uploadAudio(
-      {
-        mode:mode,
-        audioBlob:audioBlob,
-        apiKey:apikey,
-        success:success,
-        error:error,
-        specialty:specialty,
-        metadata:metadata,
-        event:onEvent,
-        professional:professional,
-      }
-      );
-    } catch (error) {
-      console.error("Não foi possível enviar o áudio", error);
-    }
-  };
-  const audioChunks: Blob[] = [];
-
-  mediaRecorder.ondataavailable = (event) => {
-    if (event.data.size > 0) {
-      audioChunks.push(event.data);
-    }
-  };
-  mediaRecorder.onstop = () => {
-    if (mediaRecorder.stream) {
-      mediaRecorder.stream.getTracks().forEach(track => {
-        track.stop();
-      });
-    }
-    if (localStream) {
-      localStream.getTracks().forEach(track => {
-        track.stop();
-      });
-      localStream = null;
-    }
-
-    if (screenStream) {
-      screenStream.getTracks().forEach(track => {
-        track.stop();
-      });
-      screenStream = null;
-    }
-
-    mediaRecorder = null;
-    handleRecordingStop(audioChunks);
-  };
-
+  metadata,
+  onEvent,
+  professional
+}: FinishRecordingProps) => {
+  // Stop recording first
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     mediaRecorder.stop();
-    state.status = "finished";
-  } else {
-    console.warn('MediaRecorder not in recording state, cannot stop');
-    state.status = "finished";
+  }
+
+  // Clean up streams
+  if (mediaRecorder?.stream) {
+    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+  }
+  if (localStream) {
+    localStream.getTracks().forEach(track => track.stop());
+    localStream = null;
+  }
+  if (screenStream) {
+    screenStream.getTracks().forEach(track => track.stop());
+    screenStream = null;
+  }
+  mediaRecorder = null;
+
+  // Wait for all chunks to upload
+  const waitForChunks = async () => {
+    const failedChunks = await getFailedChunks();
+    if (failedChunks.length > 0) {
+      await new Promise(resolve => setTimeout(resolve, CHUNK_CONFIG.RETRY_INTERVAL));
+      return waitForChunks();
+    }
+  };
+
+  state.status = "finished";
+  
+  try {
+    await waitForChunks();
+    
+    // Finalize consultation
+    const baseUrl = mode === "dev"
+      ? "https://apim.doctorassistant.ai/api/sandbox"
+      : "https://apim.doctorassistant.ai/api/production";
+
+    const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_FINISH(
+      state.currentConsultation.id,
+      state.currentConsultation.recording.id
+    ), {
+      method: 'POST',
+      headers: {
+        'x-daai-api-key': apikey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ specialty })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to finalize consultation');
+    }
+    
+    if (typeof success === "function") {
+      success(await response.json());
+    }
+  } catch (err) {
+    state.status = "upload-error";
+    if (typeof error === "function") {
+      error(err);
+    }
   }
 };
 type UploadAudioProps = {
@@ -222,9 +416,76 @@ type UploadAudioProps = {
   event:(event:any) => void,
   professional:string,
   isRetry?:boolean,
- }
+}
 
- export const uploadAudio = async ({ mode, audioBlob, apiKey, success, error, specialty, metadata, event, professional, isRetry }: UploadAudioProps) => {
+export const uploadChunk = async (chunk: ChunkData, mode: string, apiKey: string) => {
+  const baseUrl = mode === "dev"
+    ? "https://apim.doctorassistant.ai/api/sandbox"
+    : "https://apim.doctorassistant.ai/api/production";
+
+  const formData = new FormData();
+  formData.append('recording', chunk.chunk);
+  formData.append('duration', chunk.duration.toString());
+  formData.append('chunkIndex', chunk.index.toString());
+  
+  try {
+    const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_CHUNK(chunk.consultationId, chunk.recordingId), {
+      method: 'POST',
+      headers: {
+        'x-daai-api-key': apiKey
+      },
+      body: formData
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to upload chunk');
+    }
+    
+    await deleteChunk(chunk.id);
+  } catch (error) {
+    console.error('Error uploading chunk:', error);
+    // Retry handled by background process
+  }
+};
+
+// Start background retry process
+let retryInterval: number | null = null;
+
+export const startRetryProcess = (mode: string, apiKey: string) => {
+  // Clear any existing retry process
+  if (retryInterval) {
+    clearInterval(retryInterval);
+  }
+  if (!mode || !apiKey) {
+    console.error('Missing required parameters for retry process');
+    return;
+  }
+  retryInterval = setInterval(async () => {
+    if (state.isProcessingChunk) return;
+    
+    state.isProcessingChunk = true;
+    try {
+      const failedChunks = await getFailedChunks();
+      for (const chunk of failedChunks) {
+        if (chunk.retryCount >= CHUNK_CONFIG.MAX_RETRIES) {
+          await deleteChunk(chunk.id);
+          continue;
+        }
+        
+        try {
+          await uploadChunk(chunk, mode, apiKey);
+        } catch (error) {
+          chunk.retryCount++;
+          await saveChunk(chunk);
+        }
+      }
+    } finally {
+      state.isProcessingChunk = false;
+    }
+  }, CHUNK_CONFIG.RETRY_INTERVAL);
+};
+
+export const uploadAudio= async ({ mode, audioBlob, apiKey, success, error, specialty, metadata, event, professional, isRetry }: UploadAudioProps) => {
   const url =
     mode === "dev"
       ? "https://apim.doctorassistant.ai/api/sandbox/consultations"

@@ -144,7 +144,7 @@ export class DaaiConsultationActions {
                   ) {
                     this.telemedicine
                       ? this.choosenMode()
-                      : startRecording(false);
+                      : startRecording(false, undefined, this.mode, this.apikey, this.professional, this.metadata);
                   }
                 }}
                 disabled={
@@ -173,7 +173,7 @@ export class DaaiConsultationActions {
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
               id="choose-local-consultation"
-              onClick={() => startRecording(false)}
+              onClick={() => startRecording(false, undefined, this.mode, this.apikey, this.professional, this.metadata)}
             >
               <div class="flex items-center justify-center p-2">Presencial</div>
             </daai-button-with-icon>
@@ -181,7 +181,7 @@ export class DaaiConsultationActions {
               id="choose-telemedicine-consultation"
               onClick={() =>
                 state.isChecked || this.hideTutorial
-                  ? startRecording(true, this.videoElement)
+                  ? startRecording(true, this.videoElement, this.mode, this.apikey, this.professional, this.metadata)
                   : StartTutorial()
               }
             >

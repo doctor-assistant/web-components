@@ -129,6 +129,31 @@ export async function getSpecialtiesByProfessionalId(professionalId: string): Pr
 }
 
 
+interface ChunkUpload {
+  id?: number;
+  consultationId: string;
+  recordingId: string;
+  chunk: Blob;
+  duration: number;
+  index: number;
+  retryCount: number;
+  timestamp: number;
+}
+
+class ChunkUploadDB extends Dexie {
+  chunks: Dexie.Table<ChunkUpload, number>;
+
+  constructor() {
+    super("chunkUploadDb");
+    this.version(1).stores({
+      chunks: "++id,consultationId,recordingId,index,timestamp"
+    });
+    this.chunks = this.table("chunks");
+  }
+}
+
+const chunkUploadDb = new ChunkUploadDB();
+
 class ConsusltationDb extends Dexie {
   consultations: Dexie.Table<Consultation, string>;
 
@@ -200,6 +225,50 @@ export async function deleteConsultationById(professionalId: string, id: number)
     });
   } catch (error) {
     console.error("Erro ao deletar a consulta:", error);
+  }
+}
+
+export async function saveChunk(chunk: ChunkUpload) {
+  try {
+    await chunkUploadDb.transaction("rw", chunkUploadDb.chunks, async () => {
+      await chunkUploadDb.chunks.add({
+        ...chunk,
+        retryCount: chunk.retryCount || 0,
+        timestamp: chunk.timestamp || Date.now()
+      });
+    });
+  } catch (error) {
+    console.error("Erro ao salvar chunk:", error);
+  }
+}
+
+export async function getFailedChunks() {
+  try {
+    return await chunkUploadDb.chunks
+      .orderBy("timestamp")
+      .toArray();
+  } catch (error) {
+    console.error("Erro ao buscar chunks:", error);
+    return [];
+  }
+}
+
+export async function deleteChunk(id: number) {
+  try {
+    await chunkUploadDb.transaction("rw", chunkUploadDb.chunks, async () => {
+      const deletedCount = await chunkUploadDb.chunks
+        .where("id")
+        .equals(id)
+        .delete();
+
+      if (deletedCount > 0) {
+        console.warn(`Chunk com ID ${id} foi deletado.`);
+      } else {
+        console.warn(`Nenhum chunk encontrado para o ID ${id}.`);
+      }
+    });
+  } catch (error) {
+    console.error("Erro ao deletar chunk:", error);
   }
 }
 
