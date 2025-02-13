@@ -19,6 +19,7 @@ const { state } = createStore({
   chooseSpecialty: "",
   specialtyTitle: "",
   defaultSpecialty: "",
+  isProcessingChunk: false,
 });
 
 export default state;
