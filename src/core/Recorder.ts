@@ -247,7 +247,7 @@ export const startRecording = async (
     const setupMediaRecorder = (mode: string, apikey: string) => {
       mediaRecorder.ondataavailable = async (event) => {
         if (event.data.size > 0 && state.currentConsultation) {
-          const duration = event.data.size / (48000 * 2); // Assuming 48kHz stereo audio
+          const duration = Math.ceil(event.data.size / (48000 * 2)); // Assuming 48kHz stereo audio, rounded up
           const chunk: ChunkData = {
             consultationId: state.currentConsultation.id,
             recordingId: state.currentConsultation.recording.id,
@@ -359,6 +359,8 @@ export const finishRecording = async ({
   }
   mediaRecorder = null;
 
+  state.status = "finishing";
+
   // Wait for all chunks to upload
   const waitForChunks = async () => {
     const failedChunks = await getFailedChunks();
@@ -368,10 +370,9 @@ export const finishRecording = async ({
     }
   };
 
-  state.status = "finished";
-
   try {
     await waitForChunks();
+    state.status = "finished";
 
     // Finalize consultation
     const baseUrl = mode === "dev"
