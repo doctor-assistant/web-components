@@ -127,10 +127,10 @@ export const startRecording = async (
       },
     };
     if (!audioContext) {
-      audioContext = new AudioContext()
+      audioContext = new AudioContext();
+      audioContextStartTime = audioContext.currentTime;
+      chunkStartTime = audioContextStartTime;
     }
-    audioContextStartTime = audioContext.currentTime;
-    chunkStartTime = audioContextStartTime;
     if (isRemote) {
       state.telemedicine = true;
       if (videoElement) {
@@ -257,8 +257,9 @@ export const startRecording = async (
     const setupMediaRecorder = (mode: string, apikey: string) => {
       mediaRecorder.ondataavailable = async (event) => {
         if (event.data.size > 0 && currentConsultation) {
-          // Calculate duration using AudioContext timing
-          const chunkDuration = Math.ceil(audioContext.currentTime - chunkStartTime);
+          // Calculate duration using AudioContext timing (in seconds)
+          const currentTime = audioContext.currentTime;
+          const chunkDuration = Math.ceil(Math.max(0, currentTime - chunkStartTime));
           const chunk: ChunkData = {
             consultationId: currentConsultation.id,
             recordingId: currentConsultation.recording.id,
