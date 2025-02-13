@@ -353,6 +353,8 @@ export const finishRecording = async ({
   error,
   specialty,
 }: FinishRecordingProps) => {
+  state.status = "finishing";
+  
   // Stop recording first
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     currentChunkIndex++; // Increment index before final chunk
@@ -388,11 +390,13 @@ export const finishRecording = async ({
   };
 
   try {
-    state.status = "finished";
     const allUploaded = await waitForChunks();
     if (!allUploaded) {
       throw new Error('Failed to upload all chunks after multiple attempts');
     }
+    
+    pendingFirstUploads.clear(); // Clean up after all chunks are uploaded
+    state.status = "finished";
 
     // Finalize consultation
     const baseUrl = mode === "dev"
@@ -421,6 +425,7 @@ export const finishRecording = async ({
       success(jsonResponse);
     }
   } catch (err) {
+    pendingFirstUploads.clear(); // Clean up on error
     state.status = "upload-error";
     if (typeof error === "function") {
       error(err);
