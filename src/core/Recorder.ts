@@ -46,10 +46,10 @@ let analyserNode: AnalyserNode | null = null;
 let localStream: MediaStream | null = null;
 
 // Move consultation state from store to class variables
+let audioContextStartTime: number = 0;
+let chunkStartTime: number = 0;
 let currentConsultation: ConsultationResponse | null = null;
 let currentChunkIndex: number = -1;
-let chunkStartTime: number = 0;
-let audioContextStartTime: number = 0;
 
 let screenStream: MediaStream | null = null;
 
@@ -263,7 +263,7 @@ export const startRecording = async (
             consultationId: currentConsultation.id,
             recordingId: currentConsultation.recording.id,
             chunk: event.data,
-            duration: duration,
+            duration: chunkDuration,
             index: currentChunkIndex,
             retryCount: 0,
             timestamp: Date.now()
