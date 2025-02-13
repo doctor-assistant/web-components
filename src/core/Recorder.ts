@@ -104,7 +104,7 @@ export const startRecording = async (
 
     const consultation: ConsultationResponse = await response.json();
     state.currentConsultation = consultation;
-    state.currentChunkIndex = 0;
+    state.currentChunkIndex = -1; // Will be incremented to 0 before first chunk
     state.chooseModality = true;
 
     // Start the retry process for this recording session
@@ -247,17 +247,20 @@ export const startRecording = async (
     const setupMediaRecorder = (mode: string, apikey: string) => {
       mediaRecorder.ondataavailable = async (event) => {
         if (event.data.size > 0 && state.currentConsultation) {
+          const duration = event.data.size / (48000 * 2); // Assuming 48kHz stereo audio
           const chunk: ChunkData = {
             consultationId: state.currentConsultation.id,
             recordingId: state.currentConsultation.recording.id,
             chunk: event.data,
-            duration: (Date.now() - chunkStartTime) / 1000,
+            duration: duration,
             index: state.currentChunkIndex,
             retryCount: 0,
             timestamp: Date.now()
           };
-          await saveChunk(chunk);
-          await uploadChunk(chunk, mode, apikey);
+          const uploaded = await uploadChunk(chunk, mode, apikey);
+          if (!uploaded) {
+            await saveChunk(chunk);
+          }
         }
       };
     };
@@ -391,8 +394,10 @@ export const finishRecording = async ({
       throw new Error('Failed to finalize consultation');
     }
 
+    const jsonResponse = await response.json();
+    state.status = "upload-ok";
     if (typeof success === "function") {
-      success(await response.json());
+      success(jsonResponse);
     }
   } catch (err) {
     state.status = "upload-error";
@@ -438,9 +443,10 @@ export const uploadChunk = async (chunk: ChunkData, mode: string, apiKey: string
     }
 
     await deleteChunk(chunk.id);
+    return true; // Upload successful
   } catch (error) {
     console.error('Error uploading chunk:', error);
-    // Retry handled by background process
+    return false; // Upload failed, will be retried
   }
 };
 
