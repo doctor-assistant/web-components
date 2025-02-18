@@ -130,7 +130,7 @@ export async function getSpecialtiesByProfessionalId(professionalId: string): Pr
 
 
 interface ChunkUpload {
-  id?: number;
+  id: string;
   consultationId: string;
   recordingId: string;
   chunk: Blob;
@@ -253,7 +253,8 @@ export async function getFailedChunks() {
   }
 }
 
-export async function deleteChunk(id: number) {
+export async function deleteChunk(id: string) {
+  console.log(id,'id')
   try {
     await chunkUploadDb.transaction("rw", chunkUploadDb.chunks, async () => {
       const deletedCount = await chunkUploadDb.chunks

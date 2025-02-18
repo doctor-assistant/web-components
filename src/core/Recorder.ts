@@ -1,7 +1,7 @@
 import { version } from '../../package.json';
 
 import state from "../store";
-import { deleteConsultationById, getConsultation, getConsultationsByProfessional, saveConsultation, saveChunk, getFailedChunks, deleteChunk } from '../utils/indexDb';
+import { deleteChunk, deleteConsultationById, getConsultation, getConsultationsByProfessional, getFailedChunks, saveChunk, saveConsultation } from '../utils/indexDb';
 import { EventSourceManager } from "../utils/sse";
 
 const CHUNK_CONFIG = {
@@ -9,8 +9,8 @@ const CHUNK_CONFIG = {
   MAX_DURATION: 300, // seconds
   SILENCE_THRESHOLD: -50, // dB
   SILENCE_DURATION: 0.5, // seconds of silence needed for chunk split
-  RETRY_INTERVAL: 200, // ms
-  MAX_RETRIES: 3
+  RETRY_INTERVAL: 300, // ms
+  MAX_RETRIES: 5
 };
 
 const API_ENDPOINTS = {
@@ -29,7 +29,7 @@ interface ConsultationResponse {
 }
 
 interface ChunkData {
-  id?: number;
+  id: string;
   consultationId: string;
   recordingId: string;
   chunk: Blob;
@@ -89,9 +89,10 @@ export const startRecording = async (
 
   try {
     const baseUrl = mode === "dev"
-      ? "https://apim.doctorassistant.ai/api/sandbox"
-      : "https://apim.doctorassistant.ai/api/production";
-
+    ? "https://apim.doctorassistant.ai/api/sandbox"
+    : "https://apim.doctorassistant.ai/api/production";
+    console.log('baseUrl',baseUrl)
+    console.log('baseUrl + API_ENDPOINTS.CONSULTATION_INIT',baseUrl + API_ENDPOINTS.CONSULTATION_INIT)
     const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_INIT, {
       method: 'POST',
       headers: {
@@ -213,7 +214,9 @@ export const startRecording = async (
     analyserNode.connect(silenceDetectorNode);
     silenceDetectorNode.connect(audioContext.destination); // Required for processing to work
     silenceDetectorNode.onaudioprocess = () => {
-      analyserNode.getFloatTimeDomainData(dataArray);
+      if(analyserNode){
+        analyserNode.getFloatTimeDomainData(dataArray);
+      }
 
       const rms = Math.sqrt(dataArray.reduce((acc, val) => acc + val * val, 0) / dataArray.length);
       const db = 20 * Math.log10(rms);
@@ -264,6 +267,7 @@ export const startRecording = async (
           const currentTime = audioContext.currentTime;
           const duration = Math.max(1, Math.ceil(currentTime - chunkStartTime));
           const chunk: ChunkData = {
+            id:`${currentChunkIndex}-${currentConsultation.recording.id}`,
             consultationId: currentConsultation.id,
             recordingId: currentConsultation.recording.id,
             chunk: event.data,
@@ -382,32 +386,24 @@ export const finishRecording = async ({
   mediaRecorder = null;
 
   // Wait for all chunks to upload
-  const waitForChunks = async (maxAttempts = 10) => {
-    let attempts = 0;
-    while (attempts < maxAttempts) {
-      const failedChunks = await getFailedChunks();
-      if (failedChunks.length === 0 && pendingFirstUploads.size === 0) {
-        return true;
-      }
-      attempts++;
+  const waitForChunks = async () => {
+    let failedChunks = await getFailedChunks();
+    while (failedChunks.length !== 0 || pendingFirstUploads.size !== 0) {
       await new Promise(resolve => setTimeout(resolve, CHUNK_CONFIG.RETRY_INTERVAL));
+      failedChunks = await getFailedChunks();
     }
-    return false;
   };
 
   try {
-    const allUploaded = await waitForChunks();
-    if (!allUploaded) {
-      throw new Error('Failed to upload all chunks after multiple attempts');
-    }
-
+    await waitForChunks();
     pendingFirstUploads.clear(); // Clean up after all chunks are uploaded
 
     // Finalize consultation
     const baseUrl = mode === "dev"
       ? "https://apim.doctorassistant.ai/api/sandbox"
       : "https://apim.doctorassistant.ai/api/production";
-
+    specialty = specialty || 'generic'
+    console.log(specialty,'specialty')
     const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_FINISH(
       currentConsultation.id,
       currentConsultation.recording.id
@@ -526,6 +522,7 @@ export const uploadAudio = async ({ mode, audioBlob, apiKey, success, error, spe
 
   const formData = new FormData();
   formData.append("recording", audioBlob);
+  console.log(specialty,'spec')
   if (specialty) {
     formData.append("specialty", specialty);
   }
