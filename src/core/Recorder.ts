@@ -12,6 +12,8 @@ let localStream: MediaStream | null = null;
 // Stream for screen sharing in remote/telemedicine mode
 let screenStream: MediaStream | null = null;
 
+export { mediaRecorder };
+
 let retryIdFromIndexDb: any
 
 let retryProfessionalFromIndexDb:any

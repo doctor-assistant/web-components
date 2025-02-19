@@ -52,6 +52,12 @@ export class DaaiRecordingAnimation {
     await this.startAnimationRecording();
   }
 
+  @Watch("stream")
+  async handleStreamChange() {
+    await this.initializeAudio();
+    await this.startAnimationRecording();
+  }
+
   async initializeAudio() {
     if (this.stream) {
       // Use provided stream (e.g. from telemedicine)

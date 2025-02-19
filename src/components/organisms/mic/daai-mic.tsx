@@ -1,5 +1,6 @@
 import { Component, Event, EventEmitter, h } from "@stencil/core";
 import state from "../../../store";
+import { mediaRecorder } from "../../../core/Recorder";
 
 @Component({
   tag: "daai-mic",
@@ -70,7 +71,7 @@ export class DaaiMic {
                 <daai-recording-animation
                   id="animation-recording"
                   status={state.status}
-                  stream={state.composedStream}
+                  stream={mediaRecorder?.stream}
                 />
               </div>
             </div>
@@ -91,7 +92,7 @@ export class DaaiMic {
                 <daai-recording-animation
                   id="animation-recording"
                   status={state.status}
-                  stream={state.composedStream}
+                  stream={mediaRecorder?.stream}
                 />
               </div>
             </div>
