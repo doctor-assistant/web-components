@@ -1,6 +1,6 @@
 import { Component, Element, h, Prop, Watch } from "@stencil/core";
 import {
-  getAudioDestinationStream,
+  getVisualizationStream,
 } from "../../../core/Recorder";
 
 @Component({
@@ -52,7 +52,7 @@ export class DaaiRecordingAnimation {
   }
 
   async initializeAudio() {
-    const mediaStream = await getAudioDestinationStream();
+    const mediaStream = await getVisualizationStream();
     if (!mediaStream) {
       console.error("Nenhuma stream de áudio encontrada!");
       return;

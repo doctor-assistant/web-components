@@ -1,5 +1,5 @@
-import { Component, Event, EventEmitter, h } from "@stencil/core";
-import state from "../../../store";
+import { Component, Event, EventEmitter, h, State } from "@stencil/core";
+import state, { onChange } from "../../../store";
 
 @Component({
   tag: "daai-mic",
@@ -8,6 +8,7 @@ import state from "../../../store";
 })
 export class DaaiMic {
   @Event() interfaceEvent: EventEmitter<{ microphoneSelect: boolean }>;
+  @State() showAnimation = false;
 
   connectedCallback() {
     this.requestMicrophonePermission();
@@ -51,6 +52,14 @@ export class DaaiMic {
     }
   }
 
+  watchStatus() {
+    this.showAnimation = ["recording", "resume", "paused"].includes(state.status);
+  }
+
+  componentWillLoad() {
+    onChange("status", () => this.watchStatus());
+  }
+
   render() {
     return (
       <div class="flex items-center justify-center gap-2">
@@ -72,7 +81,7 @@ export class DaaiMic {
               />
             </div>
           ) : null}
-          {state.status === "recording" || state.status === "resume" || state.status === "paused" && (
+          {this.showAnimation && (
             <div class="flex items-center justify-center">
               {state.status !== "paused" && <daai-text text="Gravando..." id="initial-text"></daai-text>}
               {state.status === "paused" && <daai-text text="Pausado" id="initial-text"></daai-text>}
@@ -85,10 +94,12 @@ export class DaaiMic {
             </div>
           )}
         </div>
-        {state.microphonePermission === true && state.status === "initial" && (
-          <div></div>
-        )}
-      </div>
+        {
+          state.microphonePermission === true && state.status === "initial" && (
+            <div></div>
+          )
+        }
+      </div >
     );
   }
 }

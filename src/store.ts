@@ -1,6 +1,6 @@
 import { createStore } from "@stencil/store";
 
-const { state } = createStore({
+const { state, onChange } = createStore({
   status: "initial",
   telemedicine: false,
   openModalConfig: false,
@@ -23,3 +23,4 @@ const { state } = createStore({
 });
 
 export default state;
+export { onChange };

@@ -65,14 +65,14 @@ const pendingFirstUploads = new Set<number>();
 let retryIdFromIndexDb: any
 
 let retryProfessionalFromIndexDb: any
-let audioDestination: MediaStreamAudioDestinationNode | null = null;
+let visualizationStream: MediaStream | null = null;
 
 
-export const getAudioDestinationStream = async () => {
-  while (!audioDestination?.stream) {
+export const getVisualizationStream = async () => {
+  while (!visualizationStream) {
     await new Promise(resolve => setTimeout(resolve, 200));
   }
-  return audioDestination.stream;
+  return visualizationStream;
 }
 
 export const StartTutorial = () => {
@@ -187,7 +187,7 @@ export const startRecording = async (
 
     localStream = micStream;
     const composedStream = new MediaStream();
-    audioDestination = audioContext.createMediaStreamDestination();
+    const audioDestination = audioContext.createMediaStreamDestination();
 
     if (isRemote) {
       if (videoElementStream?.getAudioTracks().length > 0) {
@@ -213,6 +213,8 @@ export const startRecording = async (
     audioDestination.stream
       .getAudioTracks()
       .forEach((track) => composedStream.addTrack(track));
+
+    visualizationStream = composedStream.clone();
 
     const event = new CustomEvent('audioDestinationStream');
     window.dispatchEvent(event);
@@ -360,6 +362,12 @@ export const resumeRecording = () => {
   if (mediaRecorder?.state === "paused") {
     mediaRecorder.resume();
     state.status = "resume";
+
+    if (localStream) {
+      localStream
+        .getAudioTracks()
+        .forEach((track) => (track.enabled = true));
+    }
   }
 }
 
