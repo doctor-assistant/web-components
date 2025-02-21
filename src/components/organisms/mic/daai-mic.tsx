@@ -63,16 +63,6 @@ export class DaaiMic {
             />
           ) : state.status === "initial" ? (
             <daai-text text="Assistente de IA" id="initial-text"></daai-text>
-          ) : state.status === "paused" ? (
-            <div class="flex items-center justify-center">
-              <daai-text text="Pausado" id="initial-text"></daai-text>
-              <div class="ml-4">
-                <daai-recording-animation
-                  id="animation-recording"
-                  status={state.status}
-                />
-              </div>
-            </div>
           ) : state.status === "upload-error" ? (
             <div>
               <daai-text text="Sua consulta não foi enviada!" id="error-text" />
@@ -82,10 +72,10 @@ export class DaaiMic {
               />
             </div>
           ) : null}
-
-          {state.status === "recording" || state.status === "resume" ? (
+          {state.status === "recording" || state.status === "resume" || state.status === "paused" && (
             <div class="flex items-center justify-center">
-              <daai-text text="Gravando..." id="initial-text"></daai-text>
+              {state.status !== "paused" && <daai-text text="Gravando..." id="initial-text"></daai-text>}
+              {state.status === "paused" && <daai-text text="Pausado" id="initial-text"></daai-text>}
               <div class="ml-4">
                 <daai-recording-animation
                   id="animation-recording"
@@ -93,7 +83,7 @@ export class DaaiMic {
                 />
               </div>
             </div>
-          ) : null}
+          )}
         </div>
         {state.microphonePermission === true && state.status === "initial" && (
           <div></div>

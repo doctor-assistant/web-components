@@ -65,23 +65,40 @@ const pendingFirstUploads = new Set<number>();
 let retryIdFromIndexDb: any
 
 let retryProfessionalFromIndexDb: any
+let audioDestination: MediaStreamAudioDestinationNode | null = null;
 
 
+export const getAudioDestinationStream = async () => {
+  while (!audioDestination?.stream) {
+    await new Promise(resolve => setTimeout(resolve, 200));
+  }
+  return audioDestination.stream;
+}
 
 export const StartTutorial = () => {
   state.openTutorialPopup = true;
 }
 
-
-export const startRecording = async (
+export type StartRecordingProps = {
   isRemote: boolean,
   videoElement?: HTMLVideoElement,
   mode?: string,
   apikey?: string,
   professional?: string,
   metadata?: string
+}
+export const startRecording = async (
+  {
+    isRemote,
+    videoElement,
+    mode,
+    apikey,
+    professional,
+    metadata
+  }: StartRecordingProps
 ) => {
   if (!mode || !apikey) {
+    console.log(mode)
     console.error('Missing required parameters for recording');
     state.status = "initial";
     return;
@@ -89,10 +106,10 @@ export const startRecording = async (
 
   try {
     const baseUrl = mode === "dev"
-    ? "https://apim.doctorassistant.ai/api/sandbox"
-    : "https://apim.doctorassistant.ai/api/production";
-    console.log('baseUrl',baseUrl)
-    console.log('baseUrl + API_ENDPOINTS.CONSULTATION_INIT',baseUrl + API_ENDPOINTS.CONSULTATION_INIT)
+      ? "https://apim.doctorassistant.ai/api/sandbox"
+      : "https://apim.doctorassistant.ai/api/production";
+    console.log('baseUrl', baseUrl)
+    console.log('baseUrl + API_ENDPOINTS.CONSULTATION_INIT', baseUrl + API_ENDPOINTS.CONSULTATION_INIT)
     const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_INIT, {
       method: 'POST',
       headers: {
@@ -170,7 +187,7 @@ export const startRecording = async (
 
     localStream = micStream;
     const composedStream = new MediaStream();
-    const audioDestination = audioContext.createMediaStreamDestination();
+    audioDestination = audioContext.createMediaStreamDestination();
 
     if (isRemote) {
       if (videoElementStream?.getAudioTracks().length > 0) {
@@ -197,6 +214,9 @@ export const startRecording = async (
       .getAudioTracks()
       .forEach((track) => composedStream.addTrack(track));
 
+    const event = new CustomEvent('audioDestinationStream');
+    window.dispatchEvent(event);
+
     // Setup silence detection without feedback
     analyserNode = audioContext.createAnalyser();
     analyserNode.fftSize = 2048;
@@ -214,7 +234,7 @@ export const startRecording = async (
     analyserNode.connect(silenceDetectorNode);
     silenceDetectorNode.connect(audioContext.destination); // Required for processing to work
     silenceDetectorNode.onaudioprocess = () => {
-      if(analyserNode){
+      if (analyserNode) {
         analyserNode.getFloatTimeDomainData(dataArray);
       }
 
@@ -267,7 +287,7 @@ export const startRecording = async (
           const currentTime = audioContext.currentTime;
           const duration = Math.max(1, Math.ceil(currentTime - chunkStartTime));
           const chunk: ChunkData = {
-            id:`${currentChunkIndex}-${currentConsultation.recording.id}`,
+            id: `${currentChunkIndex}-${currentConsultation.recording.id}`,
             consultationId: currentConsultation.id,
             recordingId: currentConsultation.recording.id,
             chunk: event.data,
@@ -403,7 +423,7 @@ export const finishRecording = async ({
       ? "https://apim.doctorassistant.ai/api/sandbox"
       : "https://apim.doctorassistant.ai/api/production";
     specialty = specialty || 'generic'
-    console.log(specialty,'specialty')
+    console.log(specialty, 'specialty')
     const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_FINISH(
       currentConsultation.id,
       currentConsultation.recording.id
@@ -522,7 +542,7 @@ export const uploadAudio = async ({ mode, audioBlob, apiKey, success, error, spe
 
   const formData = new FormData();
   formData.append("recording", audioBlob);
-  console.log(specialty,'spec')
+  console.log(specialty, 'spec')
   if (specialty) {
     formData.append("specialty", specialty);
   }

@@ -1,4 +1,4 @@
-import { Component, h } from "@stencil/core";
+import { Component, h, Prop } from "@stencil/core";
 import { startRecording } from "../../../core/Recorder";
 import state from "../../../store";
 
@@ -8,6 +8,10 @@ import state from "../../../store";
   shadow: false,
 })
 export class DaaiPopup {
+  @Prop() mode: string;
+  @Prop() apikey: string;
+  @Prop() professional: string;
+  @Prop() metadata: string;
   handleClose() {
     state.openTutorialPopup = false;
   }
@@ -45,7 +49,13 @@ export class DaaiPopup {
             </daai-daai-button-with-icon>
             <daai-daai-button-with-icon
               id="daai-select-guide-button"
-              onClick={() => startRecording(true)}
+              onClick={() => startRecording({
+                isRemote: true,
+                mode: this.mode,
+                apikey: this.apikey,
+                professional: this.professional,
+                metadata: this.metadata,
+              })}
             >
               Selecionar guia
             </daai-daai-button-with-icon>

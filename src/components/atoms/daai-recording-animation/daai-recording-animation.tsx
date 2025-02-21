@@ -1,4 +1,7 @@
 import { Component, Element, h, Prop, Watch } from "@stencil/core";
+import {
+  getAudioDestinationStream,
+} from "../../../core/Recorder";
 
 @Component({
   tag: "daai-recording-animation",
@@ -45,15 +48,16 @@ export class DaaiRecordingAnimation {
   @Watch("status")
   async componentDidLoad() {
     await this.initializeAudio();
-    await this.startAnimationRecording();
+    this.startAnimationRecording();
   }
 
   async initializeAudio() {
-    // Store stream reference for cleanup
-    this.currentStream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-    });
-
+    const mediaStream = await getAudioDestinationStream();
+    if (!mediaStream) {
+      console.error("Nenhuma stream de áudio encontrada!");
+      return;
+    }
+    this.currentStream = mediaStream;
     const source = this.audioContext.createMediaStreamSource(
       this.currentStream
     );

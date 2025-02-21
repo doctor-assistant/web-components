@@ -115,7 +115,7 @@ export class DaaiConsultationRecorder {
         )}
 
         {state.openTutorialPopup && !this.hideTutorial && (
-          <daai-popup class="popup"></daai-popup>
+          <daai-popup class="popup" mode={this.mode} apikey={this.apikey} professional={this.professional} metadata={this.metadata}></daai-popup>
         )}
 
         {state.openModalSpecialty && (

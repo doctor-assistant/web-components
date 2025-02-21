@@ -100,6 +100,10 @@ export namespace Components {
         "width": string;
     }
     interface DaaiPopup {
+        "apikey": string;
+        "metadata": string;
+        "mode": string;
+        "professional": string;
     }
     interface DaaiPopupIcon {
         "color": string;
@@ -512,6 +516,10 @@ declare namespace LocalJSX {
         "width"?: string;
     }
     interface DaaiPopup {
+        "apikey"?: string;
+        "metadata"?: string;
+        "mode"?: string;
+        "professional"?: string;
     }
     interface DaaiPopupIcon {
         "color"?: string;
