@@ -105,38 +105,6 @@ export const startRecording = async (
   }
 
   try {
-    const baseUrl = mode === "dev"
-      ? "https://apim.doctorassistant.ai/api/sandbox"
-      : "https://apim.doctorassistant.ai/api/production";
-    console.log('baseUrl', baseUrl)
-    console.log('baseUrl + API_ENDPOINTS.CONSULTATION_INIT', baseUrl + API_ENDPOINTS.CONSULTATION_INIT)
-    const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_INIT, {
-      method: 'POST',
-      headers: {
-        'x-daai-api-key': apikey,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        professionalId: professional,
-        metadata: typeof metadata === 'string' ? JSON.parse(metadata) : metadata
-      })
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      console.error('Failed to initialize consultation:', error);
-      state.status = "initial";
-      return;
-    }
-
-    const consultation: ConsultationResponse = await response.json();
-    currentConsultation = consultation;
-    currentChunkIndex = -1; // Will be incremented to 0 before first chunk
-    state.chooseModality = true;
-
-    // Start the retry process for this recording session
-    startRetryProcess(mode, apikey);
-
     const constraints = {
       audio: {
         deviceId: state.chosenMicrophone
@@ -183,6 +151,36 @@ export const startRecording = async (
     state.openTutorialPopup = false;
     state.status = "recording";
 
+    const baseUrl = mode === "dev"
+      ? "https://apim.doctorassistant.ai/api/sandbox"
+      : "https://apim.doctorassistant.ai/api/production";
+    const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_INIT, {
+      method: 'POST',
+      headers: {
+        'x-daai-api-key': apikey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        professionalId: professional,
+        metadata: typeof metadata === 'string' ? JSON.parse(metadata) : metadata
+      })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('Failed to initialize consultation:', error);
+      state.status = "initial";
+      return;
+    }
+
+    const consultation: ConsultationResponse = await response.json();
+    currentConsultation = consultation;
+    currentChunkIndex = -1; // Will be incremented to 0 before first chunk
+    state.chooseModality = true;
+
+    // Start the retry process for this recording session
+    startRetryProcess(mode, apikey);
+
     const micStream = await navigator.mediaDevices.getUserMedia(constraints);
 
     localStream = micStream;
@@ -215,9 +213,6 @@ export const startRecording = async (
       .forEach((track) => composedStream.addTrack(track));
 
     visualizationStream = composedStream.clone();
-
-    const event = new CustomEvent('audioDestinationStream');
-    window.dispatchEvent(event);
 
     // Setup silence detection without feedback
     analyserNode = audioContext.createAnalyser();
