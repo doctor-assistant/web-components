@@ -81,9 +81,9 @@ export const StartTutorial = () => {
 
 export type StartRecordingProps = {
   isRemote: boolean,
+  mode: string,
+  apikey: string,
   videoElement?: HTMLVideoElement,
-  mode?: string,
-  apikey?: string,
   professional?: string,
   metadata?: string
 }
@@ -103,6 +103,8 @@ export const startRecording = async (
     state.status = "initial";
     return;
   }
+
+  state.status = "preparing";
 
   try {
     const constraints = {
@@ -149,7 +151,6 @@ export const startRecording = async (
     }
 
     state.openTutorialPopup = false;
-    state.status = "recording";
 
     const baseUrl = mode === "dev"
       ? "https://apim.doctorassistant.ai/api/sandbox"
@@ -172,6 +173,7 @@ export const startRecording = async (
       state.status = "initial";
       return;
     }
+    state.status = "recording";
 
     const consultation: ConsultationResponse = await response.json();
     currentConsultation = consultation;

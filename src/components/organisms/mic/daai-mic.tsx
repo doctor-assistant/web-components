@@ -9,6 +9,13 @@ import state, { onChange } from "../../../store";
 export class DaaiMic {
   @Event() interfaceEvent: EventEmitter<{ microphoneSelect: boolean }>;
   @State() showAnimation = false;
+  micTexts = {
+    initial: "Assistente de IA",
+    recording: "Gravando...",
+    resume: "Gravando...",
+    paused: "Pausado",
+    preparing: "Preparando...",
+  };
 
   connectedCallback() {
     this.requestMicrophonePermission();
@@ -53,7 +60,7 @@ export class DaaiMic {
   }
 
   watchStatus() {
-    this.showAnimation = ["recording", "resume", "paused"].includes(state.status);
+    this.showAnimation = ["recording", "resume", "paused", 'preparing'].includes(state.status);
   }
 
   componentWillLoad() {
@@ -83,8 +90,7 @@ export class DaaiMic {
           ) : null}
           {this.showAnimation && (
             <div class="flex items-center justify-center">
-              {state.status !== "paused" && <daai-text text="Gravando..." id="initial-text"></daai-text>}
-              {state.status === "paused" && <daai-text text="Pausado" id="initial-text"></daai-text>}
+              <daai-text text={this.micTexts[state.status]} id="initial-text"></daai-text>
               <div class="ml-4">
                 <daai-recording-animation
                   id="animation-recording"
