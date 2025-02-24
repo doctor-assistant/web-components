@@ -127,7 +127,7 @@ export const pauseRecording = () => {
 }
 
 export const resumeRecording = () => {
-  if (mediaRecorder?.state) {
+  if (mediaRecorder?.state === 'paused') {
     mediaRecorder.resume();
     state.status = "resume";
     if (localStream) {
