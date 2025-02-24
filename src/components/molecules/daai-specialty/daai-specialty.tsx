@@ -17,6 +17,20 @@ export class DaaiSpecialty {
   @State() chooseSpecialtyTitle: string =
     state.specialtyTitle || "SOAP GENERALISTA";
 
+  componentDidLoad() {
+    document.addEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      this.handleClick();
+    }
+  }
+
   handleClick() {
     state.openModalSpecialty = false;
   }
@@ -52,11 +66,10 @@ export class DaaiSpecialty {
               {state.specialtyList.map((specialty) => (
                 <li
                   class={`cursor-pointer p-3 rounded-lg border transition
-                  ${
-                    this.chooseSpecialty === specialty.id
+                  ${this.chooseSpecialty === specialty.id
                       ? "bg-gray-500 text-white border-gray-600"
                       : "bg-gray-100 hover:bg-gray-200 border-gray-300"
-                  }`}
+                    }`}
                   onClick={() => (
                     (this.chooseSpecialty = specialty.id),
                     (this.chooseSpecialtyTitle = specialty.title)

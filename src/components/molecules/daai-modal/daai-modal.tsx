@@ -13,6 +13,20 @@ export class DaaiModal {
   @State() devices: MediaDeviceInfo[] = [];
   @State() selectedMicrophone: string = "";
 
+  componentDidRender() {
+    document.addEventListener("keydown", this.handleKeyDown);
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
+
+  handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      this.handleClick();
+    }
+  };
+
   async componentDidLoad() {
     await this.loadAudioDevices();
     this.setPreselectedMicrophone();
@@ -66,11 +80,10 @@ export class DaaiModal {
               {this.devices.map((device) => (
                 <li
                   class={`cursor-pointer p-3 rounded-lg border transition
-                  ${
-                    this.selectedMicrophone === device.deviceId
+                  ${this.selectedMicrophone === device.deviceId
                       ? "bg-gray-500 text-white border-gray-600"
                       : "bg-gray-100 hover:bg-gray-200 border-gray-300"
-                  }`}
+                    }`}
                   onClick={() => this.toggleSelection(device.deviceId)}
                 >
                   {device.label || "Microfone desconhecido"}
