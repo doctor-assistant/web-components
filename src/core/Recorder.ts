@@ -127,12 +127,16 @@ export const pauseRecording = () => {
 }
 
 export const resumeRecording = () => {
-  if (mediaRecorder?.state === "paused") {
+  if (mediaRecorder?.state) {
     mediaRecorder.resume();
     state.status = "resume";
+    if (localStream) {
+      localStream
+        .getAudioTracks()
+        .forEach((track) => (track.enabled = true));
+    }
   }
 }
-
 
 type FinishRecordingProps = {
  mode: string,

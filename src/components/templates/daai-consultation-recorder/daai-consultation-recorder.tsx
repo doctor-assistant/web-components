@@ -43,6 +43,11 @@ export class DaaiConsultationRecorder {
     }
   }
 
+  disconnectedCallback() {
+    state.chooseSpecialty = this.specialty;
+    state.defaultSpecialty = null;
+  }
+
   async componentWillLoad() {
     this.mode = this.apikey && /PRODUCTION/i.test(this.apikey) ? "prod" : "dev";
     const spec = await getSpecialty(this.mode);

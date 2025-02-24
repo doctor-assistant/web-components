@@ -21,6 +21,7 @@
 | `specialty`       | `specialty`      |             | `any`                                                                                             | `undefined` |
 | `success`         | `success`        |             | `any`                                                                                             | `undefined` |
 | `telemedicine`    | `telemedicine`   |             | `boolean`                                                                                         | `undefined` |
+| `videoElement`    | --               |             | `HTMLVideoElement`                                                                                | `undefined` |
 
 
 ## Dependencies

@@ -20,6 +20,7 @@
 | `professional`           | `professional`           |             | `string`                       | `undefined`             |
 | `specialty`              | `specialty`              |             | `string`                       | `state.chooseSpecialty` |
 | `telemedicine`           | `telemedicine`           |             | `boolean`                      | `undefined`             |
+| `videoElement`           | --                       |             | `HTMLVideoElement`             | `undefined`             |
 | `warningRecordingTime`   | `warning-recording-time` |             | `number`                       | `0`                     |
 
 

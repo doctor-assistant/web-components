@@ -1,6 +1,6 @@
 {
   "name": "@doctorassistant/daai-component",
-  "version": "2.0.6-rc",
+  "version": "2.0.7-rc",
   "description": "Stencil Component Starter",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
