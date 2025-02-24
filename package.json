@@ -39,6 +39,7 @@
     "generate": "stencil generate"
   },
   "devDependencies": {
+    "@playwright/test": "^1.50.1",
     "@stencil/core": "^4.7.0",
     "@stencil/store": "^2.0.16",
     "@types/jest": "^29.5.6",
@@ -52,8 +53,8 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@stencil/core": "^3.0.0",
     "dexie": "^4.0.10",
-    "extended-eventsource": "2.0.0",
-    "@stencil/core": "^3.0.0"
+    "extended-eventsource": "2.0.0"
   }
 }
