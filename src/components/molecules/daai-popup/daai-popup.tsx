@@ -11,7 +11,7 @@ export class DaaiPopup {
   @Prop() mode: string;
   @Prop() apikey: string;
   @Prop() professional: string;
-  @Prop() metadata: string;
+  @Prop() metadata: Record<string, any>;
   handleClose() {
     state.openTutorialPopup = false;
   }

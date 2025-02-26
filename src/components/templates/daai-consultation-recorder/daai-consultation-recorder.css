@@ -270,7 +270,8 @@ daai-mic-animation {
   background-color: var(--recorder-primary-color);
 }
 
-#upload-text {
+#upload-text,
+.upload-text {
   color: var(--recorder-primary-color);
   font-weight: 600;
 }
@@ -343,12 +344,13 @@ daai-mic-animation {
 }
 
 
-#initial-text {
+#initial-text,
+.initial-text {
   color: var(--recorder-primary-color);
   font-weight: 600;
 }
 
-#secondary-text{
+#secondary-text {
   color: var(--recorder-text-color);
   font-weight: 600;
 }

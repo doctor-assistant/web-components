@@ -90,7 +90,7 @@ export class DaaiMic {
           ) : null}
           {this.showAnimation && (
             <div class="flex items-center justify-center">
-              <daai-text text={this.micTexts[state.status]} id="initial-text"></daai-text>
+              <daai-text text={this.micTexts[state.status]} id={state.status} class="initial-text"></daai-text>
               <div class="ml-4">
                 <daai-recording-animation
                   id="animation-recording"

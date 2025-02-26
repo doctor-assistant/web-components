@@ -32,7 +32,7 @@ export namespace Components {
         "error": any;
         "event": any;
         "hideTutorial": boolean;
-        "metadata": string;
+        "metadata": Record<string, any>;
         "mode": string;
         "professional": string;
         "recordingConfig": {
@@ -101,7 +101,7 @@ export namespace Components {
     }
     interface DaaiPopup {
         "apikey": string;
-        "metadata": string;
+        "metadata": Record<string, any>;
         "mode": string;
         "professional": string;
     }
@@ -447,7 +447,7 @@ declare namespace LocalJSX {
         "error"?: any;
         "event"?: any;
         "hideTutorial"?: boolean;
-        "metadata"?: string;
+        "metadata"?: Record<string, any>;
         "mode"?: string;
         "professional"?: string;
         "recordingConfig"?: {
@@ -517,7 +517,7 @@ declare namespace LocalJSX {
     }
     interface DaaiPopup {
         "apikey"?: string;
-        "metadata"?: string;
+        "metadata"?: Record<string, any>;
         "mode"?: string;
         "professional"?: string;
     }

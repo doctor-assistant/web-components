@@ -24,7 +24,7 @@ export class DaaiConsultationActions {
 
   @Prop() success: any;
   @Prop() error: any;
-  @Prop() metadata: string;
+  @Prop() metadata: Record<string, any>;
   @Prop() event: any;
   @Prop() mode: string;
 
@@ -94,9 +94,7 @@ export class DaaiConsultationActions {
         success: this.success,
         error: this.error,
         specialty: this.specialty,
-        metadata: this.metadata,
         onEvent: this.event,
-        professional: this.professional,
       });
     }
   }
@@ -233,9 +231,7 @@ export class DaaiConsultationActions {
                   success: this.success,
                   error: this.error,
                   specialty: this.specialty,
-                  metadata: this.metadata,
                   onEvent: this.event,
-                  professional: this.professional,
                 })
               }
             >
@@ -270,9 +266,7 @@ export class DaaiConsultationActions {
                   success: this.success,
                   error: this.error,
                   specialty: this.specialty,
-                  metadata: this.metadata,
                   onEvent: this.event,
-                  professional: this.professional,
                 })
               }
             >

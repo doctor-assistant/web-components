@@ -52,8 +52,8 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@stencil/core": "^3.0.0",
     "dexie": "^4.0.10",
-    "extended-eventsource": "2.0.0",
-    "@stencil/core": "^3.0.0"
+    "extended-eventsource": "2.0.0"
   }
 }

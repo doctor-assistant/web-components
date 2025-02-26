@@ -13,11 +13,11 @@ interface ProfessionalSpecialty {
 
 
 interface Consultation {
-  id?:number;
+  id?: number;
   professionalId: string;
   specialty: string;
-  audioBlob:any;
-  metadata:any
+  audioBlob: any;
+  metadata: any
 }
 
 class SpecialtiesDB extends Dexie {
@@ -168,7 +168,7 @@ class ConsusltationDb extends Dexie {
 
 const consultationDb = new ConsusltationDb();
 
-export async function saveConsultation(professionalId:string, audioBlob: any, specialty: string, metadata:any) {
+export async function saveConsultation(professionalId: string, audioBlob: any, specialty: string, metadata: any) {
   try {
     await consultationDb.transaction(
       "rw",
@@ -242,11 +242,12 @@ export async function saveChunk(chunk: ChunkUpload) {
   }
 }
 
-export async function getFailedChunks() {
+export async function getFailedChunks(consultationId: string) {
   try {
     return await chunkUploadDb.chunks
-      .orderBy("timestamp")
-      .toArray();
+      .where("consultationId")
+      .equals(consultationId)
+      .sortBy("timestamp");
   } catch (error) {
     console.error("Erro ao buscar chunks:", error);
     return [];
@@ -254,7 +255,7 @@ export async function getFailedChunks() {
 }
 
 export async function deleteChunk(id: string) {
-  console.log(id,'id')
+  console.log(id, 'id')
   try {
     await chunkUploadDb.transaction("rw", chunkUploadDb.chunks, async () => {
       const deletedCount = await chunkUploadDb.chunks

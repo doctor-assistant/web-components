@@ -37,6 +37,15 @@ export class DaaiConsultationRecorder {
     return allowedStates.includes(state.status);
   }
 
+  get metadataObject() {
+    try {
+      return JSON.parse(this.metadata);
+    }
+    catch (e) {
+      return {};
+    }
+  }
+
   async componentDidLoad() {
     if (this.specialty) {
       state.defaultSpecialty = this.specialty;
@@ -75,8 +84,9 @@ export class DaaiConsultationRecorder {
             )}
             {state.status === "finished" ? (
               <daai-text
+                class="upload-text"
                 text="Aguarde enquanto geramos o registro final..."
-                id="upload-text"
+                id="wait-upload-text"
               />
             ) : (
               state.status === "upload-ok" && (
@@ -88,7 +98,7 @@ export class DaaiConsultationRecorder {
               <daai-consultation-actions
                 apikey={this.apikey}
                 specialty={state.defaultSpecialty || state.chooseSpecialty}
-                metadata={this.metadata}
+                metadata={this.metadataObject}
                 success={this.onSuccess}
                 error={this.onError}
                 telemedicine={this.telemedicine}
@@ -115,7 +125,7 @@ export class DaaiConsultationRecorder {
         )}
 
         {state.openTutorialPopup && !this.hideTutorial && (
-          <daai-popup class="popup" mode={this.mode} apikey={this.apikey} professional={this.professional} metadata={this.metadata}></daai-popup>
+          <daai-popup class="popup" mode={this.mode} apikey={this.apikey} professional={this.professional} metadata={this.metadataObject}></daai-popup>
         )}
 
         {state.openModalSpecialty && (

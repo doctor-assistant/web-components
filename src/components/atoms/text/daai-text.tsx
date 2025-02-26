@@ -3,7 +3,7 @@ import { Component, Prop, h } from '@stencil/core';
 @Component({
   tag: 'daai-text',
   styleUrl: 'daai-text.css',
-  shadow: true,
+  shadow: false,
 })
 export class DaaiText {
   @Prop() text: string;

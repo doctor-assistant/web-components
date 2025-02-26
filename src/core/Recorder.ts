@@ -9,7 +9,7 @@ const CHUNK_CONFIG = {
   MAX_DURATION: 300, // seconds
   SILENCE_THRESHOLD: -50, // dB
   SILENCE_DURATION: 0.5, // seconds of silence needed for chunk split
-  RETRY_INTERVAL: 300, // ms
+  RETRY_INTERVAL: 500, // ms
   MAX_RETRIES: 5
 };
 
@@ -85,7 +85,7 @@ export type StartRecordingProps = {
   apikey: string,
   videoElement?: HTMLVideoElement,
   professional?: string,
-  metadata?: string
+  metadata: Record<string, any>,
 }
 export const startRecording = async (
   {
@@ -98,7 +98,6 @@ export const startRecording = async (
   }: StartRecordingProps
 ) => {
   if (!mode || !apikey) {
-    console.log(mode)
     console.error('Missing required parameters for recording');
     state.status = "initial";
     return;
@@ -163,7 +162,7 @@ export const startRecording = async (
       },
       body: JSON.stringify({
         professionalId: professional,
-        metadata: typeof metadata === 'string' ? JSON.parse(metadata) : metadata
+        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component" } }
       })
     });
 
@@ -235,6 +234,10 @@ export const startRecording = async (
     silenceDetectorNode.onaudioprocess = () => {
       if (analyserNode) {
         analyserNode.getFloatTimeDomainData(dataArray);
+      }
+
+      if (state.status !== "recording") {
+        return;
       }
 
       const rms = Math.sqrt(dataArray.reduce((acc, val) => acc + val * val, 0) / dataArray.length);
@@ -375,9 +378,7 @@ type FinishRecordingProps = {
   success: (event: Record<string, any>) => void,
   error: (error: any) => void,
   specialty: string,
-  metadata: string,
   onEvent: (event: any) => void,
-  professional: string,
 }
 
 export const finishRecording = async ({
@@ -385,6 +386,7 @@ export const finishRecording = async ({
   apikey,
   success,
   error,
+  onEvent: event,
   specialty,
 }: FinishRecordingProps) => {
   state.status = "finished";
@@ -412,10 +414,11 @@ export const finishRecording = async ({
 
   // Wait for all chunks to upload
   const waitForChunks = async () => {
-    let failedChunks = await getFailedChunks();
+    await new Promise(resolve => setTimeout(resolve, 300));
+    let failedChunks = await getFailedChunks(currentConsultation?.id);
     while (failedChunks.length !== 0 || pendingFirstUploads.size !== 0) {
-      await new Promise(resolve => setTimeout(resolve, CHUNK_CONFIG.RETRY_INTERVAL));
-      failedChunks = await getFailedChunks();
+      await new Promise(resolve => setTimeout(resolve, 300));
+      failedChunks = await getFailedChunks(currentConsultation?.id);
     }
   };
 
@@ -428,7 +431,6 @@ export const finishRecording = async ({
       ? "https://apim.doctorassistant.ai/api/sandbox"
       : "https://apim.doctorassistant.ai/api/production";
     specialty = specialty || 'generic'
-    console.log(specialty, 'specialty')
     const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_FINISH(
       currentConsultation.id,
       currentConsultation.recording.id
@@ -441,14 +443,16 @@ export const finishRecording = async ({
       body: JSON.stringify({ specialty })
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to finalize consultation');
-    }
-
     const jsonResponse = await response.json();
     state.status = "upload-ok";
+    const consultationId = jsonResponse.id;
     if (typeof success === "function") {
       success(jsonResponse);
+    }
+    if (typeof event === "function") {
+      const sseUrl = `${baseUrl}/${consultationId}/events`;
+      let eventSourceManager = new EventSourceManager(apikey, sseUrl, event);
+      eventSourceManager.connect();
     }
   } catch (err) {
     pendingFirstUploads.clear(); // Clean up on error
@@ -519,7 +523,7 @@ export const startRetryProcess = (mode: string, apiKey: string) => {
 
     state.isProcessingChunk = true;
     try {
-      const failedChunks = await getFailedChunks();
+      const failedChunks = await getFailedChunks(currentConsultation?.id);
       for (const chunk of failedChunks) {
         if (chunk.retryCount >= CHUNK_CONFIG.MAX_RETRIES) {
           await deleteChunk(chunk.id);
