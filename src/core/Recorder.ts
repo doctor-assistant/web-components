@@ -177,7 +177,6 @@ export const startRecording = async (
     state.status = "recording";
     const consultation: ConsultationResponse = await response.json();
 
-    console.log(start,'start')
     if (typeof start === "function") {
       start(consultation);
     }
