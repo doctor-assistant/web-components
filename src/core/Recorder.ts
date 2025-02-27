@@ -1,4 +1,5 @@
 import { version } from '../../package.json';
+import { ConsultationResponse } from '../components/entities/consultation.entity';
 
 import state from "../store";
 import { deleteChunk, deleteConsultationById, getConsultation, getConsultationsByProfessional, getFailedChunks, saveChunk, saveConsultation } from '../utils/indexDb';
@@ -21,12 +22,6 @@ const API_ENDPOINTS = {
     `/consultations/v2/${consultationId}/recordings/${recordingId}/finish`
 };
 
-interface ConsultationResponse {
-  id: string;
-  recording: {
-    id: string;
-  };
-}
 
 interface ChunkData {
   id: string;
@@ -86,7 +81,8 @@ export type StartRecordingProps = {
   videoElement?: HTMLVideoElement,
   professional?: string,
   metadata: Record<string, any>,
-  start?: any
+ start?: (consultation: ConsultationResponse)=>void
+
 }
 export const startRecording = async (
   {
@@ -380,7 +376,7 @@ export const resumeRecording = () => {
 type FinishRecordingProps = {
   mode: string,
   apikey: string,
-  success: (event: Record<string, any>) => void,
+  success:(consultation: ConsultationResponse) => void;
   error: (error: any) => void,
   specialty: string,
   onEvent: (event: any) => void,

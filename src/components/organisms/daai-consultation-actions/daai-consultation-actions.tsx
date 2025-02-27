@@ -9,6 +9,7 @@ import {
 } from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialtiesByProfessionalId } from "../../../utils/indexDb";
+import { ConsultationResponse } from "../../entities/consultation.entity";
 
 @Component({
   tag: "daai-consultation-actions",
@@ -22,12 +23,12 @@ export class DaaiConsultationActions {
   @Prop() videoElement?: HTMLVideoElement;
   @Prop() professional: string = "";
 
-  @Prop() success: any;
+  @Prop() success: (consultation: ConsultationResponse) => void;
   @Prop() error: any;
   @Prop() metadata: Record<string, any>;
   @Prop() event: any;
   @Prop() mode: string;
-  @Prop() start: any;
+  @Prop() start: (consultation: ConsultationResponse) => void;
 
   @State() title: string = "";
   @State() stopAnimation: string = "";

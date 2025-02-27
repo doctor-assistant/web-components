@@ -3,17 +3,18 @@ import { retryOldConsultations } from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
+import { ConsultationResponse } from "../../entities/consultation.entity";
 @Component({
   tag: "daai-consultation-recorder",
   styleUrl: "daai-consultation-recorder.css",
   shadow: true,
 })
 export class DaaiConsultationRecorder {
-  @Prop() onSuccess: (response: Response) => void;
+  @Prop() onSuccess: (consultation: ConsultationResponse) => void;
   @Prop() onError: (err: Error) => void;
   @Prop() onEvent: (response: Response) => void;
   @Prop() onWarningRecordingTime: () => void;
-  @Prop() onStart: (response: Response) => void;
+  @Prop() onStart: (consultation: ConsultationResponse) => void;
 
   @Prop() apikey: string;
   @Prop() specialty: string = state.chooseSpecialty;

@@ -1,6 +1,7 @@
 import { Component, h, Prop } from "@stencil/core";
 import { startRecording } from "../../../core/Recorder";
 import state from "../../../store";
+import { ConsultationResponse } from "../../entities/consultation.entity";
 
 @Component({
   tag: "daai-popup",
@@ -12,7 +13,7 @@ export class DaaiPopup {
   @Prop() apikey: string;
   @Prop() professional: string;
   @Prop() metadata: Record<string, any>;
-  @Prop() start?: any;
+  @Prop() start?: (consultation: ConsultationResponse) => void;
   handleClose() {
     state.openTutorialPopup = false;
   }
