@@ -40,8 +40,7 @@ export class DaaiConsultationRecorder {
   get metadataObject() {
     try {
       return JSON.parse(this.metadata);
-    }
-    catch (e) {
+    } catch (e) {
       return {};
     }
   }
@@ -77,24 +76,7 @@ export class DaaiConsultationRecorder {
                 />
               </div>
             </div>
-            {state.status === "choosen" ? (
-              <daai-text text="Consulta" id="choosen-mode" />
-            ) : (
-              ""
-            )}
-            {state.status === "finished" ? (
-              <daai-text
-                class="upload-text"
-                text="Aguarde enquanto geramos o registro final..."
-                id="wait-upload-text"
-              />
-            ) : (
-              state.status === "upload-ok" && (
-                <daai-text text="Registro Finalizado!" id="upload-text" />
-              )
-            )}
-
-            <div class="min-[500px]:ml-auto flex gap-2 items-center">
+            <div id="buttons-section">
               <daai-consultation-actions
                 apikey={this.apikey}
                 specialty={state.defaultSpecialty || state.chooseSpecialty}
@@ -111,7 +93,10 @@ export class DaaiConsultationRecorder {
                   warningRecordingTime: this.warningRecordingTime,
                   maxRecordingTime: this.maxRecordingTime,
                 }}
-                hideTutorial={this.hideTutorial}
+                hideTutorial={
+                  this.hideTutorial ||
+                  (this.videoElement && this.videoElement !== null)
+                }
                 mode={this.mode}
               ></daai-consultation-actions>
             </div>
@@ -125,7 +110,13 @@ export class DaaiConsultationRecorder {
         )}
 
         {state.openTutorialPopup && !this.hideTutorial && (
-          <daai-popup class="popup" mode={this.mode} apikey={this.apikey} professional={this.professional} metadata={this.metadataObject}></daai-popup>
+          <daai-popup
+            class="popup"
+            mode={this.mode}
+            apikey={this.apikey}
+            professional={this.professional}
+            metadata={this.metadataObject}
+          ></daai-popup>
         )}
 
         {state.openModalSpecialty && (

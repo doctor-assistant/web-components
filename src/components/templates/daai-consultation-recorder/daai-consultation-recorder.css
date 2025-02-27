@@ -24,7 +24,13 @@
   --recorder-small-device-min-width: 300px;
   --recorder-large-device-height: 52px;
   --recorder-small-device-height: 120px;
-
+  --recorder-gap:4px;
+  --recorder-padding:8px;
+  --recorder-align: center;
+  --recorder-justify-large-size: space-between;
+  --recorder-justify-small-size: center;
+  --recorder-large-devices-direction:row;
+  --recorder-small-devices-direction:column;
 }
 
 daai-button-with-icon {
@@ -38,29 +44,28 @@ daai-button-with-icon {
   cursor: pointer;
 }
 
-
-
 #daai-consultation-recorder {
   max-width: var(--recorder-large-device-max-width);
   min-width: var(--recorder-large-device-min-width);
   font-family: "Open Sans", serif;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: var(--recorder-align);
+  justify-content:  var(--recorder-justify-large-size);
   background-color: var(--recorder-background-color);
   border-radius: var(--recorder-border-radius);
   border: 1px solid var(--recorder-border-color);
-  padding: 8px;
-  gap: 4px;
+  padding: var(--recorder-padding);
+  gap: var(--recorder-gap);
   height: var(--recorder-large-device-height);
-
-  @media (min-width: 100px) and (max-width: 499px) {
+  flex-direction: var( --recorder-large-devices-direction);
+   @media (min-width: 100px) and (max-width:499px) {
+    display: flex;
     max-width: var(--recorder-small-device-max-width);
     min-width: var(--recorder-small-device-min-width);
-    display: flex;
-    flex-direction: column;
+    flex-direction: var( --recorder-small-devices-direction);
+    justify-content: var(--recorder-justify-small-size);
     height: var(--recorder-small-device-height);
-  }
+  };
 }
 
 daai-recording-animation {
@@ -140,7 +145,6 @@ daai-mic-animation {
 }
 
 #start-recording-disabled {
-  max-width: 132px;
   flex-direction: row;
   font-size: 12px;
   display: flex;
@@ -207,6 +211,13 @@ daai-mic-animation {
   margin-top: 4px;
 }
 
+#buttons-section{
+  @media (min-width: 700px) {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  }
+}
 
 #button-resume {
   width: 40px;
@@ -235,7 +246,6 @@ daai-mic-animation {
   color: var(--recorder-primary-color);
   flex-direction: row;
   border: 1px solid var(--recorder-primary-color);
-  /* background-color: var(--recorder-primary-color); */
   border-radius: var(--recorder-button-radius);
 }
 

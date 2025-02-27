@@ -11,10 +11,13 @@ export class DaaiMic {
   @State() showAnimation = false;
   micTexts = {
     initial: "Assistente de IA",
+    choosen: "Consulta",
     recording: "Gravando...",
     resume: "Gravando...",
     paused: "Pausado",
-    preparing: "Preparando...",
+    preparing: "Preparando para iniciar o seu registro...",
+    finished: "Aguarde enquanto finalizamos sua consulta...",
+    upload: "Registro Finalizado!",
   };
 
   connectedCallback() {
@@ -60,7 +63,9 @@ export class DaaiMic {
   }
 
   watchStatus() {
-    this.showAnimation = ["recording", "resume", "paused", 'preparing'].includes(state.status);
+    this.showAnimation = ["recording", "resume", "paused"].includes(
+      state.status
+    );
   }
 
   componentWillLoad() {
@@ -77,8 +82,6 @@ export class DaaiMic {
               text="Aguardando autorização do microfone"
               id="error-msg"
             />
-          ) : state.status === "initial" ? (
-            <daai-text text="Assistente de IA" id="initial-text"></daai-text>
           ) : state.status === "upload-error" ? (
             <div>
               <daai-text text="Sua consulta não foi enviada!" id="error-text" />
@@ -88,24 +91,26 @@ export class DaaiMic {
               />
             </div>
           ) : null}
-          {this.showAnimation && (
-            <div class="flex items-center justify-center">
-              <daai-text text={this.micTexts[state.status]} id={state.status} class="initial-text"></daai-text>
+          <div class="flex items-center justify-center">
+            <daai-text
+              text={this.micTexts[state.status]}
+              id={state.status}
+              class="initial-text"
+            ></daai-text>
+            {this.showAnimation && (
               <div class="ml-4">
                 <daai-recording-animation
                   id="animation-recording"
                   status={state.status}
                 />
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-        {
-          state.microphonePermission === true && state.status === "initial" && (
-            <div></div>
-          )
-        }
-      </div >
+        {state.microphonePermission === true && state.status === "initial" && (
+          <div></div>
+        )}
+      </div>
     );
   }
 }

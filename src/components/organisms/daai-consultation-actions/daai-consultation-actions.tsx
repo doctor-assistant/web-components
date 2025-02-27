@@ -143,12 +143,12 @@ export class DaaiConsultationActions {
                     this.telemedicine
                       ? this.choosenMode()
                       : startRecording({
-                        isRemote: false,
-                        mode: this.mode,
-                        apikey: this.apikey,
-                        professional: this.professional,
-                        metadata: this.metadata,
-                      });
+                          isRemote: false,
+                          mode: this.mode,
+                          apikey: this.apikey,
+                          professional: this.professional,
+                          metadata: this.metadata,
+                        });
                   }
                 }}
                 disabled={
@@ -177,13 +177,15 @@ export class DaaiConsultationActions {
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
               id="choose-local-consultation"
-              onClick={() => startRecording({
-                isRemote: false,
-                mode: this.mode,
-                apikey: this.apikey,
-                professional: this.professional,
-                metadata: this.metadata,
-              })}
+              onClick={() =>
+                startRecording({
+                  isRemote: false,
+                  mode: this.mode,
+                  apikey: this.apikey,
+                  professional: this.professional,
+                  metadata: this.metadata,
+                })
+              }
             >
               <div class="flex items-center justify-center p-2">Presencial</div>
             </daai-button-with-icon>
@@ -192,13 +194,13 @@ export class DaaiConsultationActions {
               onClick={() =>
                 state.isChecked || this.hideTutorial
                   ? startRecording({
-                    isRemote: true,
-                    videoElement: this.videoElement,
-                    mode: this.mode,
-                    apikey: this.apikey,
-                    professional: this.professional,
-                    metadata: this.metadata,
-                  })
+                      isRemote: true,
+                      videoElement: this.videoElement,
+                      mode: this.mode,
+                      apikey: this.apikey,
+                      professional: this.professional,
+                      metadata: this.metadata,
+                    })
                   : StartTutorial()
               }
             >
@@ -274,7 +276,7 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
-      case "upload-ok":
+      case "upload":
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
@@ -285,7 +287,7 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
-      case "upload-error":
+      case "error":
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
