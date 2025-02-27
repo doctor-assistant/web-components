@@ -16,7 +16,7 @@ export class DaaiMic {
     resume: "Gravando...",
     paused: "Pausado",
     preparing: "Preparando para iniciar o seu registro...",
-    finished: "Aguarde enquanto geramos o registro final...",
+    finished: "Aguarde enquanto finalizamos sua consulta",
     upload: "Registro Finalizado!",
   };
 
