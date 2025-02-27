@@ -118,6 +118,7 @@ export class DaaiConsultationRecorder {
             apikey={this.apikey}
             professional={this.professional}
             metadata={this.metadataObject}
+            start={this.onStart}
           ></daai-popup>
         )}
 

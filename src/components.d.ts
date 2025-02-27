@@ -106,6 +106,7 @@ export namespace Components {
         "metadata": Record<string, any>;
         "mode": string;
         "professional": string;
+        "start"?: any;
     }
     interface DaaiPopupIcon {
         "color": string;
@@ -524,6 +525,7 @@ declare namespace LocalJSX {
         "metadata"?: Record<string, any>;
         "mode"?: string;
         "professional"?: string;
+        "start"?: any;
     }
     interface DaaiPopupIcon {
         "color"?: string;
