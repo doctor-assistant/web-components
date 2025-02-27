@@ -27,6 +27,7 @@ export class DaaiConsultationActions {
   @Prop() metadata: Record<string, any>;
   @Prop() event: any;
   @Prop() mode: string;
+  @Prop() start: any;
 
   @State() title: string = "";
   @State() stopAnimation: string = "";
@@ -148,6 +149,7 @@ export class DaaiConsultationActions {
                           apikey: this.apikey,
                           professional: this.professional,
                           metadata: this.metadata,
+                          start: this.start,
                         });
                   }
                 }}
@@ -184,6 +186,7 @@ export class DaaiConsultationActions {
                   apikey: this.apikey,
                   professional: this.professional,
                   metadata: this.metadata,
+                  start: this.start,
                 })
               }
             >
@@ -200,6 +203,7 @@ export class DaaiConsultationActions {
                       apikey: this.apikey,
                       professional: this.professional,
                       metadata: this.metadata,
+                      start: this.start,
                     })
                   : StartTutorial()
               }

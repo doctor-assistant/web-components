@@ -86,6 +86,7 @@ export type StartRecordingProps = {
   videoElement?: HTMLVideoElement,
   professional?: string,
   metadata: Record<string, any>,
+  start?: any
 }
 export const startRecording = async (
   {
@@ -94,7 +95,8 @@ export const startRecording = async (
     mode,
     apikey,
     professional,
-    metadata
+    metadata,
+    start
   }: StartRecordingProps
 ) => {
   if (!mode || !apikey) {
@@ -173,8 +175,12 @@ export const startRecording = async (
       return;
     }
     state.status = "recording";
-
     const consultation: ConsultationResponse = await response.json();
+
+    console.log(start,'start')
+    if (typeof start === "function") {
+      start(consultation);
+    }
     currentConsultation = consultation;
     currentChunkIndex = -1; // Will be incremented to 0 before first chunk
     state.chooseModality = true;

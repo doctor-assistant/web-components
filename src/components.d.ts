@@ -42,6 +42,7 @@ export namespace Components {
   };
         "recordingTime": number;
         "specialty": any;
+        "start": any;
         "success": any;
         "telemedicine": boolean;
         "videoElement"?: HTMLVideoElement;
@@ -53,6 +54,7 @@ export namespace Components {
         "metadata": string;
         "onError": (err: Error) => void;
         "onEvent": (response: Response) => void;
+        "onStart": (response: Response) => void;
         "onSuccess": (response: Response) => void;
         "onWarningRecordingTime": () => void;
         "professional": string;
@@ -457,6 +459,7 @@ declare namespace LocalJSX {
   };
         "recordingTime"?: number;
         "specialty"?: any;
+        "start"?: any;
         "success"?: any;
         "telemedicine"?: boolean;
         "videoElement"?: HTMLVideoElement;
@@ -468,6 +471,7 @@ declare namespace LocalJSX {
         "metadata"?: string;
         "onError"?: (err: Error) => void;
         "onEvent"?: (response: Response) => void;
+        "onStart"?: (response: Response) => void;
         "onSuccess"?: (response: Response) => void;
         "onWarningRecordingTime"?: () => void;
         "professional"?: string;

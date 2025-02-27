@@ -13,6 +13,7 @@ export class DaaiConsultationRecorder {
   @Prop() onError: (err: Error) => void;
   @Prop() onEvent: (response: Response) => void;
   @Prop() onWarningRecordingTime: () => void;
+  @Prop() onStart: (response: Response) => void;
 
   @Prop() apikey: string;
   @Prop() specialty: string = state.chooseSpecialty;
@@ -98,6 +99,7 @@ export class DaaiConsultationRecorder {
                   (this.videoElement && this.videoElement !== null)
                 }
                 mode={this.mode}
+                start={this.onStart}
               ></daai-consultation-actions>
             </div>
           </div>
