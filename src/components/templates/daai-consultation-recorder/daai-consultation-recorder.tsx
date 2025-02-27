@@ -76,23 +76,6 @@ export class DaaiConsultationRecorder {
                 />
               </div>
             </div>
-            {state.status === "choosen" ? (
-              <daai-text text="Consulta" id="choosen-mode" />
-            ) : (
-              ""
-            )}
-            {state.status === "finished" ? (
-              <daai-text
-                class="upload-text"
-                text="Aguarde enquanto geramos o registro final..."
-                id="wait-upload-text"
-              />
-            ) : (
-              state.status === "upload-ok" && (
-                <daai-text text="Registro Finalizado!" id="upload-text" />
-              )
-            )}
-
             <div id="buttons-section">
               <daai-consultation-actions
                 apikey={this.apikey}

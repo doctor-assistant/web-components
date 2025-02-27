@@ -444,7 +444,7 @@ export const finishRecording = async ({
     });
 
     const jsonResponse = await response.json();
-    state.status = "upload-ok";
+    state.status = "upload";
     const consultationId = jsonResponse.id;
     if (typeof success === "function") {
       success(jsonResponse);
@@ -455,7 +455,7 @@ export const finishRecording = async ({
       eventSourceManager.connect();
     }
   } catch (err) {
-    pendingFirstUploads.clear(); // Clean up on error
+    pendingFirstUploads.clear();
     state.status = "upload-error";
     if (typeof error === "function") {
       error(err);
@@ -595,7 +595,7 @@ export const uploadAudio = async ({ mode, audioBlob, apiKey, success, error, spe
       if (isRetry) {
         deleteConsultationById(retryProfessionalFromIndexDb, retryIdFromIndexDb);
       }
-      state.status = "upload-ok";
+      state.status = "upload";
       if (typeof success === "function") {
         success(jsonResponse);
       }

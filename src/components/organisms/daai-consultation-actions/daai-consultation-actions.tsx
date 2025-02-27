@@ -276,7 +276,7 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
-      case "upload-ok":
+      case "upload":
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
@@ -287,7 +287,7 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
-      case "upload-error":
+      case "error":
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon

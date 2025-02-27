@@ -11,10 +11,13 @@ export class DaaiMic {
   @State() showAnimation = false;
   micTexts = {
     initial: "Assistente de IA",
+    choosen: "Consulta",
     recording: "Gravando...",
     resume: "Gravando...",
     paused: "Pausado",
     preparing: "Preparando para iniciar o seu registro...",
+    finished: "Aguarde enquanto geramos o registro final...",
+    upload: "Registro Finalizado!",
   };
 
   connectedCallback() {
