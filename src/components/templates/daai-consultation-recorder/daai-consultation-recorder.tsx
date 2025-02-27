@@ -40,8 +40,7 @@ export class DaaiConsultationRecorder {
   get metadataObject() {
     try {
       return JSON.parse(this.metadata);
-    }
-    catch (e) {
+    } catch (e) {
       return {};
     }
   }
@@ -94,7 +93,7 @@ export class DaaiConsultationRecorder {
               )
             )}
 
-            <div class="min-[500px]:ml-auto flex gap-2 items-center">
+            <div id="buttons-section">
               <daai-consultation-actions
                 apikey={this.apikey}
                 specialty={state.defaultSpecialty || state.chooseSpecialty}
@@ -125,7 +124,13 @@ export class DaaiConsultationRecorder {
         )}
 
         {state.openTutorialPopup && !this.hideTutorial && (
-          <daai-popup class="popup" mode={this.mode} apikey={this.apikey} professional={this.professional} metadata={this.metadataObject}></daai-popup>
+          <daai-popup
+            class="popup"
+            mode={this.mode}
+            apikey={this.apikey}
+            professional={this.professional}
+            metadata={this.metadataObject}
+          ></daai-popup>
         )}
 
         {state.openModalSpecialty && (
