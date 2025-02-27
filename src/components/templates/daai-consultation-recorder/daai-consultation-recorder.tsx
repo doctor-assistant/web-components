@@ -93,7 +93,10 @@ export class DaaiConsultationRecorder {
                   warningRecordingTime: this.warningRecordingTime,
                   maxRecordingTime: this.maxRecordingTime,
                 }}
-                hideTutorial={this.hideTutorial}
+                hideTutorial={
+                  this.hideTutorial ||
+                  (this.videoElement && this.videoElement !== null)
+                }
                 mode={this.mode}
               ></daai-consultation-actions>
             </div>
