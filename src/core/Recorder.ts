@@ -1,4 +1,5 @@
 import { version } from '../../package.json';
+import { ConsultationResponse } from '../components/entities/consultation.entity';
 
 import state from "../store";
 import { deleteChunk, deleteConsultationById, getConsultation, getConsultationsByProfessional, getFailedChunks, saveChunk, saveConsultation } from '../utils/indexDb';
@@ -21,12 +22,6 @@ const API_ENDPOINTS = {
     `/consultations/v2/${consultationId}/recordings/${recordingId}/finish`
 };
 
-interface ConsultationResponse {
-  id: string;
-  recording: {
-    id: string;
-  };
-}
 
 interface ChunkData {
   id: string;
@@ -86,6 +81,8 @@ export type StartRecordingProps = {
   videoElement?: HTMLVideoElement,
   professional?: string,
   metadata: Record<string, any>,
+ start?: (consultation: ConsultationResponse)=>void
+
 }
 export const startRecording = async (
   {
@@ -94,7 +91,8 @@ export const startRecording = async (
     mode,
     apikey,
     professional,
-    metadata
+    metadata,
+    start
   }: StartRecordingProps
 ) => {
   if (!mode || !apikey) {
@@ -173,8 +171,11 @@ export const startRecording = async (
       return;
     }
     state.status = "recording";
-
     const consultation: ConsultationResponse = await response.json();
+
+    if (typeof start === "function") {
+      start(consultation);
+    }
     currentConsultation = consultation;
     currentChunkIndex = -1; // Will be incremented to 0 before first chunk
     state.chooseModality = true;
@@ -375,7 +376,7 @@ export const resumeRecording = () => {
 type FinishRecordingProps = {
   mode: string,
   apikey: string,
-  success: (event: Record<string, any>) => void,
+  success:(consultation: ConsultationResponse) => void;
   error: (error: any) => void,
   specialty: string,
   onEvent: (event: any) => void,

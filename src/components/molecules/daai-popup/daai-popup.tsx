@@ -1,6 +1,7 @@
 import { Component, h, Prop } from "@stencil/core";
 import { startRecording } from "../../../core/Recorder";
 import state from "../../../store";
+import { ConsultationResponse } from "../../entities/consultation.entity";
 
 @Component({
   tag: "daai-popup",
@@ -12,6 +13,7 @@ export class DaaiPopup {
   @Prop() apikey: string;
   @Prop() professional: string;
   @Prop() metadata: Record<string, any>;
+  @Prop() start?: (consultation: ConsultationResponse) => void;
   handleClose() {
     state.openTutorialPopup = false;
   }
@@ -49,13 +51,16 @@ export class DaaiPopup {
             </daai-daai-button-with-icon>
             <daai-daai-button-with-icon
               id="daai-select-guide-button"
-              onClick={() => startRecording({
-                isRemote: true,
-                mode: this.mode,
-                apikey: this.apikey,
-                professional: this.professional,
-                metadata: this.metadata,
-              })}
+              onClick={() =>
+                startRecording({
+                  isRemote: true,
+                  mode: this.mode,
+                  apikey: this.apikey,
+                  professional: this.professional,
+                  metadata: this.metadata,
+                  start: this.start,
+                })
+              }
             >
               Selecionar guia
             </daai-daai-button-with-icon>
