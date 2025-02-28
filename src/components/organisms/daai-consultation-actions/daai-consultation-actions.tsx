@@ -125,9 +125,7 @@ export class DaaiConsultationActions {
                   onClick={this.choosenSpecialty}
                   disabled={state.defaultSpecialty !== ""}
                 >
-                  {state.specialtyTitle
-                    ? state.specialtyTitle
-                    : "SOAP Generalista"}
+                  {state.specialtyTitle ? state.specialtyTitle : "Generalista"}
                 </daai-button-with-icon>
               )}
               <daai-button-with-icon

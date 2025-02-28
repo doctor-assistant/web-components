@@ -36,8 +36,8 @@ export async function getSpecialty(mode:string) {
           title,
         })
       );
-
-      state.specialtyList = specialties;
+      const sortedSpecialties = specialties.sort((a, b) => a.title.localeCompare(b.title));
+      state.specialtyList = sortedSpecialties;
       return specialties
     }
   } catch (error) {
