@@ -1,5 +1,8 @@
 import { Config } from '@stencil/core';
 import tailwind, { tailwindHMR } from 'stencil-tailwind-plugin';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export const config: Config = {
   namespace: 'web-components',
@@ -30,5 +33,8 @@ export const config: Config = {
   ],
   testing: {
     browserHeadless: "new",
+  },
+  env: {
+    API_KEY: process.env.API_KEY,
   },
 };
