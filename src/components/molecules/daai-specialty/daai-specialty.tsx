@@ -5,7 +5,7 @@ import { saveSpecialtyByProfessionalId } from "../../../utils/indexDb";
 @Component({
   tag: "daai-specialty",
   styleUrl: "daai-specialty.css",
-  shadow: true,
+  shadow: false,
 })
 export class DaaiSpecialty {
   @Prop() professional: string;
@@ -59,10 +59,8 @@ export class DaaiSpecialty {
     return (
       <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm">
         <div class="w-96 p-4 rounded-md border-2 border-gray-200 mt-4 bg-white">
-          <div class="flex gap-24 space-x-8">
-            <p class="text-md text-gray-600 mb-4">
-              Escolha a sua Especialidade
-            </p>
+          <div class="flex gap-24 space-x-8 font-semibold">
+            <h2>Escolha a sua Especialidade</h2>
             <daai-button
               class="text-black font-medium text-sm mb-4"
               onClick={() => this.handleClick()}
