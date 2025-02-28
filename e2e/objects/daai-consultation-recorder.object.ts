@@ -16,14 +16,16 @@ export class DaaiConsultationRecorderPageObject {
       width: 540,
       height: 68
     });
-
+    await page.waitForChanges();
     await page.setContent('<daai-consultation-recorder></daai-consultation-recorder>');
+    await page.waitForChanges();
+    return page;
   }
 
   static async createEmpty() {
     const page = await newE2EPage();
-    await this.commonSetup(page);
-    const recorder = new DaaiConsultationRecorderPageObject(page);
+    const setupedPage = await this.commonSetup(page);
+    const recorder = new DaaiConsultationRecorderPageObject(setupedPage);
     return recorder;
   }
 
@@ -33,8 +35,8 @@ export class DaaiConsultationRecorderPageObject {
       html,
     });
 
-    await this.commonSetup(page);
-    const recorder = new DaaiConsultationRecorderPageObject(page);
+    const setupedPage = await this.commonSetup(page);
+    const recorder = new DaaiConsultationRecorderPageObject(setupedPage);
     return recorder;
   }
 
@@ -70,15 +72,15 @@ export class DaaiConsultationRecorderPageObject {
 
     const preparingText = await this.page.find('daai-consultation-recorder >>> daai-text#preparing p');
     expect(preparingText).not.toBeNull();
-    expect(preparingText.innerText).toBe('Preparando...');
-    await this.page.waitForChanges();
-
-    const clockElement = await this.page.find('daai-consultation-recorder >>> daai-recording-animation');
-    expect(clockElement).not.toBeNull();
+    expect(preparingText.innerText).toBe('Preparando para iniciar o seu registro...');
     await this.page.waitForChanges();
 
     // wait for API call
     await this.waitAPICall();
+
+    const clockElement = await this.page.find('daai-consultation-recorder >>> daai-recording-animation');
+    expect(clockElement).not.toBeNull();
+    await this.page.waitForChanges();
   }
 
   async waitForRecording(seconds: number) {
@@ -95,7 +97,7 @@ export class DaaiConsultationRecorderPageObject {
     // wait for API call
     await this.waitAPICall();
 
-    const uploadedText = await this.page.find('daai-consultation-recorder >>> daai-text#upload-text p');
+    const uploadedText = await this.page.find('daai-consultation-recorder >>> daai-text#upload p');
     expect(uploadedText).not.toBeNull();
     expect(uploadedText.innerText).toBe('Registro Finalizado!');
   }

@@ -1,22 +1,21 @@
-import { newE2EPage } from '@stencil/core/testing';
+import { DaaiConsultationRecorderPageObject } from '../../../../../e2e/objects/daai-consultation-recorder.object';
 
 describe('daai-consultation-recorder', () => {
-  let page;
+  let recorder;
 
   beforeAll(async () => {
-    page = await newE2EPage();
-    await page.setContent('<daai-consultation-recorder></daai-consultation-recorder>');
+    recorder = await DaaiConsultationRecorderPageObject.createEmpty();
   });
 
   describe('Rendering and Hydration', () => {
     it('should render the component with hydrated class', async () => {
-      const element = await page.find('daai-consultation-recorder');
-      expect(element).toHaveClass('hydrated');
+      await recorder.rendered();
     });
   });
 
   describe('Start Button', () => {
     it('should render the start button disabled', async () => {
+      const { page } = recorder;
       const startButton = await page.find('daai-consultation-recorder >>> daai-button-with-icon#start-recording-disabled');
       const buttonElement = await startButton.find('button');
       expect(buttonElement).not.toBeNull();
@@ -26,12 +25,14 @@ describe('daai-consultation-recorder', () => {
 
   describe('Specialty Button and Modal', () => {
     it('should render the specialty button enabled', async () => {
+      const { page } = recorder;
       const specialtyButton = await page.find('daai-consultation-recorder >>> daai-button-with-icon#specialty');
       const buttonElement = await specialtyButton.find('button');
       expect(buttonElement).not.toBeNull();
     });
 
     it('should open and then close the specialty modal on button click', async () => {
+      const { page } = recorder;
       const specialtyButton = await page.find('daai-consultation-recorder >>> daai-button-with-icon#specialty');
       await specialtyButton.click();
       await page.waitForChanges();
@@ -49,12 +50,14 @@ describe('daai-consultation-recorder', () => {
 
   describe('Menu Button and Mic Config Modal', () => {
     it('should render the menu button enabled', async () => {
+      const { page } = recorder;
       const menuButton = await page.find('daai-consultation-recorder >>> daai-button-with-icon#button-menu');
       const buttonElement = await menuButton.find('button');
       expect(buttonElement).not.toBeNull();
     });
 
     it('should open the config modal and then show and close the mic config modal', async () => {
+      const { page } = recorder;
       const menuButton = await page.find('daai-consultation-recorder >>> daai-button-with-icon#button-menu');
       await menuButton.click();
       await page.waitForChanges();
@@ -80,6 +83,7 @@ describe('daai-consultation-recorder', () => {
     });
 
     it('should open tutorial page on support button click', async () => {
+      const { page } = recorder;
       const menuButton = await page.find('daai-consultation-recorder >>> daai-button-with-icon#button-menu');
       await menuButton.click();
       await page.waitForChanges();
