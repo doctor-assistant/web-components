@@ -22,6 +22,9 @@ let retryIdFromIndexDb: any
 let retryProfessionalFromIndexDb:any
 
 
+export const isChrome = () => {
+  return /Chrome/.test(window.navigator.userAgent) && /Google Inc/.test(window.navigator.vendor);
+}
 
 export const StartTutorial = () => {
   state.openTutorialPopup = true;
@@ -45,6 +48,10 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
     state.telemedicine = true;
     if (videoElement) {
       try {
+        if(isChrome() && videoElement){
+          let ve : any = videoElement
+          videoElementStream = ve.captureStream()
+        }
         if (!videoElementSource) {
           videoElementSource = audioContext.createMediaElementSource(videoElement);
         }
