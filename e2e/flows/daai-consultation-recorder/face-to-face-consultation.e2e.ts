@@ -16,7 +16,6 @@ describe('daai-consultation-recorder', () => {
   beforeAll(async () => {
     recorder = await DaaiConsultationRecorderPageObject.createWithVirtualMic();
     await recorder.setApiKey(process.env.API_KEY as string);
-    console.log('apiKey', process.env.API_KEY);
     await recorder.setProfessional('e2e-test-id');
     await recorder.allowMicrophone();
   });

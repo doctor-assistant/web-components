@@ -20,6 +20,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Check API_KEY
+        run: echo "API_KEY is ${{ secrets.API_KEY }}"
+
       - name: Run end-to-end tests
         run: npm run test:e2e
         env:
