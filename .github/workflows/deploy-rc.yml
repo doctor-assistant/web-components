@@ -30,6 +30,6 @@ jobs:
         run: npm run build
 
       - name: Publish to npm with rc tag
-        run: npm publish --tag rc
+        run: npm publish --access public --tag rc
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
