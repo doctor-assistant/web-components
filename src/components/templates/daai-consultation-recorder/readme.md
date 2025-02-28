@@ -7,20 +7,22 @@
 
 ## Properties
 
-| Property                 | Attribute                | Description | Type                           | Default                 |
-| ------------------------ | ------------------------ | ----------- | ------------------------------ | ----------------------- |
-| `apikey`                 | `apikey`                 |             | `string`                       | `undefined`             |
-| `hideTutorial`           | `hide-tutorial`          |             | `boolean`                      | `false`                 |
-| `maxRecordingTime`       | `max-recording-time`     |             | `number`                       | `Infinity`              |
-| `metadata`               | `metadata`               |             | `string`                       | `undefined`             |
-| `onError`                | --                       |             | `(err: Error) => void`         | `undefined`             |
-| `onEvent`                | --                       |             | `(response: Response) => void` | `undefined`             |
-| `onSuccess`              | --                       |             | `(response: Response) => void` | `undefined`             |
-| `onWarningRecordingTime` | --                       |             | `() => void`                   | `undefined`             |
-| `professional`           | `professional`           |             | `string`                       | `undefined`             |
-| `specialty`              | `specialty`              |             | `string`                       | `state.chooseSpecialty` |
-| `telemedicine`           | `telemedicine`           |             | `boolean`                      | `undefined`             |
-| `warningRecordingTime`   | `warning-recording-time` |             | `number`                       | `0`                     |
+| Property                 | Attribute                | Description | Type                                           | Default                 |
+| ------------------------ | ------------------------ | ----------- | ---------------------------------------------- | ----------------------- |
+| `apikey`                 | `apikey`                 |             | `string`                                       | `undefined`             |
+| `hideTutorial`           | `hide-tutorial`          |             | `boolean`                                      | `false`                 |
+| `maxRecordingTime`       | `max-recording-time`     |             | `number`                                       | `Infinity`              |
+| `metadata`               | `metadata`               |             | `string`                                       | `undefined`             |
+| `onError`                | --                       |             | `(err: Error) => void`                         | `undefined`             |
+| `onEvent`                | --                       |             | `(response: Response) => void`                 | `undefined`             |
+| `onStart`                | --                       |             | `(consultation: ConsultationResponse) => void` | `undefined`             |
+| `onSuccess`              | --                       |             | `(consultation: ConsultationResponse) => void` | `undefined`             |
+| `onWarningRecordingTime` | --                       |             | `() => void`                                   | `undefined`             |
+| `professional`           | `professional`           |             | `string`                                       | `undefined`             |
+| `specialty`              | `specialty`              |             | `string`                                       | `state.chooseSpecialty` |
+| `telemedicine`           | `telemedicine`           |             | `boolean`                                      | `undefined`             |
+| `videoElement`           | --                       |             | `HTMLVideoElement`                             | `undefined`             |
+| `warningRecordingTime`   | `warning-recording-time` |             | `number`                                       | `0`                     |
 
 
 ## Dependencies
@@ -29,7 +31,6 @@
 
 - [daai-mic](../../organisms/mic)
 - [daai-clock](../../atoms/daai-clock)
-- [daai-text](../../atoms/text)
 - [daai-consultation-actions](../../organisms/daai-consultation-actions)
 - [daai-modal](../../molecules/daai-modal)
 - [daai-popup](../../molecules/daai-popup)
@@ -40,7 +41,6 @@
 graph TD;
   daai-consultation-recorder --> daai-mic
   daai-consultation-recorder --> daai-clock
-  daai-consultation-recorder --> daai-text
   daai-consultation-recorder --> daai-consultation-actions
   daai-consultation-recorder --> daai-modal
   daai-consultation-recorder --> daai-popup

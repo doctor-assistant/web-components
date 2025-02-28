@@ -13,14 +13,16 @@
 | `error`           | `error`          |             | `any`                                                                                             | `undefined` |
 | `event`           | `event`          |             | `any`                                                                                             | `undefined` |
 | `hideTutorial`    | `hide-tutorial`  |             | `boolean`                                                                                         | `false`     |
-| `metadata`        | `metadata`       |             | `string`                                                                                          | `undefined` |
+| `metadata`        | --               |             | `{ [x: string]: any; }`                                                                           | `undefined` |
 | `mode`            | `mode`           |             | `string`                                                                                          | `undefined` |
 | `professional`    | `professional`   |             | `string`                                                                                          | `""`        |
 | `recordingConfig` | --               |             | `{ onWarningRecordingTime: () => void; maxRecordingTime: number; warningRecordingTime: number; }` | `undefined` |
 | `recordingTime`   | `recording-time` |             | `number`                                                                                          | `0`         |
 | `specialty`       | `specialty`      |             | `any`                                                                                             | `undefined` |
-| `success`         | `success`        |             | `any`                                                                                             | `undefined` |
+| `start`           | --               |             | `(consultation: ConsultationResponse) => void`                                                    | `undefined` |
+| `success`         | --               |             | `(consultation: ConsultationResponse) => void`                                                    | `undefined` |
 | `telemedicine`    | `telemedicine`   |             | `boolean`                                                                                         | `undefined` |
+| `videoElement`    | --               |             | `HTMLVideoElement`                                                                                | `undefined` |
 
 
 ## Dependencies
