@@ -33,6 +33,7 @@ export const config: Config = {
   ],
   testing: {
     browserHeadless: "new",
+    browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
   },
   env: {
     API_KEY: process.env.API_KEY,
