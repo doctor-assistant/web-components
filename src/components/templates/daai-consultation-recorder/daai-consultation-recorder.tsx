@@ -57,8 +57,8 @@ export class DaaiConsultationRecorder {
     const apiKeyTest = 'PRODUCTION_TEST_KEY';
     /PRODUCTION/i.test(apiKeyTest) ? console.warn('The apikeytest is production') : console.warn('The apikeytest is not production');
     const apiKey = process.env.API_KEY as string;
-    /PRODUCTION/i.test(apiKeyTest) ? console.warn('The apikey is production') : console.warn('The apikey is not production');
-    apiKeyTest === apiKey ? console.warn('The apikeytest is equal to apikey') : console.warn('The apikeytest is not equal to apikey');
+    /PRODUCTION/i.test(this.apikey) ? console.warn('The apikey is production') : console.warn('The apikey is not production');
+    apiKeyTest === this.apikey ? console.warn('The apikeytest is equal to apikey') : console.warn('The apikeytest is not equal to apikey');
     this.mode = this.apikey && /PRODUCTION/i.test(this.apikey) ? "prod" : "dev";
     const spec = await getSpecialty(this.mode);
     await saveSpecialties(spec);
