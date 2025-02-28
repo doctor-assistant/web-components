@@ -139,12 +139,23 @@ daai-consultation-recorder {
   --recorder-small-device-min-width: 300px;
   --recorder-large-device-height: 52px;
   --recorder-small-device-height: 120px;
+  --recorder-gap: 4px;
+  --recorder-padding: 8px;
+  --recorder-align: center;
+  --recorder-justify-large-size: space-between;
+  --recorder-justify-small-size: center;
+  --recorder-large-devices-direction: row;
+  --recorder-small-devices-direction: column;
 }
 ```
 
 ### Callbacks
 
 ```js
+// Função chamada ao iniciar o registro
+onStart = (data) => {
+  console.log("Inicio da sua gravação", data);
+};
 // Função chamada em caso de sucesso na gravação
 onSuccess = (data) => {
   console.log("Gravação finalizada com sucesso:", data);
@@ -183,6 +194,10 @@ no x.x.x substitua pela versão vigente do pacote.
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const recorder = document.getElementById("recorder");
+
+        recorder.onStart = (data) => {
+          console.log("registration has started", data);
+        };
 
         recorder.onSuccess = (event) => {
           console.log("Recording succeeded!", event);

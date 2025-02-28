@@ -2,11 +2,11 @@ import { Component, Event, Prop, h } from "@stencil/core";
 
 @Component({
   tag: "daai-button-with-icon",
-  shadow: true,
+  shadow: false,
 })
 export class DaaiButtonWithIcon {
   @Prop() disabled: boolean = false;
-  @Event() onClick: (event: MouseEvent) => void = () => {};
+  @Event() onClick: (event: MouseEvent) => void = () => { };
 
   render() {
     return (

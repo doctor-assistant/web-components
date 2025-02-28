@@ -13,11 +13,11 @@ interface ProfessionalSpecialty {
 
 
 interface Consultation {
-  id?:number;
+  id?: number;
   professionalId: string;
   specialty: string;
-  audioBlob:any;
-  metadata:any
+  audioBlob: any;
+  metadata: any
 }
 
 class SpecialtiesDB extends Dexie {
@@ -129,6 +129,31 @@ export async function getSpecialtiesByProfessionalId(professionalId: string): Pr
 }
 
 
+interface ChunkUpload {
+  id: string;
+  consultationId: string;
+  recordingId: string;
+  chunk: Blob;
+  duration: number;
+  index: number;
+  retryCount: number;
+  timestamp: number;
+}
+
+class ChunkUploadDB extends Dexie {
+  chunks: Dexie.Table<ChunkUpload, number>;
+
+  constructor() {
+    super("chunkUploadDb");
+    this.version(1).stores({
+      chunks: "++id,consultationId,recordingId,index,timestamp"
+    });
+    this.chunks = this.table("chunks");
+  }
+}
+
+const chunkUploadDb = new ChunkUploadDB();
+
 class ConsusltationDb extends Dexie {
   consultations: Dexie.Table<Consultation, string>;
 
@@ -143,7 +168,7 @@ class ConsusltationDb extends Dexie {
 
 const consultationDb = new ConsusltationDb();
 
-export async function saveConsultation(professionalId:string, audioBlob: any, specialty: string, metadata:any) {
+export async function saveConsultation(professionalId: string, audioBlob: any, specialty: string, metadata: any) {
   try {
     await consultationDb.transaction(
       "rw",
@@ -200,6 +225,52 @@ export async function deleteConsultationById(professionalId: string, id: number)
     });
   } catch (error) {
     console.error("Erro ao deletar a consulta:", error);
+  }
+}
+
+export async function saveChunk(chunk: ChunkUpload) {
+  try {
+    await chunkUploadDb.transaction("rw", chunkUploadDb.chunks, async () => {
+      await chunkUploadDb.chunks.add({
+        ...chunk,
+        retryCount: chunk.retryCount || 0,
+        timestamp: chunk.timestamp || Date.now()
+      });
+    });
+  } catch (error) {
+    console.error("Erro ao salvar chunk:", error);
+  }
+}
+
+export async function getFailedChunks(consultationId: string) {
+  try {
+    return await chunkUploadDb.chunks
+      .where("consultationId")
+      .equals(consultationId)
+      .sortBy("timestamp");
+  } catch (error) {
+    console.error("Erro ao buscar chunks:", error);
+    return [];
+  }
+}
+
+export async function deleteChunk(id: string) {
+  console.log(id, 'id')
+  try {
+    await chunkUploadDb.transaction("rw", chunkUploadDb.chunks, async () => {
+      const deletedCount = await chunkUploadDb.chunks
+        .where("id")
+        .equals(id)
+        .delete();
+
+      if (deletedCount > 0) {
+        console.warn(`Chunk com ID ${id} foi deletado.`);
+      } else {
+        console.warn(`Nenhum chunk encontrado para o ID ${id}.`);
+      }
+    });
+  } catch (error) {
+    console.error("Erro ao deletar chunk:", error);
   }
 }
 

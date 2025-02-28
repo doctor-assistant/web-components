@@ -3,16 +3,18 @@ import { retryOldConsultations } from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
+import { ConsultationResponse } from "../../entities/consultation.entity";
 @Component({
   tag: "daai-consultation-recorder",
   styleUrl: "daai-consultation-recorder.css",
   shadow: true,
 })
 export class DaaiConsultationRecorder {
-  @Prop() onSuccess: (response: Response) => void;
+  @Prop() onSuccess: (consultation: ConsultationResponse) => void;
   @Prop() onError: (err: Error) => void;
   @Prop() onEvent: (response: Response) => void;
   @Prop() onWarningRecordingTime: () => void;
+  @Prop() onStart: (consultation: ConsultationResponse) => void;
 
   @Prop() apikey: string;
   @Prop() specialty: string = state.chooseSpecialty;
@@ -35,6 +37,14 @@ export class DaaiConsultationRecorder {
   get showClock() {
     const allowedStates = ["recording", "paused", "resume"];
     return allowedStates.includes(state.status);
+  }
+
+  get metadataObject() {
+    try {
+      return JSON.parse(this.metadata);
+    } catch (e) {
+      return {};
+    }
   }
 
   async componentDidLoad() {
@@ -68,27 +78,11 @@ export class DaaiConsultationRecorder {
                 />
               </div>
             </div>
-            {state.status === "choosen" ? (
-              <daai-text text="Consulta" id="choosen-mode" />
-            ) : (
-              ""
-            )}
-            {state.status === "finished" ? (
-              <daai-text
-                text="Aguarde enquanto geramos o registro final..."
-                id="upload-text"
-              />
-            ) : (
-              state.status === "upload-ok" && (
-                <daai-text text="Registro Finalizado!" id="upload-text" />
-              )
-            )}
-
-            <div class="min-[500px]:ml-auto flex gap-2 items-center">
+            <div id="buttons-section">
               <daai-consultation-actions
                 apikey={this.apikey}
                 specialty={state.defaultSpecialty || state.chooseSpecialty}
-                metadata={this.metadata}
+                metadata={this.metadataObject}
                 success={this.onSuccess}
                 error={this.onError}
                 telemedicine={this.telemedicine}
@@ -101,8 +95,12 @@ export class DaaiConsultationRecorder {
                   warningRecordingTime: this.warningRecordingTime,
                   maxRecordingTime: this.maxRecordingTime,
                 }}
-                hideTutorial={this.hideTutorial}
+                hideTutorial={
+                  this.hideTutorial ||
+                  (this.videoElement && this.videoElement !== null)
+                }
                 mode={this.mode}
+                start={this.onStart}
               ></daai-consultation-actions>
             </div>
           </div>
@@ -115,7 +113,14 @@ export class DaaiConsultationRecorder {
         )}
 
         {state.openTutorialPopup && !this.hideTutorial && (
-          <daai-popup class="popup"></daai-popup>
+          <daai-popup
+            class="popup"
+            mode={this.mode}
+            apikey={this.apikey}
+            professional={this.professional}
+            metadata={this.metadataObject}
+            start={this.onStart}
+          ></daai-popup>
         )}
 
         {state.openModalSpecialty && (

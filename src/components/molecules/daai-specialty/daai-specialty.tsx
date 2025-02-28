@@ -5,17 +5,36 @@ import { saveSpecialtyByProfessionalId } from "../../../utils/indexDb";
 @Component({
   tag: "daai-specialty",
   styleUrl: "daai-specialty.css",
-  shadow: true,
+  shadow: false,
 })
 export class DaaiSpecialty {
   @Prop() professional: string;
 
-  @State() specialtyList: Array<{ title: string; id: string }> = [];
-
+  @State() specialtyList: Array<{ title: string; id: string }> =
+    state.specialtyList || [];
   @State() chooseSpecialty: string = state.chooseSpecialty || "generic";
+  @State() chooseSpecialtyTitle: string = state.specialtyTitle || "GENERALISTA";
+  @State() searchQuery: string = "";
 
-  @State() chooseSpecialtyTitle: string =
-    state.specialtyTitle || "SOAP GENERALISTA";
+  get filteredSpecialtyList() {
+    return this.specialtyList.filter((specialty) =>
+      specialty.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
+  }
+
+  componentDidLoad() {
+    document.addEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      this.handleClick();
+    }
+  }
 
   handleClick() {
     state.openModalSpecialty = false;
@@ -32,35 +51,45 @@ export class DaaiSpecialty {
     }
   }
 
+  handleSearch(event: Event) {
+    this.searchQuery = (event.target as HTMLInputElement).value;
+  }
+
   render() {
     return (
       <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm">
         <div class="w-96 p-4 rounded-md border-2 border-gray-200 mt-4 bg-white">
-          <div class="flex gap-24 space-x-8">
-            <p class="text-md text-gray-600 mb-4">
-              Escolha a sua Especialidade
-            </p>
+          <div class="flex gap-24 space-x-8 font-semibold">
+            <h2>Escolha a sua Especialidade</h2>
             <daai-button
-              class="text-black font-medium  text-sm mb-4"
+              class="text-black font-medium text-sm mb-4"
               onClick={() => this.handleClick()}
             >
               X
             </daai-button>
           </div>
+          <input
+            type="text"
+            class="w-full p-2 mb-3 border rounded-md"
+            placeholder="Busque a sua especialidade"
+            onInput={(event) => this.handleSearch(event)}
+            value={this.searchQuery}
+            id="search-input"
+          />
           <div class="w-full h-64 overflow-y-auto border p-4">
             <ul class="space-y-2">
-              {state.specialtyList.map((specialty) => (
+              {this.filteredSpecialtyList.map((specialty) => (
                 <li
-                  class={`cursor-pointer p-3 rounded-lg border transition
-                  ${
+                  key={specialty.id}
+                  id={
                     this.chooseSpecialty === specialty.id
-                      ? "bg-gray-500 text-white border-gray-600"
-                      : "bg-gray-100 hover:bg-gray-200 border-gray-300"
-                  }`}
-                  onClick={() => (
-                    (this.chooseSpecialty = specialty.id),
-                    (this.chooseSpecialtyTitle = specialty.title)
-                  )}
+                      ? "choose-specialty"
+                      : "default-specialty"
+                  }
+                  onClick={() => {
+                    this.chooseSpecialty = specialty.id;
+                    this.chooseSpecialtyTitle = specialty.title;
+                  }}
                 >
                   {specialty.title}
                 </li>
@@ -69,7 +98,7 @@ export class DaaiSpecialty {
           </div>
           <div class="flex items-start justify-end gap-2 mt-2">
             <daai-button
-              class="text-white bg-gray-500 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+              id="choose-specialty-button"
               onClick={() => this.handleChooseSpecialty()}
             >
               Escolher Especialidade

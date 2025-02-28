@@ -9,6 +9,7 @@ import {
 } from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialtiesByProfessionalId } from "../../../utils/indexDb";
+import { ConsultationResponse } from "../../entities/consultation.entity";
 
 @Component({
   tag: "daai-consultation-actions",
@@ -22,11 +23,12 @@ export class DaaiConsultationActions {
   @Prop() videoElement?: HTMLVideoElement;
   @Prop() professional: string = "";
 
-  @Prop() success: any;
+  @Prop() success: (consultation: ConsultationResponse) => void;
   @Prop() error: any;
-  @Prop() metadata: string;
+  @Prop() metadata: Record<string, any>;
   @Prop() event: any;
   @Prop() mode: string;
+  @Prop() start: (consultation: ConsultationResponse) => void;
 
   @State() title: string = "";
   @State() stopAnimation: string = "";
@@ -94,9 +96,7 @@ export class DaaiConsultationActions {
         success: this.success,
         error: this.error,
         specialty: this.specialty,
-        metadata: this.metadata,
         onEvent: this.event,
-        professional: this.professional,
       });
     }
   }
@@ -125,9 +125,7 @@ export class DaaiConsultationActions {
                   onClick={this.choosenSpecialty}
                   disabled={state.defaultSpecialty !== ""}
                 >
-                  {state.specialtyTitle
-                    ? state.specialtyTitle
-                    : "SOAP Generalista"}
+                  {state.specialtyTitle ? state.specialtyTitle : "Generalista"}
                 </daai-button-with-icon>
               )}
               <daai-button-with-icon
@@ -144,7 +142,14 @@ export class DaaiConsultationActions {
                   ) {
                     this.telemedicine
                       ? this.choosenMode()
-                      : startRecording(false);
+                      : startRecording({
+                          isRemote: false,
+                          mode: this.mode,
+                          apikey: this.apikey,
+                          professional: this.professional,
+                          metadata: this.metadata,
+                          start: this.start,
+                        });
                   }
                 }}
                 disabled={
@@ -173,7 +178,16 @@ export class DaaiConsultationActions {
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
               id="choose-local-consultation"
-              onClick={() => startRecording(false)}
+              onClick={() =>
+                startRecording({
+                  isRemote: false,
+                  mode: this.mode,
+                  apikey: this.apikey,
+                  professional: this.professional,
+                  metadata: this.metadata,
+                  start: this.start,
+                })
+              }
             >
               <div class="flex items-center justify-center p-2">Presencial</div>
             </daai-button-with-icon>
@@ -181,7 +195,15 @@ export class DaaiConsultationActions {
               id="choose-telemedicine-consultation"
               onClick={() =>
                 state.isChecked || this.hideTutorial
-                  ? startRecording(true, this.videoElement)
+                  ? startRecording({
+                      isRemote: true,
+                      videoElement: this.videoElement,
+                      mode: this.mode,
+                      apikey: this.apikey,
+                      professional: this.professional,
+                      metadata: this.metadata,
+                      start: this.start,
+                    })
                   : StartTutorial()
               }
             >
@@ -214,9 +236,7 @@ export class DaaiConsultationActions {
                   success: this.success,
                   error: this.error,
                   specialty: this.specialty,
-                  metadata: this.metadata,
                   onEvent: this.event,
-                  professional: this.professional,
                 })
               }
             >
@@ -251,9 +271,7 @@ export class DaaiConsultationActions {
                   success: this.success,
                   error: this.error,
                   specialty: this.specialty,
-                  metadata: this.metadata,
                   onEvent: this.event,
-                  professional: this.professional,
                 })
               }
             >
@@ -261,7 +279,7 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
-      case "upload-ok":
+      case "upload":
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
@@ -272,7 +290,7 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
-      case "upload-error":
+      case "error":
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon

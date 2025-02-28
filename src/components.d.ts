@@ -5,6 +5,8 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ConsultationResponse } from "./components/entities/consultation.entity";
+export { ConsultationResponse } from "./components/entities/consultation.entity";
 export namespace Components {
     interface DaaiButton {
         "disabled": boolean;
@@ -32,7 +34,7 @@ export namespace Components {
         "error": any;
         "event": any;
         "hideTutorial": boolean;
-        "metadata": string;
+        "metadata": Record<string, any>;
         "mode": string;
         "professional": string;
         "recordingConfig": {
@@ -42,7 +44,8 @@ export namespace Components {
   };
         "recordingTime": number;
         "specialty": any;
-        "success": any;
+        "start": (consultation: ConsultationResponse) => void;
+        "success": (consultation: ConsultationResponse) => void;
         "telemedicine": boolean;
         "videoElement"?: HTMLVideoElement;
     }
@@ -53,7 +56,8 @@ export namespace Components {
         "metadata": string;
         "onError": (err: Error) => void;
         "onEvent": (response: Response) => void;
-        "onSuccess": (response: Response) => void;
+        "onStart": (consultation: ConsultationResponse) => void;
+        "onSuccess": (consultation: ConsultationResponse) => void;
         "onWarningRecordingTime": () => void;
         "professional": string;
         "specialty": string;
@@ -100,6 +104,11 @@ export namespace Components {
         "width": string;
     }
     interface DaaiPopup {
+        "apikey": string;
+        "metadata": Record<string, any>;
+        "mode": string;
+        "professional": string;
+        "start"?: (consultation: ConsultationResponse) => void;
     }
     interface DaaiPopupIcon {
         "color": string;
@@ -443,7 +452,7 @@ declare namespace LocalJSX {
         "error"?: any;
         "event"?: any;
         "hideTutorial"?: boolean;
-        "metadata"?: string;
+        "metadata"?: Record<string, any>;
         "mode"?: string;
         "professional"?: string;
         "recordingConfig"?: {
@@ -453,7 +462,8 @@ declare namespace LocalJSX {
   };
         "recordingTime"?: number;
         "specialty"?: any;
-        "success"?: any;
+        "start"?: (consultation: ConsultationResponse) => void;
+        "success"?: (consultation: ConsultationResponse) => void;
         "telemedicine"?: boolean;
         "videoElement"?: HTMLVideoElement;
     }
@@ -464,7 +474,8 @@ declare namespace LocalJSX {
         "metadata"?: string;
         "onError"?: (err: Error) => void;
         "onEvent"?: (response: Response) => void;
-        "onSuccess"?: (response: Response) => void;
+        "onStart"?: (consultation: ConsultationResponse) => void;
+        "onSuccess"?: (consultation: ConsultationResponse) => void;
         "onWarningRecordingTime"?: () => void;
         "professional"?: string;
         "specialty"?: string;
@@ -512,6 +523,11 @@ declare namespace LocalJSX {
         "width"?: string;
     }
     interface DaaiPopup {
+        "apikey"?: string;
+        "metadata"?: Record<string, any>;
+        "mode"?: string;
+        "professional"?: string;
+        "start"?: (consultation: ConsultationResponse) => void;
     }
     interface DaaiPopupIcon {
         "color"?: string;

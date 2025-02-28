@@ -11,10 +11,6 @@ export class DaaiConfig {
   private popupRef: HTMLElement;
   @State() isOpen: boolean = true;
 
-  handleClickTutorialButton() {
-    window.open("https://doctorassistant.ai/tutorial/", "_blank");
-  }
-
   handleClickOutside = (event: MouseEvent) => {
     if (this.popupRef && !this.popupRef.contains(event.target as Node)) {
       state.openMenu = false;
@@ -64,17 +60,17 @@ export class DaaiConfig {
               <daai-text text="Configurações" class="font-bold"></daai-text>
             </div>
           </daai-button-with-icon>
-          <daai-button-with-icon
-            class="flex items-center gap-2"
-            title="Suporte"
-            id="button-support"
-            onClick={this.handleClickTutorialButton}
-          >
-            <div class="flex items-start justify-start gap-2">
-              <daai-menu-tutorial-icon />
-              <daai-text text="Tutorial" class="font-bold"></daai-text>
-            </div>
-          </daai-button-with-icon>
+          <a href="https://doctorassistant.ai/tutorial/" target="_blank" id="button-support">
+            <daai-button-with-icon
+              class="flex items-center gap-2"
+              title="Suporte"
+            >
+              <div class="flex items-start justify-start gap-2">
+                <daai-menu-tutorial-icon />
+                <daai-text text="Tutorial" class="font-bold"></daai-text>
+              </div>
+            </daai-button-with-icon>
+          </a>
         </div>
       </div>
     );

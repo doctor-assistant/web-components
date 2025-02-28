@@ -1,5 +1,5 @@
-import { Component, Event, EventEmitter, h } from "@stencil/core";
-import state from "../../../store";
+import { Component, Event, EventEmitter, h, State } from "@stencil/core";
+import state, { onChange } from "../../../store";
 
 @Component({
   tag: "daai-mic",
@@ -8,6 +8,17 @@ import state from "../../../store";
 })
 export class DaaiMic {
   @Event() interfaceEvent: EventEmitter<{ microphoneSelect: boolean }>;
+  @State() showAnimation = false;
+  micTexts = {
+    initial: "Assistente de IA",
+    choosen: "Consulta",
+    recording: "Gravando...",
+    resume: "Gravando...",
+    paused: "Pausado",
+    preparing: "Preparando para iniciar o seu registro...",
+    finished: "Aguarde enquanto finalizamos sua consulta...",
+    upload: "Registro Finalizado!",
+  };
 
   connectedCallback() {
     this.requestMicrophonePermission();
@@ -51,6 +62,16 @@ export class DaaiMic {
     }
   }
 
+  watchStatus() {
+    this.showAnimation = ["recording", "resume", "paused"].includes(
+      state.status
+    );
+  }
+
+  componentWillLoad() {
+    onChange("status", () => this.watchStatus());
+  }
+
   render() {
     return (
       <div class="flex items-center justify-center gap-2">
@@ -61,18 +82,6 @@ export class DaaiMic {
               text="Aguardando autorização do microfone"
               id="error-msg"
             />
-          ) : state.status === "initial" ? (
-            <daai-text text="Assistente de IA" id="initial-text"></daai-text>
-          ) : state.status === "paused" ? (
-            <div class="flex items-center justify-center">
-              <daai-text text="Pausado" id="initial-text"></daai-text>
-              <div class="ml-4">
-                <daai-recording-animation
-                  id="animation-recording"
-                  status={state.status}
-                />
-              </div>
-            </div>
           ) : state.status === "upload-error" ? (
             <div>
               <daai-text text="Sua consulta não foi enviada!" id="error-text" />
@@ -82,18 +91,21 @@ export class DaaiMic {
               />
             </div>
           ) : null}
-
-          {state.status === "recording" || state.status === "resume" ? (
-            <div class="flex items-center justify-center">
-              <daai-text text="Gravando..." id="initial-text"></daai-text>
+          <div class="flex items-center justify-center">
+            <daai-text
+              text={this.micTexts[state.status]}
+              id={state.status}
+              class="initial-text"
+            ></daai-text>
+            {this.showAnimation && (
               <div class="ml-4">
                 <daai-recording-animation
                   id="animation-recording"
                   status={state.status}
                 />
               </div>
-            </div>
-          ) : null}
+            )}
+          </div>
         </div>
         {state.microphonePermission === true && state.status === "initial" && (
           <div></div>
