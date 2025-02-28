@@ -369,3 +369,44 @@ daai-mic-animation {
   color: var(--recorder-error-color);
   font-weight: bold;
 }
+
+#search-input:focus {
+  border-color: var(--recorder-primary-color);
+  outline: none;
+}
+
+#choose-specialty {
+  background-color: var(--recorder-primary-color);
+  color: white;
+  border: 1px solid var(--recorder-primary-color);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+#default-specialty {
+  background-color: var(--recorder-disable-color);
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+#default-specialty:hover {
+  background-color: #e5e7eb;
+}
+
+#choose-specialty-button {
+  flex-direction: row;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: var(--recorder-button-radius);
+  background-color: var(--recorder-primary-color);
+  color: var(--recorder-text-color);
+  color: white;
+}
