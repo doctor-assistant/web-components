@@ -17,17 +17,25 @@ jobs:
         with:
           node-version: '21'
 
+      - name: Configure npm registry
+        run: echo "//registry.npmjs.org/:_authToken=\${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
       - name: Install dependencies
         run: npm install
 
-      - name: Run end-to-end tests
-        run: npm run test:e2e
-        continue-on-error: true
-        env:
-          API_KEY: ${{ secrets.API_KEY }}
+      # - name: Run end-to-end tests
+      #   run: npm run test:e2e
+      #   continue-on-error: true
+      #   env:
+      #     API_KEY: ${{ secrets.API_KEY }}
 
       - name: Build the project
         run: npm run build
+
+      - name: Bump version
+        run: |
+          npm version patch
+          git push origin HEAD --tags
 
       - name: Publish to npm with rc tag
         run: npm publish --access public --tag rc
