@@ -42,8 +42,6 @@ export class DaaiConsultationRecorderPageObject {
 
   async setApiKey(apiKey: string) {
     const recorderEl = await this.page.find('daai-consultation-recorder');
-    console.log('apiKey', apiKey);
-    console.log('recorderEl', recorderEl);
     await recorderEl.setProperty('apikey', apiKey);
     await this.page.waitForChanges();
   }
