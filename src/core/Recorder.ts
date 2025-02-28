@@ -552,7 +552,6 @@ export const uploadAudio = async ({ mode, audioBlob, apiKey, success, error, spe
 
   const formData = new FormData();
   formData.append("recording", audioBlob);
-  console.log(specialty, 'spec')
   if (specialty) {
     formData.append("specialty", specialty);
   }

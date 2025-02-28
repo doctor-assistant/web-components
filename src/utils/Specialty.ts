@@ -1,6 +1,15 @@
 import state from "../store";
 
-async function getSpecialtyApi(mode: string) {
+type SpecialtyResponse = {
+  specialties: {
+    [key: string]: {
+      title: string;
+    };
+  };
+};
+
+
+async function getSpecialtyApi(mode: string): Promise<SpecialtyResponse>{
   const url =
     mode === "dev"
       ? "https://apim.doctorassistant.ai/api/sandbox/specialties"
@@ -30,14 +39,13 @@ export async function getSpecialty(mode:string) {
     const jsonResponse = await getSpecialtyApi(mode);
     if (jsonResponse && jsonResponse.specialties) {
       const specialties = Object.entries(jsonResponse.specialties).map(
-        //@ts-ignore
         ([key, { title }]) => ({
           id: key,
           title,
         })
       );
-
-      state.specialtyList = specialties;
+      const sortedSpecialties = specialties.sort((a, b) => a.title.localeCompare(b.title));
+      state.specialtyList = sortedSpecialties;
       return specialties
     }
   } catch (error) {
