@@ -40,7 +40,9 @@ export class DaaiSpecialty {
     state.openModalSpecialty = false;
   }
 
-  handleChooseSpecialty() {
+  handleChooseSpecialty(specialty: { title: string; id: string }) {
+    this.chooseSpecialty = specialty.id;
+    this.chooseSpecialtyTitle = specialty.title;
     if (this.chooseSpecialty) {
       state.chooseSpecialty = this.chooseSpecialty;
       state.specialtyTitle = this.chooseSpecialtyTitle;
@@ -58,9 +60,9 @@ export class DaaiSpecialty {
   render() {
     return (
       <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm">
-        <div class="w-96 p-4 rounded-md border-2 border-gray-200 mt-4 bg-white">
-          <div class="flex gap-24 space-x-8 font-semibold">
-            <h2>Escolha a sua Especialidade</h2>
+        <div class="w-96 px-5 pt-5 pb-8 rounded-md mt-4 bg-white">
+          <div class="flex justify-between">
+            <span class="text-[12px] font-[600] modal-title" id="specialty-title">Escolha a sua especialidade</span>
             <daai-button
               class="text-black font-medium text-sm mb-4"
               onClick={() => this.handleClick()}
@@ -70,39 +72,30 @@ export class DaaiSpecialty {
           </div>
           <input
             type="text"
-            class="w-full p-2 mb-3 border rounded-md"
-            placeholder="Busque a sua especialidade"
+            class="w-full px-2 py-3 mb-6 -translate-y-2 border rounded-md text-[12px]"
+            placeholder="Busque por sua especialidade"
             onInput={(event) => this.handleSearch(event)}
             value={this.searchQuery}
-            id="search-input"
+            id="search-specialty-input"
           />
-          <div class="w-full h-64 overflow-y-auto border p-4">
-            <ul class="space-y-2">
+          <div class="w-[calc(100%+18px)] h-64 overflow-y-scroll">
+            <ul class="space-y-2 pr-1">
               {this.filteredSpecialtyList.map((specialty) => (
                 <li
                   key={specialty.id}
-                  id={
+                  class={
                     this.chooseSpecialty === specialty.id
-                      ? "choose-specialty"
-                      : "default-specialty"
+                      ? "selected-modal-item"
+                      : "modal-item"
                   }
                   onClick={() => {
-                    this.chooseSpecialty = specialty.id;
-                    this.chooseSpecialtyTitle = specialty.title;
+                    this.handleChooseSpecialty(specialty);
                   }}
                 >
                   {specialty.title}
                 </li>
               ))}
             </ul>
-          </div>
-          <div class="flex items-start justify-end gap-2 mt-2">
-            <daai-button
-              id="choose-specialty-button"
-              onClick={() => this.handleChooseSpecialty()}
-            >
-              Escolher Especialidade
-            </daai-button>
           </div>
         </div>
       </div>

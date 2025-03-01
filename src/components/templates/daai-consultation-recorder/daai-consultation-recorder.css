@@ -24,13 +24,13 @@
   --recorder-small-device-min-width: 300px;
   --recorder-large-device-height: 52px;
   --recorder-small-device-height: 120px;
-  --recorder-gap:4px;
-  --recorder-padding:8px;
+  --recorder-gap: 4px;
+  --recorder-padding: 8px;
   --recorder-align: center;
   --recorder-justify-large-size: space-between;
   --recorder-justify-small-size: center;
-  --recorder-large-devices-direction:row;
-  --recorder-small-devices-direction:column;
+  --recorder-large-devices-direction: row;
+  --recorder-small-devices-direction: column;
 }
 
 daai-button-with-icon {
@@ -50,22 +50,25 @@ daai-button-with-icon {
   font-family: "Open Sans", serif;
   display: flex;
   align-items: var(--recorder-align);
-  justify-content:  var(--recorder-justify-large-size);
+  justify-content: var(--recorder-justify-large-size);
   background-color: var(--recorder-background-color);
   border-radius: var(--recorder-border-radius);
   border: 1px solid var(--recorder-border-color);
   padding: var(--recorder-padding);
   gap: var(--recorder-gap);
   height: var(--recorder-large-device-height);
-  flex-direction: var( --recorder-large-devices-direction);
-   @media (min-width: 100px) and (max-width:499px) {
+  flex-direction: var(--recorder-large-devices-direction);
+
+  @media (min-width: 100px) and (max-width:499px) {
     display: flex;
     max-width: var(--recorder-small-device-max-width);
     min-width: var(--recorder-small-device-min-width);
-    flex-direction: var( --recorder-small-devices-direction);
+    flex-direction: var(--recorder-small-devices-direction);
     justify-content: var(--recorder-justify-small-size);
     height: var(--recorder-small-device-height);
-  };
+  }
+
+  ;
 }
 
 daai-recording-animation {
@@ -211,11 +214,11 @@ daai-mic-animation {
   margin-top: 4px;
 }
 
-#buttons-section{
+#buttons-section {
   @media (min-width: 700px) {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
   }
 }
 
@@ -375,38 +378,51 @@ daai-mic-animation {
   outline: none;
 }
 
-#choose-specialty {
+.selected-modal-item {
   background-color: var(--recorder-primary-color);
   color: white;
   border: 1px solid var(--recorder-primary-color);
   border-radius: 8px;
   padding: 12px;
+  font-size: 12px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 }
 
-#default-specialty {
-  background-color: var(--recorder-disable-color);
-  border: 1px solid #d1d5db;
+.modal-item {
+  border: 1px solid var(--recorder-border-button-color);
   border-radius: 8px;
   padding: 12px;
+  font-size: 12px;
   cursor: pointer;
+  color: var(--recorder-text-color);
+  font-weight: 600;
   transition: background-color 0.2s ease-in-out;
 }
 
-#default-specialty:hover {
-  background-color: #e5e7eb;
+.modal-item:hover {
+  /* background-color: rgba(var(--recorder-primary-color), 0.8); */
+  background-color: rgb(from var(--recorder-primary-color) r g b / 0.05);
+  border-color: var(--recorder-primary-color);
+  color: var(--recorder-primary-color);
 }
 
-#choose-specialty-button {
-  flex-direction: row;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 16px;
-  border-radius: var(--recorder-button-radius);
-  background-color: var(--recorder-primary-color);
+.modal-title {
   color: var(--recorder-text-color);
-  color: white;
+  margin-bottom: 0px;
+}
+
+#search-specialty-input {
+  color: var(--recorder-text-color);
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 14px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--recorder-primary-color);
+  border-radius: var(--recorder-border-radius);
+  border: 3px solid var(--recorder-background-color);
 }

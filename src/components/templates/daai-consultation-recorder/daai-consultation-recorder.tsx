@@ -107,7 +107,7 @@ export class DaaiConsultationRecorder {
         </slot>
         {state.openModalConfig && (
           <daai-modal
-            headerTitle="Escolha o seu Microfone"
+            headerTitle="Escolha o seu microfone"
             items={state.availableMicrophones}
           />
         )}
