@@ -1,4 +1,4 @@
-name: Deploy Release Candidate
+name: Publish Version
 
 on:
   workflow_dispatch:
@@ -33,8 +33,17 @@ jobs:
       - name: Build the project
         run: npm run build
 
+      - name: Determine npm tag
+        id: npm_tag
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$VERSION" == *-rc ]]; then
+            echo "TAG=rc" >> $GITHUB_ENV
+          else
+            echo "TAG=latest" >> $GITHUB_ENV
+          fi
 
-      - name: Publish to npm with rc tag
-        run: npm publish --provenance --access public --tag rc
+      - name: Publish to npm
+        run: npm publish --provenance --access public --tag ${{ env.TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
