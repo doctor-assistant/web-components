@@ -38,11 +38,25 @@ export class DaaiMic {
       // Get the list of available audio devices
       const devices = await navigator.mediaDevices.enumerateDevices();
 
+      if (devices.length === 0) {
+        state.microphonePermission = false;
+        return;
+      }
+
       const microphones = devices
         .filter((device) => device.kind === "audioinput")
         .map((device) => device.label || "Microfone sem nome");
 
       state.availableMicrophones = microphones;
+
+      // Set the default microphone to the one saved in local storage, if it exists
+      const storedMicrophone = localStorage.getItem("selectedMicrophone");
+      const storedMicrophoneIsAvailable = devices.some((device) => device.deviceId === storedMicrophone);
+      if (storedMicrophone && storedMicrophoneIsAvailable) {
+        state.defaultMicrophone = storedMicrophone;
+      } else {
+        state.defaultMicrophone = devices.some((device) => device.deviceId === 'default') ? 'default' : microphones[0];
+      }
 
       // Always stop the temporary stream immediately after getting permissions and device list
       // This ensures we don't keep any lingering streams that could affect the recording indicator

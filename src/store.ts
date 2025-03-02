@@ -12,7 +12,6 @@ const { state, onChange } = createStore({
   chooseModality: false,
   microphonePermission: false,
   availableMicrophones: [],
-  chosenMicrophone: "",
   defaultMicrophone: "",
   recordingTime: 0,
   specialtyList: [],

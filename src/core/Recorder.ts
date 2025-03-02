@@ -81,7 +81,7 @@ export type StartRecordingProps = {
   videoElement?: HTMLVideoElement,
   professional?: string,
   metadata: Record<string, any>,
- start?: (consultation: ConsultationResponse)=>void
+  start?: (consultation: ConsultationResponse) => void
 
 }
 export const startRecording = async (
@@ -106,7 +106,7 @@ export const startRecording = async (
   try {
     const constraints = {
       audio: {
-        deviceId: state.chosenMicrophone
+        deviceId: state.defaultMicrophone
           ? { exact: state.defaultMicrophone }
           : undefined,
       },
@@ -376,7 +376,7 @@ export const resumeRecording = () => {
 type FinishRecordingProps = {
   mode: string,
   apikey: string,
-  success:(consultation: ConsultationResponse) => void;
+  success: (consultation: ConsultationResponse) => void;
   error: (error: any) => void,
   specialty: string,
   onEvent: (event: any) => void,
