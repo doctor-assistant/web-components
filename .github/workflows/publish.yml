@@ -36,11 +36,12 @@ jobs:
       - name: Determine npm tag
         id: npm_tag
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          if [[ "$VERSION" == *-rc ]]; then
+          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+            echo "TAG=latest" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF_NAME}" == "develop" ]]; then
             echo "TAG=rc" >> $GITHUB_ENV
           else
-            echo "TAG=latest" >> $GITHUB_ENV
+            echo "TAG=alpha" >> $GITHUB_ENV
           fi
 
       - name: Publish to npm
