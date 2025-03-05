@@ -1,5 +1,5 @@
 import { Component, h, Host, Prop, State } from "@stencil/core";
-import { retryOldConsultations } from "../../../core/Recorder";
+import { retryChunkedConsultations, retryOldConsultations } from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
@@ -51,13 +51,14 @@ export class DaaiConsultationRecorder {
     if (this.specialty) {
       state.defaultSpecialty = this.specialty;
     }
+    await retryOldConsultations(this.mode, this.apikey);
+    await retryChunkedConsultations(this.mode, this.apikey);
   }
 
   async componentWillLoad() {
     this.mode = this.apikey && /PRODUCTION/i.test(this.apikey) ? "prod" : "dev";
     const spec = await getSpecialty(this.mode);
     await saveSpecialties(spec);
-    await retryOldConsultations(this.mode, this.apikey);
   }
 
   render() {
