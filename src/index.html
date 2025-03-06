@@ -14,14 +14,16 @@
 </head>
 
 <body>
-  <daai-consultation-recorder apikey="" speciality="" metadata="" telemedicine="" professional=""
-    hideTutorial=""></daai-consultation-recorder>
+  <daai-consultation-recorder apikey="afe16d81-8037-4228-9f3e-4f422ba804cf" speciality=""
+    metadata='{"attendanceId":123,"professionalId":678}' telemedicine="false" professional="12345"
+    hideTutorial="false"></daai-consultation-recorder>
 
   <script>
     const recorder = document.querySelector('daai-consultation-recorder');
     recorder.onStart = console.log;
     recorder.onSuccess = console.log;
     recorder.onError = console.error;
+    recorder.onEvent = console.log;
   </script>
 </body>
 
