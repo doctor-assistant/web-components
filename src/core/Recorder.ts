@@ -452,7 +452,7 @@ export const finishRecording = async ({
       success(jsonResponse);
     }
     if (typeof event === "function") {
-      const sseUrl = `${baseUrl}/${consultationId}/events`;
+      const sseUrl = `${baseUrl}/consultations/${consultationId}/events`;
       let eventSourceManager = new EventSourceManager(apikey, sseUrl, event);
       eventSourceManager.connect();
     }

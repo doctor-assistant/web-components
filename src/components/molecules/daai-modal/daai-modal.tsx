@@ -4,7 +4,7 @@ import state from "../../../store";
 @Component({
   tag: "daai-modal",
   styleUrl: "daai-modal.css",
-  shadow: true,
+  shadow: false,
 })
 export class DaaiModal {
   @Prop() items = [];
