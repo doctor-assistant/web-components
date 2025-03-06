@@ -5,10 +5,23 @@ dotenv.config();
 
 const options = {
   files: 'src/index.html',
-  from: [/apikey=".*?"/g, /professional=".*?"/g],
+  from: [
+    // Props
+    /apikey=".*?"/g,
+    /specialty=".*?"/g,
+    /metadata=".*?"/g,
+    /telemedicine=".*?"/g,
+    /professional=".*?"/g,
+    /hideTutorial=".*?"/g,
+  ],
   to: [
+    //Props
     `apikey="${process.env.API_KEY}"`,
-    `professional="${process.env.PROFESSIONAL_ID}"`
+    `specialty="${process.env.SPECIALTY}"`,
+    `metadata='${process.env.METADATA}'`,
+    `telemedicine="${process.env.TELEMEDICINE}"`,
+    `professional="${process.env.PROFESSIONAL_ID}"`,
+    `hideTutorial="${process.env.HIDE_TUTORIAL}"`,
   ],
 };
 
