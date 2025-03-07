@@ -393,6 +393,8 @@ export const finishRecording = async ({
 }: FinishRecordingProps) => {
   state.status = "finished";
 
+  visualizationStream = null;
+
   // Stop recording first
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     currentChunkIndex++; // Increment index before final chunk
