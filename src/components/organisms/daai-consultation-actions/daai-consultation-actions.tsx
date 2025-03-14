@@ -6,10 +6,10 @@ import {
   retryUpload,
   startRecording,
   StartTutorial,
+  resumeAudioContextOnUserInteraction,
 } from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialtiesByProfessionalId } from "../../../utils/indexDb";
-import { ConsultationResponse } from "../../entities/consultation.entity";
 
 @Component({
   tag: "daai-consultation-actions",
@@ -23,12 +23,11 @@ export class DaaiConsultationActions {
   @Prop() videoElement?: HTMLVideoElement;
   @Prop() professional: string = "";
 
-  @Prop() success: (consultation: ConsultationResponse) => void;
+  @Prop() success: any;
   @Prop() error: any;
-  @Prop() metadata: Record<string, any>;
+  @Prop() metadata: string;
   @Prop() event: any;
   @Prop() mode: string;
-  @Prop() start: (consultation: ConsultationResponse) => void;
 
   @State() title: string = "";
   @State() stopAnimation: string = "";
@@ -71,6 +70,14 @@ export class DaaiConsultationActions {
       state.chooseSpecialty = specialtyByProfessionalId.mostRecentSpecialty.id;
     }
 
+    // Add event listeners to resume AudioContext on user interaction
+    const userInteractionEvents = ['click', 'touchstart', 'keydown'];
+    userInteractionEvents.forEach(eventType => {
+      document.addEventListener(eventType, async () => {
+        await resumeAudioContextOnUserInteraction();
+      }, { once: true });
+    });
+
     const storedValue = localStorage.getItem("checkboxState");
     state.isChecked = storedValue !== null ? JSON.parse(storedValue) : "";
     this.title = `Especialidade`;
@@ -96,7 +103,9 @@ export class DaaiConsultationActions {
         success: this.success,
         error: this.error,
         specialty: this.specialty,
+        metadata: this.metadata,
         onEvent: this.event,
+        professional: this.professional,
       });
     }
   }
@@ -125,7 +134,9 @@ export class DaaiConsultationActions {
                   onClick={this.choosenSpecialty}
                   disabled={state.defaultSpecialty !== ""}
                 >
-                  {state.specialtyTitle ? state.specialtyTitle : "Generalista"}
+                  {state.specialtyTitle
+                    ? state.specialtyTitle
+                    : "SOAP Generalista"}
                 </daai-button-with-icon>
               )}
               <daai-button-with-icon
@@ -142,14 +153,7 @@ export class DaaiConsultationActions {
                   ) {
                     this.telemedicine
                       ? this.choosenMode()
-                      : startRecording({
-                          isRemote: false,
-                          mode: this.mode,
-                          apikey: this.apikey,
-                          professional: this.professional,
-                          metadata: this.metadata,
-                          start: this.start,
-                        });
+                      : startRecording(false);
                   }
                 }}
                 disabled={
@@ -178,34 +182,18 @@ export class DaaiConsultationActions {
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
               id="choose-local-consultation"
-              onClick={() =>
-                startRecording({
-                  isRemote: false,
-                  mode: this.mode,
-                  apikey: this.apikey,
-                  professional: this.professional,
-                  metadata: this.metadata,
-                  start: this.start,
-                })
-              }
+              onClick={() => startRecording(false)}
             >
               <div class="flex items-center justify-center p-2">Presencial</div>
             </daai-button-with-icon>
             <daai-button-with-icon
               id="choose-telemedicine-consultation"
-              onClick={() =>
-                state.isChecked || this.hideTutorial
-                  ? startRecording({
-                      isRemote: true,
-                      videoElement: this.videoElement,
-                      mode: this.mode,
-                      apikey: this.apikey,
-                      professional: this.professional,
-                      metadata: this.metadata,
-                      start: this.start,
-                    })
-                  : StartTutorial()
-              }
+              onClick={async () => {
+                await resumeAudioContextOnUserInteraction();
+                return state.isChecked || this.hideTutorial
+                  ? startRecording(true, this.videoElement)
+                  : StartTutorial();
+              }}
             >
               Telemedicina
             </daai-button-with-icon>
@@ -236,7 +224,9 @@ export class DaaiConsultationActions {
                   success: this.success,
                   error: this.error,
                   specialty: this.specialty,
+                  metadata: this.metadata,
                   onEvent: this.event,
+                  professional: this.professional,
                 })
               }
             >
@@ -271,7 +261,9 @@ export class DaaiConsultationActions {
                   success: this.success,
                   error: this.error,
                   specialty: this.specialty,
+                  metadata: this.metadata,
                   onEvent: this.event,
+                  professional: this.professional,
                 })
               }
             >
@@ -279,7 +271,7 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
-      case "upload":
+      case "upload-ok":
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
@@ -290,7 +282,7 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
-      case "error":
+      case "upload-error":
         return (
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon

@@ -1,6 +1,6 @@
 import { createStore } from "@stencil/store";
 
-const { state, onChange } = createStore({
+const { state } = createStore({
   status: "initial",
   telemedicine: false,
   openModalConfig: false,
@@ -11,15 +11,15 @@ const { state, onChange } = createStore({
   isChecked: false,
   chooseModality: false,
   microphonePermission: false,
+  audioContextSuspended: false,
   availableMicrophones: [],
+  chosenMicrophone: "",
   defaultMicrophone: "",
   recordingTime: 0,
   specialtyList: [],
   chooseSpecialty: "",
   specialtyTitle: "",
   defaultSpecialty: "",
-  isProcessingChunk: false,
 });
 
 export default state;
-export { onChange };
