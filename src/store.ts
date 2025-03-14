@@ -11,6 +11,7 @@ const { state } = createStore({
   isChecked: false,
   chooseModality: false,
   microphonePermission: false,
+  audioContextSuspended: false,
   availableMicrophones: [],
   chosenMicrophone: "",
   defaultMicrophone: "",

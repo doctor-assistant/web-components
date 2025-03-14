@@ -26,6 +26,27 @@ export const isChrome = () => {
   return /Chrome/.test(window.navigator.userAgent) && /Google Inc/.test(window.navigator.vendor);
 }
 
+export const isSafari = () => {
+  return /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+}
+
+export const ensureAudioContextResumed = async (context: AudioContext) => {
+  if (context.state === 'suspended') {
+    try {
+      // Try to resume the AudioContext
+      await context.resume();
+      console.log('AudioContext resumed successfully');
+      return true;
+    } catch (error) {
+      console.warn('Failed to resume AudioContext:', error);
+      // Dispatch an event to notify the user that interaction is required
+      state.audioContextSuspended = true;
+      return false;
+    }
+  }
+  return true;
+}
+
 export const StartTutorial = () => {
   state.openTutorialPopup = true;
 }
@@ -42,19 +63,40 @@ export const startRecording = async (isRemote: boolean, videoElement?: HTMLVideo
     },
   };
   if(!audioContext){
-    audioContext = new AudioContext()
+    audioContext = new AudioContext();
+  }
+  
+  // Ensure AudioContext is resumed before proceeding
+  const audioContextResumed = await ensureAudioContextResumed(audioContext);
+  if (!audioContextResumed) {
+    console.warn('AudioContext is suspended. User interaction required.');
+    return;
   }
   if (isRemote) {
     state.telemedicine = true;
     if (videoElement) {
       try {
+        // Chrome-specific implementation
         if(isChrome() && videoElement){
-          let ve : any = videoElement
-          videoElementStream = ve.captureStream()
+          let ve : any = videoElement;
+          videoElementStream = ve.captureStream();
         }
+        
+        // Create media element source for the video
         if (!videoElementSource) {
-          videoElementSource = audioContext.createMediaElementSource(videoElement);
+          try {
+            videoElementSource = audioContext.createMediaElementSource(videoElement);
+          } catch (error) {
+            console.error('Error creating media element source:', error);
+            if (error.name === 'NotAllowedError' || error.name === 'InvalidStateError') {
+              console.warn('Browser autoplay policy prevented audio capture. User interaction required.');
+              state.audioContextSuspended = true;
+              return;
+            }
+            throw error;
+          }
         }
+        
         const destination = audioContext.createMediaStreamDestination();
         videoElementSource.connect(destination);
         videoElementStream = destination.stream;
@@ -385,6 +427,21 @@ try{
     }
   }
 };
+
+export const resumeAudioContextOnUserInteraction = async () => {
+  if (audioContext && audioContext.state === 'suspended') {
+    try {
+      await audioContext.resume();
+      state.audioContextSuspended = false;
+      console.log('AudioContext resumed after user interaction');
+      return true;
+    } catch (error) {
+      console.error('Failed to resume AudioContext after user interaction:', error);
+      return false;
+    }
+  }
+  return true;
+}
 
 export const openConfigModal = () => {
   state.openModalConfig = true;

@@ -6,6 +6,7 @@ import {
   retryUpload,
   startRecording,
   StartTutorial,
+  resumeAudioContextOnUserInteraction,
 } from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialtiesByProfessionalId } from "../../../utils/indexDb";
@@ -68,6 +69,14 @@ export class DaaiConsultationActions {
         specialtyByProfessionalId.mostRecentSpecialty.title;
       state.chooseSpecialty = specialtyByProfessionalId.mostRecentSpecialty.id;
     }
+
+    // Add event listeners to resume AudioContext on user interaction
+    const userInteractionEvents = ['click', 'touchstart', 'keydown'];
+    userInteractionEvents.forEach(eventType => {
+      document.addEventListener(eventType, async () => {
+        await resumeAudioContextOnUserInteraction();
+      }, { once: true });
+    });
 
     const storedValue = localStorage.getItem("checkboxState");
     state.isChecked = storedValue !== null ? JSON.parse(storedValue) : "";
@@ -179,11 +188,12 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
             <daai-button-with-icon
               id="choose-telemedicine-consultation"
-              onClick={() =>
-                state.isChecked || this.hideTutorial
+              onClick={async () => {
+                await resumeAudioContextOnUserInteraction();
+                return state.isChecked || this.hideTutorial
                   ? startRecording(true, this.videoElement)
-                  : StartTutorial()
-              }
+                  : StartTutorial();
+              }}
             >
               Telemedicina
             </daai-button-with-icon>
