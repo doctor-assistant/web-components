@@ -261,7 +261,6 @@ export async function getFailedChunks() {
 }
 
 export async function deleteChunk(id: string) {
-  console.log(id, 'id')
   try {
     await chunkUploadDb.transaction("rw", chunkUploadDb.chunks, async () => {
       const deletedCount = await chunkUploadDb.chunks
