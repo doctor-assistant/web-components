@@ -1,16 +1,13 @@
 import Dexie from "dexie";
 import state from "../store";
-
 interface Specialty {
   id: string;
   title: string;
 }
-
 interface ProfessionalSpecialty {
   professionalId: string;
   specialtyId: string;
 }
-
 
 interface Consultation {
   id?: number;
@@ -19,7 +16,6 @@ interface Consultation {
   audioBlob: any;
   metadata: any
 }
-
 class SpecialtiesDB extends Dexie {
   specialties: Dexie.Table<Specialty, string>;
 
@@ -138,6 +134,7 @@ interface ChunkUpload {
   index: number;
   retryCount: number;
   timestamp: number;
+  specialty: string;
 }
 
 class ChunkUploadDB extends Dexie {
@@ -146,7 +143,7 @@ class ChunkUploadDB extends Dexie {
   constructor() {
     super("chunkUploadDb");
     this.version(1).stores({
-      chunks: "++id,consultationId,recordingId,index,timestamp"
+      chunks: "++id,consultationId,recordingId,chunk,duration,index,retryCount,timestamp,specialty"
     });
     this.chunks = this.table("chunks");
   }
@@ -242,7 +239,7 @@ export async function saveChunk(chunk: ChunkUpload) {
   }
 }
 
-export async function getFailedChunks(consultationId: string) {
+export async function getFailedChunksBydId(consultationId: string) {
   try {
     return await chunkUploadDb.chunks
       .where("consultationId")
@@ -254,8 +251,16 @@ export async function getFailedChunks(consultationId: string) {
   }
 }
 
+export async function getFailedChunks() {
+  try {
+    return await chunkUploadDb.chunks.toArray();
+  } catch (error) {
+    console.error("Erro ao buscar chunks:", error);
+    return [];
+  }
+}
+
 export async function deleteChunk(id: string) {
-  console.log(id, 'id')
   try {
     await chunkUploadDb.transaction("rw", chunkUploadDb.chunks, async () => {
       const deletedCount = await chunkUploadDb.chunks

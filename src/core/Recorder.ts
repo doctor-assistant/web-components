@@ -2,7 +2,7 @@ import { version } from '../../package.json';
 import { ConsultationResponse } from '../components/entities/consultation.entity';
 
 import state from "../store";
-import { deleteChunk, deleteConsultationById, getConsultation, getConsultationsByProfessional, getFailedChunks, saveChunk, saveConsultation } from '../utils/indexDb';
+import { deleteChunk, deleteConsultationById, getConsultation, getConsultationsByProfessional, getFailedChunks, getFailedChunksBydId, saveChunk, saveConsultation } from '../utils/indexDb';
 import { EventSourceManager } from "../utils/sse";
 
 const CHUNK_CONFIG = {
@@ -10,8 +10,7 @@ const CHUNK_CONFIG = {
   MAX_DURATION: 300, // seconds
   SILENCE_THRESHOLD: -50, // dB
   SILENCE_DURATION: 0.5, // seconds of silence needed for chunk split
-  RETRY_INTERVAL: 500, // ms
-  MAX_RETRIES: 5
+  RETRY_INTERVAL: 10000, // milliseconds
 };
 
 const API_ENDPOINTS = {
@@ -32,6 +31,7 @@ interface ChunkData {
   index: number;
   retryCount: number;
   timestamp: number;
+  specialty: string;
 }
 
 let mediaRecorder: MediaRecorder | null = null;
@@ -297,7 +297,8 @@ export const startRecording = async (
             duration,
             index: currentChunkIndex,
             retryCount: 0,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            specialty: state.chooseSpecialty || 'generic',
           };
           pendingFirstUploads.add(currentChunkIndex);
           const uploaded = await uploadChunk(chunk, mode, apikey);
@@ -392,6 +393,8 @@ export const finishRecording = async ({
 }: FinishRecordingProps) => {
   state.status = "finished";
 
+  visualizationStream = null;
+
   // Stop recording first
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     currentChunkIndex++; // Increment index before final chunk
@@ -416,10 +419,10 @@ export const finishRecording = async ({
   // Wait for all chunks to upload
   const waitForChunks = async () => {
     await new Promise(resolve => setTimeout(resolve, 300));
-    let failedChunks = await getFailedChunks(currentConsultation?.id);
+    let failedChunks = await getFailedChunksBydId(currentConsultation?.id);
     while (failedChunks.length !== 0 || pendingFirstUploads.size !== 0) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      failedChunks = await getFailedChunks(currentConsultation?.id);
+      failedChunks = await getFailedChunksBydId(currentConsultation?.id);
     }
   };
 
@@ -451,7 +454,7 @@ export const finishRecording = async ({
       success(jsonResponse);
     }
     if (typeof event === "function") {
-      const sseUrl = `${baseUrl}/${consultationId}/events`;
+      const sseUrl = `${baseUrl}/consultations/${consultationId}/events`;
       let eventSourceManager = new EventSourceManager(apikey, sseUrl, event);
       eventSourceManager.connect();
     }
@@ -463,6 +466,32 @@ export const finishRecording = async ({
     }
   }
 };
+
+type FinishRecordingRequestProps = {
+  mode: string,
+  apikey: string,
+  consultationId: string,
+  recordingId: string,
+  specialty: string,
+}
+
+export const finishRecordingRequest = async ({ mode, apikey, consultationId, recordingId, specialty }: FinishRecordingRequestProps) => {
+  const baseUrl = mode === "dev"
+    ? "https://apim.doctorassistant.ai/api/sandbox"
+    : "https://apim.doctorassistant.ai/api/production";
+  specialty = specialty || 'generic'
+  await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_FINISH(
+    consultationId, recordingId
+  ), {
+    method: 'POST',
+    headers: {
+      'x-daai-api-key': apikey,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ specialty })
+  });
+}
+
 type UploadAudioProps = {
   mode: string,
   audioBlob: Blob,
@@ -524,13 +553,8 @@ export const startRetryProcess = (mode: string, apiKey: string) => {
 
     state.isProcessingChunk = true;
     try {
-      const failedChunks = await getFailedChunks(currentConsultation?.id);
+      const failedChunks = await getFailedChunksBydId(currentConsultation?.id);
       for (const chunk of failedChunks) {
-        if (chunk.retryCount >= CHUNK_CONFIG.MAX_RETRIES) {
-          await deleteChunk(chunk.id);
-          continue;
-        }
-
         try {
           await uploadChunk(chunk, mode, apiKey);
         } catch (error) {
@@ -698,6 +722,33 @@ export const retryOldConsultations = async (mode: string, apiKey: string) => {
     }
   }
 };
+
+export const retryChunkedConsultations = async (mode: string, apiKey: string) => {
+  const allFailedChunks = await getFailedChunks();
+  const chunksByConsultation = allFailedChunks.reduce((acc, chunk) => {
+    acc[chunk.consultationId] = acc[chunk.consultationId] || [];
+    acc[chunk.consultationId].push(chunk);
+    return acc;
+  }, {} as Record<string, ChunkData[]>);
+
+  for (const consultationId in chunksByConsultation) {
+    try {
+      const chunks = chunksByConsultation[consultationId];
+      for (const chunk of chunks) {
+        await uploadChunk(chunk, mode, apiKey);
+      }
+      await finishRecordingRequest({
+        mode,
+        apikey: apiKey,
+        consultationId,
+        recordingId: chunks[0].recordingId,
+        specialty: chunks[0].specialty,
+      });
+    } catch (error) {
+      console.error(`Erro ao processar chunks da consulta ${consultationId}:`, error);
+    }
+  }
+}
 
 export const openConfigModal = () => {
   state.openModalConfig = true;
