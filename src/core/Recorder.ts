@@ -121,11 +121,28 @@ export const startRecording = async (
       if (videoElement) {
         try {
           if (!videoElementSource) {
+            // Aguardar o videoElement estar pronto para reprodução
+            await new Promise((resolve) => {
+              if (videoElement.readyState >= 3) {
+                resolve(true);
+              } else {
+                videoElement.addEventListener('canplay', () => resolve(true), { once: true });
+              }
+            });
+
+            // Garantir que o audioContext está em estado running
+            if (audioContext.state === 'suspended') {
+              await audioContext.resume();
+            }
+
             videoElementSource = audioContext.createMediaElementSource(videoElement);
           }
           const destination = audioContext.createMediaStreamDestination();
           videoElementSource.connect(destination);
           videoElementStream = destination.stream;
+
+          // Reconectar ao destino de áudio do sistema para manter o som do vídeo
+          videoElementSource.connect(audioContext.destination);
         } catch (error) {
           console.error('Erro ao capturar áudio do vídeo:', error);
           try {
