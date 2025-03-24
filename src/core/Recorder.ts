@@ -354,14 +354,13 @@ export const pauseRecording = () => {
     mediaRecorder.pause();
     state.status = "paused";
   }
-  }
   if (localStream) {
     localStream
       .getAudioTracks()
       .forEach((track) => (track.enabled = false));
     state.status = "paused";
   }
-
+}
 
 export const resumeRecording = () => {
   if (mediaRecorder?.state === "paused") {
