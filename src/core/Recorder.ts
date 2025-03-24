@@ -351,8 +351,9 @@ export const startRecording = async (
 
 export const pauseRecording = () => {
   if (mediaRecorder?.state === "recording") {
+    mediaRecorder.pause();
     state.status = "paused";
-    };
+  }
   }
   if (localStream) {
     localStream
