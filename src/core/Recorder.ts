@@ -2,6 +2,7 @@ import { version } from '../../package.json';
 import { ConsultationResponse } from '../components/entities/consultation.entity';
 
 import state from "../store";
+import { getBrowserInfo, getOSInfo, isMobile } from '../utils/device';
 import { deleteChunk, deleteConsultationById, getConsultation, getConsultationsByProfessional, getFailedChunks, getFailedChunksBydId, saveChunk, saveConsultation } from '../utils/indexDb';
 import { EventSourceManager } from "../utils/sse";
 
@@ -148,21 +149,25 @@ export const startRecording = async (
         }
       }
     }
-
     state.openTutorialPopup = false;
 
+    const devices = {
+      isMobile: isMobile(),
+      os: getOSInfo(),
+      browser: getBrowserInfo()
+  };
     const baseUrl = mode === "dev"
       ? "https://apim.doctorassistant.ai/api/sandbox"
       : "https://apim.doctorassistant.ai/api/production";
-    const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_INIT, {
-      method: 'POST',
+      const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_INIT, {
+        method: 'POST',
       headers: {
         'x-daai-api-key': apikey,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         professionalId: professional,
-        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component" } }
+        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component", ...devices} }
       })
     });
 
