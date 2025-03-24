@@ -5,6 +5,7 @@ export const isMobile = () => {
   } catch(error) {
     console.error(error)
   }
+  return false
 }
 
 export const getOSInfo = () => {
@@ -23,10 +24,10 @@ export const getOSInfo = () => {
       return "iOS";
     }
 
-    return "Unknown";
   }  catch(error) {
     console.error(error)
   }
+  return "Unknown";
 }
 
 export const getBrowserInfo = () => {
@@ -45,10 +46,9 @@ export const getBrowserInfo = () => {
     } else if (userAgent.includes("MSIE") || userAgent.includes("Trident")) {
       return "Internet Explorer";
     }
-
-    return "Unknown";
   } catch(error) {
     console.error(error)
   }
+  return "Unknown";
 }
 
