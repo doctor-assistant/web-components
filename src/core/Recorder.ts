@@ -119,12 +119,14 @@ export const startRecording = async (
     if (isRemote) {
       state.telemedicine = true;
       if (videoElement) {
+        videoElement.play()
         try {
           if (!videoElementSource) {
             videoElementSource = audioContext.createMediaElementSource(videoElement);
           }
           const destination = audioContext.createMediaStreamDestination();
           videoElementSource.connect(destination);
+          videoElementSource.connect(audioContext.destination)
           videoElementStream = destination.stream;
         } catch (error) {
           console.error('Erro ao capturar áudio do vídeo:', error);
@@ -349,8 +351,8 @@ export const startRecording = async (
 
 export const pauseRecording = () => {
   if (mediaRecorder?.state === "recording") {
-    mediaRecorder.pause();
     state.status = "paused";
+    };
   }
   if (localStream) {
     localStream
@@ -358,7 +360,7 @@ export const pauseRecording = () => {
       .forEach((track) => (track.enabled = false));
     state.status = "paused";
   }
-}
+
 
 export const resumeRecording = () => {
   if (mediaRecorder?.state === "paused") {
