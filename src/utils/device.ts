@@ -4,8 +4,8 @@ export const isMobile = () => {
     return /Mobi|Android|iPhone/i.test(userAgent);
   } catch(error) {
     console.error(error)
+    return false
   }
-  return false
 }
 
 export const getOSInfo = () => {
@@ -23,7 +23,6 @@ export const getOSInfo = () => {
     } else if (userAgent.includes("iOS")) {
       return "iOS";
     }
-
   }  catch(error) {
     console.error(error)
   }
