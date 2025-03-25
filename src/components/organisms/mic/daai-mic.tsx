@@ -55,7 +55,7 @@ export class DaaiMic {
       if (storedMicrophone && storedMicrophoneIsAvailable) {
         state.defaultMicrophone = storedMicrophone;
       } else {
-        state.defaultMicrophone = devices.some((device) => device.deviceId === 'default') ? 'default' : microphones[0];
+        state.defaultMicrophone = devices.some((device) => device.deviceId === 'default') ? 'default' : devices[0].deviceId;
       }
 
       // Always stop the temporary stream immediately after getting permissions and device list
