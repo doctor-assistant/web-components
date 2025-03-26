@@ -1,6 +1,6 @@
 {
   "name": "@doctorassistant/daai-component",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Web components for Doctor Assistant",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",

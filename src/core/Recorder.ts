@@ -51,8 +51,6 @@ let screenStream: MediaStream | null = null;
 
 let videoElementStream: MediaStream | null = null;
 
-let videoElementSource: MediaElementAudioSourceNode | null = null;
-
 let audioContext: AudioContext | null = null
 
 // Track chunks being uploaded for the first time
@@ -122,13 +120,7 @@ export const startRecording = async (
       if (videoElement) {
         videoElement.play()
         try {
-          if (!videoElementSource) {
-            videoElementSource = audioContext.createMediaElementSource(videoElement);
-          }
-          const destination = audioContext.createMediaStreamDestination();
-          videoElementSource.connect(destination);
-          videoElementSource.connect(audioContext.destination)
-          videoElementStream = destination.stream;
+          videoElementStream = (videoElement as HTMLVideoElement & { captureStream?: () => MediaStream }).captureStream?.();
         } catch (error) {
           console.error('Erro ao capturar áudio do vídeo:', error);
           try {
@@ -155,19 +147,19 @@ export const startRecording = async (
       isMobile: isMobile(),
       os: getOSInfo(),
       browser: getBrowserInfo()
-  };
+    };
     const baseUrl = mode === "dev"
       ? "https://apim.doctorassistant.ai/api/sandbox"
       : "https://apim.doctorassistant.ai/api/production";
-      const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_INIT, {
-        method: 'POST',
+    const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_INIT, {
+      method: 'POST',
       headers: {
         'x-daai-api-key': apikey,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         professionalId: professional,
-        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component", ...devices} }
+        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component", ...devices } }
       })
     });
 
