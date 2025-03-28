@@ -1,4 +1,4 @@
-# Componentes Doctor Assitant.ai
+# Componentes Doctor Assistant AI
 
 1. [Introdução](#introdução)
 2. [Como usar o componente](#uso)
@@ -11,10 +11,6 @@
 9. [Exemplos de integração em diferentes stacks](#exemplos-de-integração-em-diferentes-stacks)
 
 ## Introdução
-
-Apatir da versão 2.0.0-rc lançamos uma versão nova do componente de registro da consulta, nessa versão ele é equipado com uma nova mecânica de telemedicina e um novo design.
-
-## Daai Components
 
 O Daai Components é uma biblioteca de componentes web especializados para sistemas de saúde, incluindo o Consultation Recorder para gravação de consultas médicas. Desenvolvido para facilitar a integração em sistemas de saúde, clínicas e plataformas médicas, oferecendo componentes reutilizáveis e personalizáveis.
 
@@ -37,10 +33,8 @@ Para instalar o `daai-consultation-recorder` no seu projeto, basta rodar no term
 
 💻 Execute:
 
-no x.x.x substitua pela versão vigente do pacote.
-
 ```bash
-npm i @doctorassistant/daai-component@x.x.x
+npm i @doctorassistant/daai-component
 ```
 
 ### Como usar após a instalação:
@@ -49,6 +43,7 @@ Após instalar o pacote no seu projeto, basta adicionar a tag <daai-consultation
 
 ```html
 import '@doctorassistant/daai-component';
+
 <daai-consultation-recorder
   apiKey="YOUR_API_KEY"
   professional="YOUR_PROFESSIONAL_ID"
@@ -89,8 +84,6 @@ maxRecordingTime = 300; // Exemplo: 300 segundos (5 minutos).
 // A propriedade "warningRecordingTime" não é obrigatória. Define em quantos segundos antes do limite o usuário receberá um aviso.
 warningRecordingTime = 30; // Exemplo: Aviso 30 segundos antes do fim da gravação
 ```
-
-⚠️ A propriedade ~~modeApi~~ não é mais necessária. A partir da versão 1.2.0, identificamos o ambiente de execução através da apiKey
 
 ### Formato metadata
 
@@ -177,18 +170,31 @@ onWarningRecordingTime = () => {
 };
 ```
 
+## Aviso sobre a versão latest
+
+⚠️ Importante!
+
+Sempre utilize a versão latest ao importar o componente via CDN para garantir que esteja utilizando a versão mais recente, com todas as melhorias, correções de bugs e atualizações de segurança. Exemplo:
+
+```html
+<script
+  src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@lastest/dist/web-components/web-components.esm.js"
+  type="module"
+></script>
+```
+
+Isso evita problemas de compatibilidade e garante que o sistema esteja atualizado.
+
 ## Uso do componente via CDN
 
 Para utilizar o componente via CDN, adicione o seguinte script ao seu HTML:
-
-no x.x.x substitua pela versão vigente do pacote.
 
 ```html
 <!DOCTYPE html>
 <html>
   <head>
     <script
-      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@x.x.x/dist/web-components/web-components.esm.js"
+      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@latest/dist/web-components/web-components.esm.js"
       type="module"
     ></script>
     <script>
@@ -313,14 +319,12 @@ Função acionada quando o tempo restante de gravação atingir o valor definido
 
 Quero que o registro tenha um limite de 20 segundos, quero que o componente me avise quando faltar 5 segundos, então vamos definir assim:
 
-no x.x.x substitua pela versão vigente do pacote.
-
 ```html
 <!DOCTYPE html>
 <html>
   <head>
     <script
-      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@x.x.x/dist/web-components/web-components.esm.js"
+      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@latest/dist/web-components/web-components.esm.js"
       type="module"
     ></script>
     <script>
@@ -350,8 +354,6 @@ Nessa seção vou mostrar como funciona a integração em diferentes stacks:
 
 ### Usando diretamente no Html
 
-no x.x.x substitua pela versão vigente do pacote.
-
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -360,7 +362,7 @@ no x.x.x substitua pela versão vigente do pacote.
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script
-      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@x.x.x/dist/web-components/web-components.esm.js"
+      src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@latest/dist/web-components/web-components.esm.js"
       type="module"
     ></script>
     <script>

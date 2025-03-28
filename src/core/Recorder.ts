@@ -236,7 +236,7 @@ export const startRecording = async (
         analyserNode.getFloatTimeDomainData(dataArray);
       }
 
-      if (state.status !== "recording") {
+      if (state.status !== "recording" && state.status !== "resume") {
         return;
       }
 
@@ -428,6 +428,16 @@ export const finishRecording = async ({
   try {
     await waitForChunks();
     pendingFirstUploads.clear(); // Clean up after all chunks are uploaded
+
+    if (silenceDetectorNode) {
+      silenceDetectorNode.disconnect();
+      silenceDetectorNode = null;
+    }
+
+    if (analyserNode) {
+      analyserNode.disconnect();
+      analyserNode = null;
+    }
 
     // Finalize consultation
     const baseUrl = mode === "dev"
