@@ -7,8 +7,8 @@ import { deleteChunk, deleteConsultationById, getConsultation, getConsultationsB
 import { EventSourceManager } from "../utils/sse";
 
 const CHUNK_CONFIG = {
-  MIN_DURATION: 270, // seconds
-  MAX_DURATION: 300, // seconds
+  MIN_DURATION: 3, // seconds
+  MAX_DURATION: 5, // seconds
   SILENCE_THRESHOLD: -50, // dB
   SILENCE_DURATION: 0.5, // seconds of silence needed for chunk split
   RETRY_INTERVAL: 10000, // milliseconds
@@ -236,7 +236,7 @@ export const startRecording = async (
         analyserNode.getFloatTimeDomainData(dataArray);
       }
 
-      if (state.status !== "recording") {
+      if (state.status !== "recording" && state.status !== "resume") {
         return;
       }
 
@@ -257,6 +257,7 @@ export const startRecording = async (
           const newChunkStartTime = audioContext.currentTime;
           mediaRecorder = new MediaRecorder(composedStream);
           setupMediaRecorder(mode, apikey);
+          console.log('cortando chunk por silencio', currentChunkIndex)
           oldMediaRecorder.stop();
           mediaRecorder.start();
 
@@ -274,6 +275,7 @@ export const startRecording = async (
         const newChunkStartTime = audioContext.currentTime;
         mediaRecorder = new MediaRecorder(composedStream);
         setupMediaRecorder(mode, apikey);
+        console.log('cortando chunk por max duration', currentChunkIndex)
         oldMediaRecorder.stop();
         mediaRecorder.start();
 
@@ -347,6 +349,8 @@ export const startRecording = async (
 };
 
 export const pauseRecording = () => {
+  console.log('pauseRecording', silenceDetectorNode)
+  console.log('pauseRecording', analyserNode)
   if (mediaRecorder?.state === "recording") {
     mediaRecorder.pause();
     state.status = "paused";
@@ -360,6 +364,8 @@ export const pauseRecording = () => {
 }
 
 export const resumeRecording = () => {
+  console.log('resumeRecording', silenceDetectorNode)
+  console.log('resumeRecording', analyserNode)
   if (mediaRecorder?.state === "paused") {
     mediaRecorder.resume();
     state.status = "resume";
@@ -419,6 +425,8 @@ export const finishRecording = async ({
   const waitForChunks = async () => {
     await new Promise(resolve => setTimeout(resolve, 300));
     let failedChunks = await getFailedChunksBydId(currentConsultation?.id);
+    console.log('Failed chunks:', failedChunks);
+    console.log('Pending first uploads:', pendingFirstUploads);
     while (failedChunks.length !== 0 || pendingFirstUploads.size !== 0) {
       await new Promise(resolve => setTimeout(resolve, 300));
       failedChunks = await getFailedChunksBydId(currentConsultation?.id);
@@ -428,6 +436,16 @@ export const finishRecording = async ({
   try {
     await waitForChunks();
     pendingFirstUploads.clear(); // Clean up after all chunks are uploaded
+
+    if (silenceDetectorNode) {
+      silenceDetectorNode.disconnect();
+      silenceDetectorNode = null;
+    }
+
+    if (analyserNode) {
+      analyserNode.disconnect();
+      analyserNode = null;
+    }
 
     // Finalize consultation
     const baseUrl = mode === "dev"
