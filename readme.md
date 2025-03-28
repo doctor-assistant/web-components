@@ -170,6 +170,21 @@ onWarningRecordingTime = () => {
 };
 ```
 
+## Aviso sobre a versão latest
+
+⚠️ Importante!
+
+Sempre utilize a versão latest ao importar o componente via CDN para garantir que esteja utilizando a versão mais recente, com todas as melhorias, correções de bugs e atualizações de segurança. Exemplo:
+
+```html
+<script
+  src="https://cdn.jsdelivr.net/npm/@doctorassistant/daai-component@lastest/dist/web-components/web-components.esm.js"
+  type="module"
+></script>
+```
+
+Isso evita problemas de compatibilidade e garante que o sistema esteja atualizado.
+
 ## Uso do componente via CDN
 
 Para utilizar o componente via CDN, adicione o seguinte script ao seu HTML:
