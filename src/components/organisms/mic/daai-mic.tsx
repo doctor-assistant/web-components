@@ -51,11 +51,17 @@ export class DaaiMic {
 
       // Set the default microphone to the one saved in local storage, if it exists
       const storedMicrophone = localStorage.getItem("selectedMicrophone");
-      const storedMicrophoneIsAvailable = devices.some((device) => device.deviceId === storedMicrophone);
+      const storedMicrophoneIsAvailable = devices.some(
+        (device) => device.deviceId === storedMicrophone
+      );
       if (storedMicrophone && storedMicrophoneIsAvailable) {
         state.defaultMicrophone = storedMicrophone;
       } else {
-        state.defaultMicrophone = devices.some((device) => device.deviceId === 'default') ? 'default' : devices[0].deviceId;
+        state.defaultMicrophone = devices.some(
+          (device) => device.deviceId === "default"
+        )
+          ? "default"
+          : devices[0].deviceId;
       }
 
       // Always stop the temporary stream immediately after getting permissions and device list
@@ -104,22 +110,23 @@ export class DaaiMic {
                 id="secondary-text"
               />
             </div>
-          ) : null}
-          <div class="flex items-center justify-center">
-            <daai-text
-              text={this.micTexts[state.status]}
-              id={state.status}
-              class="initial-text"
-            ></daai-text>
-            {this.showAnimation && (
-              <div class="ml-4">
-                <daai-recording-animation
-                  id="animation-recording"
-                  status={state.status}
-                />
-              </div>
-            )}
-          </div>
+          ) : (
+            <div class="flex items-center justify-center">
+              <daai-text
+                text={this.micTexts[state.status]}
+                id={state.status}
+                class="initial-text"
+              ></daai-text>
+              {this.showAnimation && (
+                <div class="ml-4">
+                  <daai-recording-animation
+                    id="animation-recording"
+                    status={state.status}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
         {state.microphonePermission === true && state.status === "initial" && (
           <div></div>
