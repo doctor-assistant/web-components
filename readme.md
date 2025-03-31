@@ -139,6 +139,7 @@ daai-consultation-recorder {
   --recorder-justify-small-size: center;
   --recorder-large-devices-direction: row;
   --recorder-small-devices-direction: column;
+  --recorder-font-family: "fonte de sua escolha";
 }
 ```
 
