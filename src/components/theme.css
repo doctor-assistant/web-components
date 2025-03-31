@@ -23,7 +23,7 @@
   --animation-recorder-color:#f43f5e;
   --animation-paused-color:#009cb1;
   --logo-url:'';
-  --font-family:"Poppins", sans-serif
+  --font-family:"Open Sans", sans-serif
 }
 button {
   color: var(--color-primary);
