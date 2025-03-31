@@ -1,4 +1,5 @@
 @import '../../theme.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 :host {
   --recorder-primary-color: var(--primary-color);
@@ -31,6 +32,7 @@
   --recorder-justify-small-size: center;
   --recorder-large-devices-direction: row;
   --recorder-small-devices-direction: column;
+  --recorder-font-family:var(--font-family)
 }
 
 daai-button-with-icon {
@@ -47,7 +49,7 @@ daai-button-with-icon {
 #daai-consultation-recorder {
   max-width: var(--recorder-large-device-max-width);
   min-width: var(--recorder-large-device-min-width);
-  font-family: "Open Sans", serif;
+  font-family: var(--recorder-font-family);
   display: flex;
   align-items: var(--recorder-align);
   justify-content: var(--recorder-justify-large-size);
@@ -58,7 +60,6 @@ daai-button-with-icon {
   gap: var(--recorder-gap);
   height: var(--recorder-large-device-height);
   flex-direction: var(--recorder-large-devices-direction);
-
   @media (min-width: 100px) and (max-width:499px) {
     display: flex;
     max-width: var(--recorder-small-device-max-width);
@@ -67,7 +68,6 @@ daai-button-with-icon {
     justify-content: var(--recorder-justify-small-size);
     height: var(--recorder-small-device-height);
   }
-
   ;
 }
 
@@ -79,7 +79,6 @@ daai-recording-animation {
 daai-mic-animation {
   background-color: transparent !important;
 }
-
 
 #daai-logo-icon {
   width: 30px;
@@ -295,7 +294,6 @@ daai-mic-animation {
     opacity: 0;
     transform: scale(0.9);
   }
-
   100% {
     opacity: 1;
     transform: scale(1);
