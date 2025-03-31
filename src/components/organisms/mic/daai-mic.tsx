@@ -61,7 +61,7 @@ export class DaaiMic {
           (device) => device.deviceId === "default"
         )
           ? "default"
-          : microphones[0];
+          : devices[0].deviceId;
       }
 
       // Always stop the temporary stream immediately after getting permissions and device list
