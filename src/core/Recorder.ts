@@ -538,6 +538,7 @@ export const uploadChunk = async (chunk: ChunkData, mode: string, apiKey: string
     }
 
     await deleteChunk(chunk.id);
+    pendingFirstUploads.delete(chunk.index);
     return true; // Upload successful
   } catch (error) {
     console.error('Error uploading chunk:', error);
