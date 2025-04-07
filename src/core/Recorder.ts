@@ -485,6 +485,11 @@ type FinishRecordingRequestProps = {
 }
 
 export const finishRecordingRequest = async ({ mode, apikey, consultationId, recordingId, specialty }: FinishRecordingRequestProps) => {
+  const storedChunks = await getFailedChunksBydId(consultationId);
+  if (storedChunks.length > 0) {
+    return;
+  }
+
   const baseUrl = mode === "dev"
     ? "https://apim.doctorassistant.ai/api/sandbox"
     : "https://apim.doctorassistant.ai/api/production";
