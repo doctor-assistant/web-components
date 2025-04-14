@@ -59,8 +59,8 @@ export class DaaiSpecialty {
 
   render() {
     return (
-      <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm">
-        <div class="w-96 px-5 pt-5 pb-8 rounded-md mt-4 bg-white">
+      <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm tw-z-[9999]">
+        <div class="w-96 px-5 pt-5 pb-8 rounded-md mt-4 bg-white tw-z-[9999]">
           <div class="flex justify-between">
             <span class="text-[12px] font-[600] modal-title" id="specialty-title">Escolha a sua especialidade</span>
             <daai-button
