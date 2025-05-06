@@ -81,7 +81,7 @@ export type StartRecordingProps = {
   professional?: string,
   metadata: Record<string, any>,
   start?: (consultation: ConsultationResponse) => void
-
+  mediaStreamByPatient: MediaStream
 }
 export const startRecording = async (
   {
@@ -91,7 +91,8 @@ export const startRecording = async (
     apikey,
     professional,
     metadata,
-    start
+    start,
+    mediaStreamByPatient
   }: StartRecordingProps
 ) => {
   if (!mode || !apikey) {
@@ -117,6 +118,10 @@ export const startRecording = async (
     }
     if (isRemote) {
       state.telemedicine = true;
+      if (mediaStreamByPatient) {
+        screenStream = mediaStreamByPatient;
+        return;
+      }
       if (videoElement) {
         videoElement.play()
         try {
