@@ -41,7 +41,7 @@ export class DaaiConsultationActions {
   };
 
   @Prop() hideTutorial: boolean = false;
-
+  @Prop() mediaStreamByPatient: MediaStream;
   newRecording() {
     state.status = "initial";
   }
@@ -149,6 +149,7 @@ export class DaaiConsultationActions {
                           professional: this.professional,
                           metadata: this.metadata,
                           start: this.start,
+                          mediaStreamByPatient: this.mediaStreamByPatient,
                         });
                   }
                 }}
@@ -186,6 +187,7 @@ export class DaaiConsultationActions {
                   professional: this.professional,
                   metadata: this.metadata,
                   start: this.start,
+                  mediaStreamByPatient: this.mediaStreamByPatient,
                 })
               }
             >
@@ -203,6 +205,7 @@ export class DaaiConsultationActions {
                       professional: this.professional,
                       metadata: this.metadata,
                       start: this.start,
+                      mediaStreamByPatient: this.mediaStreamByPatient,
                     })
                   : StartTutorial()
               }

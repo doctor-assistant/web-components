@@ -14,6 +14,8 @@ export class DaaiPopup {
   @Prop() professional: string;
   @Prop() metadata: Record<string, any>;
   @Prop() start?: (consultation: ConsultationResponse) => void;
+  @Prop() mediaStreamByPatient: MediaStream;
+
   handleClose() {
     state.openTutorialPopup = false;
   }
@@ -59,6 +61,7 @@ export class DaaiPopup {
                   professional: this.professional,
                   metadata: this.metadata,
                   start: this.start,
+                  mediaStreamByPatient: this.mediaStreamByPatient,
                 })
               }
             >

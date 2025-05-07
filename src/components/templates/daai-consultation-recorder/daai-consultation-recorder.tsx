@@ -1,5 +1,8 @@
 import { Component, h, Host, Prop, State } from "@stencil/core";
-import { retryChunkedConsultations, retryOldConsultations } from "../../../core/Recorder";
+import {
+  retryChunkedConsultations,
+  retryOldConsultations,
+} from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
@@ -26,6 +29,7 @@ export class DaaiConsultationRecorder {
 
   @Prop() warningRecordingTime: number = 0;
   @Prop() maxRecordingTime: number = Infinity;
+  @Prop() mediaStreamByPatient: MediaStream;
 
   @Prop() hideTutorial: boolean = false;
   @State() mode: string;
@@ -60,6 +64,12 @@ export class DaaiConsultationRecorder {
     const spec = await getSpecialty(this.mode);
     await saveSpecialties(spec);
   }
+  isUndefined = (item: any): item is undefined => typeof item === "undefined";
+
+  isNull = (item: any): item is null => item === null;
+
+  isNullish = (item: any): item is null | undefined =>
+    this.isNull(item) || this.isUndefined(item);
 
   render() {
     return (
@@ -98,10 +108,12 @@ export class DaaiConsultationRecorder {
                 }}
                 hideTutorial={
                   this.hideTutorial ||
-                  (this.videoElement && this.videoElement !== null)
+                  !this.isNullish(this.videoElement) ||
+                  !this.isNullish(this.mediaStreamByPatient)
                 }
                 mode={this.mode}
                 start={this.onStart}
+                mediaStreamByPatient={this.mediaStreamByPatient}
               ></daai-consultation-actions>
             </div>
           </div>
@@ -121,6 +133,7 @@ export class DaaiConsultationRecorder {
             professional={this.professional}
             metadata={this.metadataObject}
             start={this.onStart}
+            mediaStreamByPatient={this.mediaStreamByPatient}
           ></daai-popup>
         )}
 
