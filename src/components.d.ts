@@ -107,6 +107,7 @@ export namespace Components {
     }
     interface DaaiPopup {
         "apikey": string;
+        "mediaStreamByPatient": MediaStream;
         "metadata": Record<string, any>;
         "mode": string;
         "professional": string;
@@ -528,6 +529,7 @@ declare namespace LocalJSX {
     }
     interface DaaiPopup {
         "apikey"?: string;
+        "mediaStreamByPatient"?: MediaStream;
         "metadata"?: Record<string, any>;
         "mode"?: string;
         "professional"?: string;

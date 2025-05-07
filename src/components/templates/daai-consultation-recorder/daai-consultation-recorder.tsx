@@ -133,6 +133,7 @@ export class DaaiConsultationRecorder {
             professional={this.professional}
             metadata={this.metadataObject}
             start={this.onStart}
+            mediaStreamByPatient={this.mediaStreamByPatient}
           ></daai-popup>
         )}
 
