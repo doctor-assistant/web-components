@@ -58,6 +58,7 @@
   "license": "MIT",
   "dependencies": {
     "@stencil/core": "^3.0.0",
+    "ajv": "^8.17.1",
     "dexie": "^4.0.10",
     "extended-eventsource": "2.0.0"
   }
