@@ -110,6 +110,10 @@ export class DaaiMic {
                 id="secondary-text"
               />
             </div>
+          ) : state.status === "report-schema-error" ? (
+            <div>
+              <daai-text text="Erro ao validar o esquema de relatório" id="error-text" />
+            </div>
           ) : (
             <div class="flex items-center justify-center">
               <daai-text

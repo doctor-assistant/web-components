@@ -5,8 +5,8 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ConsultationResponse } from "./components/entities/consultation.entity";
-export { ConsultationResponse } from "./components/entities/consultation.entity";
+import { ConsultationReportSchema, ConsultationResponse } from "./components/entities/consultation.entity";
+export { ConsultationReportSchema, ConsultationResponse } from "./components/entities/consultation.entity";
 export namespace Components {
     interface DaaiButton {
         "disabled": boolean;
@@ -43,6 +43,7 @@ export namespace Components {
     warningRecordingTime: number;
   };
         "recordingTime": number;
+        "reportSchema"?: ConsultationReportSchema;
         "specialty": any;
         "start": (consultation: ConsultationResponse) => void;
         "success": (consultation: ConsultationResponse) => void;
@@ -60,6 +61,7 @@ export namespace Components {
         "onSuccess": (consultation: ConsultationResponse) => void;
         "onWarningRecordingTime": () => void;
         "professional": string;
+        "reportSchema"?: string;
         "specialty": string;
         "telemedicine": boolean;
         "videoElement"?: HTMLVideoElement;
@@ -461,6 +463,7 @@ declare namespace LocalJSX {
     warningRecordingTime: number;
   };
         "recordingTime"?: number;
+        "reportSchema"?: ConsultationReportSchema;
         "specialty"?: any;
         "start"?: (consultation: ConsultationResponse) => void;
         "success"?: (consultation: ConsultationResponse) => void;
@@ -478,6 +481,7 @@ declare namespace LocalJSX {
         "onSuccess"?: (consultation: ConsultationResponse) => void;
         "onWarningRecordingTime"?: () => void;
         "professional"?: string;
+        "reportSchema"?: string;
         "specialty"?: string;
         "telemedicine"?: boolean;
         "videoElement"?: HTMLVideoElement;

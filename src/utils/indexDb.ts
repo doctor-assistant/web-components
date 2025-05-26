@@ -1,5 +1,6 @@
 import Dexie from "dexie";
 import state from "../store";
+import { ConsultationReportSchema } from "../components/entities/consultation.entity";
 interface Specialty {
   id: string;
   title: string;
@@ -135,6 +136,7 @@ interface ChunkUpload {
   retryCount: number;
   timestamp: number;
   specialty: string;
+  reportSchema?: ConsultationReportSchema;
 }
 
 class ChunkUploadDB extends Dexie {
@@ -143,7 +145,7 @@ class ChunkUploadDB extends Dexie {
   constructor() {
     super("chunkUploadDb");
     this.version(1).stores({
-      chunks: "++id,consultationId,recordingId,chunk,duration,index,retryCount,timestamp,specialty"
+      chunks: "++id,consultationId,recordingId,chunk,duration,index,retryCount,timestamp,specialty,reportSchema?"
     });
     this.chunks = this.table("chunks");
   }
