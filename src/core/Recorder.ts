@@ -1,5 +1,5 @@
 import { version } from '../../package.json';
-import { ConsultationResponse } from '../components/entities/consultation.entity';
+import { ConsultationReportSchema, ConsultationResponse } from '../components/entities/consultation.entity';
 
 import state from "../store";
 import { getBrowserInfo, getOSInfo, isMobile } from '../utils/device';
@@ -33,6 +33,7 @@ interface ChunkData {
   retryCount: number;
   timestamp: number;
   specialty: string;
+  reportSchema?: ConsultationReportSchema;
 }
 
 let mediaRecorder: MediaRecorder | null = null;
@@ -298,6 +299,7 @@ export const startRecording = async (
             retryCount: 0,
             timestamp: Date.now(),
             specialty: state.chooseSpecialty || 'generic',
+            reportSchema: state.reportSchema,
           };
           pendingFirstUploads.add(currentChunkIndex);
           const uploaded = await uploadChunk(chunk, mode, apikey);
@@ -380,6 +382,7 @@ type FinishRecordingProps = {
   error: (error: any) => void,
   specialty: string,
   onEvent: (event: any) => void,
+  reportSchema?: ConsultationReportSchema,
 }
 
 export const finishRecording = async ({
@@ -389,6 +392,7 @@ export const finishRecording = async ({
   error,
   onEvent: event,
   specialty,
+  reportSchema: rawReportSchema,
 }: FinishRecordingProps) => {
   state.status = "finished";
 
@@ -439,6 +443,13 @@ export const finishRecording = async ({
       analyserNode = null;
     }
 
+    const reportSchemaObject = state.reportSchema || rawReportSchema;
+    const reportSchema = reportSchemaObject ? {
+      instructions: reportSchemaObject.instructions,
+      fewShots: JSON.stringify(reportSchemaObject.fewShots),
+      schema: reportSchemaObject.schema,
+    } : undefined;
+
     // Finalize consultation
     const baseUrl = mode === "dev"
       ? "https://apim.doctorassistant.ai/api/sandbox"
@@ -453,7 +464,7 @@ export const finishRecording = async ({
         'x-daai-api-key': apikey,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ specialty })
+      body: JSON.stringify({ specialty, reportSchema })
     });
 
     const jsonResponse = await response.json();
@@ -482,13 +493,20 @@ type FinishRecordingRequestProps = {
   consultationId: string,
   recordingId: string,
   specialty: string,
+  reportSchema?: ConsultationReportSchema,
 }
 
-export const finishRecordingRequest = async ({ mode, apikey, consultationId, recordingId, specialty }: FinishRecordingRequestProps) => {
+export const finishRecordingRequest = async ({ mode, apikey, consultationId, recordingId, specialty, reportSchema: rawReportSchema }: FinishRecordingRequestProps) => {
   const storedChunks = await getFailedChunksBydId(consultationId);
   if (storedChunks.length > 0) {
     return;
   }
+
+  const reportSchema = rawReportSchema ? {
+    instructions: rawReportSchema.instructions,
+    fewShots: JSON.stringify(rawReportSchema.fewShots),
+    schema: rawReportSchema.schema,
+  } : undefined;
 
   const baseUrl = mode === "dev"
     ? "https://apim.doctorassistant.ai/api/sandbox"
@@ -502,7 +520,7 @@ export const finishRecordingRequest = async ({ mode, apikey, consultationId, rec
       'x-daai-api-key': apikey,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ specialty })
+    body: JSON.stringify({ specialty, reportSchema })
   });
 }
 
@@ -758,6 +776,7 @@ export const retryChunkedConsultations = async (mode: string, apiKey: string) =>
         consultationId,
         recordingId: chunks[0].recordingId,
         specialty: chunks[0].specialty,
+        reportSchema: chunks[0].reportSchema,
       });
     } catch (error) {
       console.error(`Erro ao processar chunks da consulta ${consultationId}:`, error);

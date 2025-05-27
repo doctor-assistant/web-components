@@ -83,17 +83,42 @@ maxRecordingTime = 300; // Exemplo: 300 segundos (5 minutos).
 
 // A propriedade "warningRecordingTime" não é obrigatória. Define em quantos segundos antes do limite o usuário receberá um aviso.
 warningRecordingTime = 30; // Exemplo: Aviso 30 segundos antes do fim da gravação
+
+// A propriedade "reportSchema" não é obrigatória. Define a estrtura de retorno do relatório da consulta.
+reportSchema = "Estrutura do relatório customizado"
 ```
 
 ### Formato metadata
 
 ```html
-// ⚠️ Essse deve ser o formato
+// ⚠️ Essse deve ser o formato do metadata
 <body>
   <daai-consultation-recorder
     metadata='{"name": "doctor", "role": "Assistant"}'
     apiKey="YOUR_API_KEY"
     professional="YOUR_PROFESSIONAL_ID"
+  >
+  </daai-consultation-recorder>
+</body>
+```
+
+### Formato do reportSchema
+```html
+// ⚠️ Essse deve ser o formato do reportSchema
+<body>
+  <daai-consultation-recorder
+    apiKey="YOUR_API_KEY"
+    professional="YOUR_PROFESSIONAL_ID"
+    report-schema='{"instructions":"Example", "fewShots":[{"foo": 1, "bar": "test"}, {"foo": 2, "bar": "test2"}], "schema": {
+    "type": "object",
+    "properties": {
+      "foo": {"type": "integer"},
+      "bar": {"type": "string"}
+    },
+    "required": ["foo", "bar"],
+    "additionalProperties": true
+  }
+}'
   >
   </daai-consultation-recorder>
 </body>
