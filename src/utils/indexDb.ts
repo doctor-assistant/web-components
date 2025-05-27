@@ -145,7 +145,7 @@ class ChunkUploadDB extends Dexie {
   constructor() {
     super("chunkUploadDb");
     this.version(1).stores({
-      chunks: "++id,consultationId,recordingId,chunk,duration,index,retryCount,timestamp,specialty,reportSchema?"
+      chunks: "++id,consultationId,recordingId,chunk,duration,index,retryCount,timestamp,specialty,reportSchema"
     });
     this.chunks = this.table("chunks");
   }
