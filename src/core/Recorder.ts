@@ -444,11 +444,11 @@ export const finishRecording = async ({
     }
 
     const reportSchemaObject = state.reportSchema || rawReportSchema;
-    const reportSchema = {
-      instructions: reportSchemaObject?.instructions,
-      fewShots: JSON.stringify(reportSchemaObject?.fewShots),
-      schema: reportSchemaObject?.schema,
-    }
+    const reportSchema = reportSchemaObject ? {
+      instructions: reportSchemaObject.instructions,
+      fewShots: JSON.stringify(reportSchemaObject.fewShots),
+      schema: reportSchemaObject.schema,
+    } : undefined;
 
     // Finalize consultation
     const baseUrl = mode === "dev"
@@ -502,11 +502,11 @@ export const finishRecordingRequest = async ({ mode, apikey, consultationId, rec
     return;
   }
 
-  const reportSchema = {
-    instructions: rawReportSchema?.instructions,
-    fewShots: JSON.stringify(rawReportSchema?.fewShots),
-    schema: rawReportSchema?.schema,
-  }
+  const reportSchema = rawReportSchema ? {
+    instructions: rawReportSchema.instructions,
+    fewShots: JSON.stringify(rawReportSchema.fewShots),
+    schema: rawReportSchema.schema,
+  } : undefined;
 
   const baseUrl = mode === "dev"
     ? "https://apim.doctorassistant.ai/api/sandbox"
