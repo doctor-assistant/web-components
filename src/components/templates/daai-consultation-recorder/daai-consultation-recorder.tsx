@@ -6,11 +6,11 @@ import {
 import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
+import { getReportSchema } from "../../../utils/json-schema";
 import {
   ConsultationReportSchema,
   ConsultationResponse,
 } from "../../entities/consultation.entity";
-import { getReportSchema } from "../../../utils/json-schema";
 
 @Component({
   tag: "daai-consultation-recorder",
@@ -35,7 +35,6 @@ export class DaaiConsultationRecorder {
 
   @Prop() warningRecordingTime: number = 0;
   @Prop() maxRecordingTime: number = Infinity;
-  @Prop() mediaStreamByPatient: MediaStream;
 
   @Prop() hideTutorial: boolean = false;
   @State() mode: string;
@@ -62,7 +61,7 @@ export class DaaiConsultationRecorder {
 
     const result = getReportSchema(this.reportSchema);
     if (result.error) {
-      console.error('Invalid report schema', result.error);
+      console.error("Invalid report schema", result.error);
       state.status = "report-schema-error";
       return undefined;
     }
@@ -127,13 +126,10 @@ export class DaaiConsultationRecorder {
                   maxRecordingTime: this.maxRecordingTime,
                 }}
                 hideTutorial={
-                  this.hideTutorial ||
-                  !this.isNullish(this.videoElement) ||
-                  !this.isNullish(this.mediaStreamByPatient)
+                  this.hideTutorial || !this.isNullish(this.videoElement)
                 }
                 mode={this.mode}
                 start={this.onStart}
-                mediaStreamByPatient={this.mediaStreamByPatient}
               ></daai-consultation-actions>
             </div>
           </div>
@@ -153,7 +149,6 @@ export class DaaiConsultationRecorder {
             professional={this.professional}
             metadata={this.metadataObject}
             start={this.onStart}
-            mediaStreamByPatient={this.mediaStreamByPatient}
           ></daai-popup>
         )}
 

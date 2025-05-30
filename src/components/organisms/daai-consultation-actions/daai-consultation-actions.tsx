@@ -45,7 +45,6 @@ export class DaaiConsultationActions {
   };
 
   @Prop() hideTutorial: boolean = false;
-  @Prop() mediaStreamByPatient: MediaStream;
   newRecording() {
     state.status = "initial";
   }
@@ -147,13 +146,13 @@ export class DaaiConsultationActions {
                     this.telemedicine
                       ? this.choosenMode()
                       : startRecording({
-                        isRemote: false,
-                        mode: this.mode,
-                        apikey: this.apikey,
-                        professional: this.professional,
-                        metadata: this.metadata,
-                        start: this.start,
-                      });
+                          isRemote: false,
+                          mode: this.mode,
+                          apikey: this.apikey,
+                          professional: this.professional,
+                          metadata: this.metadata,
+                          start: this.start,
+                        });
                   }
                 }}
                 disabled={
@@ -200,14 +199,14 @@ export class DaaiConsultationActions {
               onClick={() =>
                 state.isChecked || this.hideTutorial
                   ? startRecording({
-                    isRemote: true,
-                    videoElement: this.videoElement,
-                    mode: this.mode,
-                    apikey: this.apikey,
-                    professional: this.professional,
-                    metadata: this.metadata,
-                    start: this.start,
-                  })
+                      isRemote: true,
+                      videoElement: this.videoElement,
+                      mode: this.mode,
+                      apikey: this.apikey,
+                      professional: this.professional,
+                      metadata: this.metadata,
+                      start: this.start,
+                    })
                   : StartTutorial()
               }
             >
