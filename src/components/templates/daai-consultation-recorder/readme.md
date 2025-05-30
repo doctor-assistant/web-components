@@ -19,6 +19,7 @@
 | `onSuccess`              | --                       |             | `(consultation: ConsultationResponse) => void` | `undefined`             |
 | `onWarningRecordingTime` | --                       |             | `() => void`                                   | `undefined`             |
 | `professional`           | `professional`           |             | `string`                                       | `undefined`             |
+| `reportSchema`           | `report-schema`          |             | `string`                                       | `undefined`             |
 | `specialty`              | `specialty`              |             | `string`                                       | `state.chooseSpecialty` |
 | `telemedicine`           | `telemedicine`           |             | `boolean`                                      | `undefined`             |
 | `videoElement`           | --                       |             | `HTMLVideoElement`                             | `undefined`             |

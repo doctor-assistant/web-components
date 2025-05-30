@@ -34,7 +34,6 @@ export namespace Components {
         "error": any;
         "event": any;
         "hideTutorial": boolean;
-        "mediaStreamByPatient": MediaStream;
         "metadata": Record<string, any>;
         "mode": string;
         "professional": string;
@@ -55,7 +54,6 @@ export namespace Components {
         "apikey": string;
         "hideTutorial": boolean;
         "maxRecordingTime": number;
-        "mediaStreamByPatient": MediaStream;
         "metadata": string;
         "onError": (err: Error) => void;
         "onEvent": (response: Response) => void;
@@ -109,7 +107,6 @@ export namespace Components {
     }
     interface DaaiPopup {
         "apikey": string;
-        "mediaStreamByPatient": MediaStream;
         "metadata": Record<string, any>;
         "mode": string;
         "professional": string;
@@ -457,7 +454,6 @@ declare namespace LocalJSX {
         "error"?: any;
         "event"?: any;
         "hideTutorial"?: boolean;
-        "mediaStreamByPatient"?: MediaStream;
         "metadata"?: Record<string, any>;
         "mode"?: string;
         "professional"?: string;
@@ -478,7 +474,6 @@ declare namespace LocalJSX {
         "apikey"?: string;
         "hideTutorial"?: boolean;
         "maxRecordingTime"?: number;
-        "mediaStreamByPatient"?: MediaStream;
         "metadata"?: string;
         "onError"?: (err: Error) => void;
         "onEvent"?: (response: Response) => void;
@@ -533,7 +528,6 @@ declare namespace LocalJSX {
     }
     interface DaaiPopup {
         "apikey"?: string;
-        "mediaStreamByPatient"?: MediaStream;
         "metadata"?: Record<string, any>;
         "mode"?: string;
         "professional"?: string;
