@@ -6,7 +6,12 @@ import {
 import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
-import { ConsultationResponse } from "../../entities/consultation.entity";
+import {
+  ConsultationReportSchema,
+  ConsultationResponse,
+} from "../../entities/consultation.entity";
+import { getReportSchema } from "../../../utils/json-schema";
+
 @Component({
   tag: "daai-consultation-recorder",
   styleUrl: "daai-consultation-recorder.css",
@@ -22,6 +27,7 @@ export class DaaiConsultationRecorder {
   @Prop() apikey: string;
   @Prop() specialty: string = state.chooseSpecialty;
   @Prop() metadata: string;
+  @Prop() reportSchema?: string;
   @Prop() telemedicine: boolean;
   @Prop() videoElement?: HTMLVideoElement;
   @Prop() professional: string;
@@ -49,6 +55,19 @@ export class DaaiConsultationRecorder {
     } catch (e) {
       return {};
     }
+  }
+
+  get reportSchemaObject(): ConsultationReportSchema | undefined {
+    if (!this.reportSchema) return undefined;
+
+    const result = getReportSchema(this.reportSchema);
+    if (result.error) {
+      console.error('Invalid report schema', result.error);
+      state.status = "report-schema-error";
+      return undefined;
+    }
+    state.reportSchema = result.success;
+    return result.success;
   }
 
   async componentDidLoad() {
@@ -94,6 +113,7 @@ export class DaaiConsultationRecorder {
                 apikey={this.apikey}
                 specialty={state.defaultSpecialty || state.chooseSpecialty}
                 metadata={this.metadataObject}
+                reportSchema={this.reportSchemaObject}
                 success={this.onSuccess}
                 error={this.onError}
                 telemedicine={this.telemedicine}

@@ -9,7 +9,10 @@ import {
 } from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialtiesByProfessionalId } from "../../../utils/indexDb";
-import { ConsultationResponse } from "../../entities/consultation.entity";
+import {
+  ConsultationReportSchema,
+  ConsultationResponse,
+} from "../../entities/consultation.entity";
 
 @Component({
   tag: "daai-consultation-actions",
@@ -26,6 +29,7 @@ export class DaaiConsultationActions {
   @Prop() success: (consultation: ConsultationResponse) => void;
   @Prop() error: any;
   @Prop() metadata: Record<string, any>;
+  @Prop() reportSchema?: ConsultationReportSchema;
   @Prop() event: any;
   @Prop() mode: string;
   @Prop() start: (consultation: ConsultationResponse) => void;
@@ -143,14 +147,13 @@ export class DaaiConsultationActions {
                     this.telemedicine
                       ? this.choosenMode()
                       : startRecording({
-                          isRemote: false,
-                          mode: this.mode,
-                          apikey: this.apikey,
-                          professional: this.professional,
-                          metadata: this.metadata,
-                          start: this.start,
-                          mediaStreamByPatient: this.mediaStreamByPatient,
-                        });
+                        isRemote: false,
+                        mode: this.mode,
+                        apikey: this.apikey,
+                        professional: this.professional,
+                        metadata: this.metadata,
+                        start: this.start,
+                      });
                   }
                 }}
                 disabled={
@@ -187,7 +190,6 @@ export class DaaiConsultationActions {
                   professional: this.professional,
                   metadata: this.metadata,
                   start: this.start,
-                  mediaStreamByPatient: this.mediaStreamByPatient,
                 })
               }
             >
@@ -198,15 +200,14 @@ export class DaaiConsultationActions {
               onClick={() =>
                 state.isChecked || this.hideTutorial
                   ? startRecording({
-                      isRemote: true,
-                      videoElement: this.videoElement,
-                      mode: this.mode,
-                      apikey: this.apikey,
-                      professional: this.professional,
-                      metadata: this.metadata,
-                      start: this.start,
-                      mediaStreamByPatient: this.mediaStreamByPatient,
-                    })
+                    isRemote: true,
+                    videoElement: this.videoElement,
+                    mode: this.mode,
+                    apikey: this.apikey,
+                    professional: this.professional,
+                    metadata: this.metadata,
+                    start: this.start,
+                  })
                   : StartTutorial()
               }
             >
@@ -240,6 +241,7 @@ export class DaaiConsultationActions {
                   error: this.error,
                   specialty: this.specialty,
                   onEvent: this.event,
+                  reportSchema: this.reportSchema,
                 })
               }
             >

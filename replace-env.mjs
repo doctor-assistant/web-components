@@ -13,6 +13,7 @@ const options = {
     /telemedicine=".*?"/g,
     /professional=".*?"/g,
     /hideTutorial=".*?"/g,
+    /report-schema=".*?"/g,
   ],
   to: [
     //Props
@@ -22,6 +23,7 @@ const options = {
     `telemedicine="${process.env.TELEMEDICINE}"`,
     `professional="${process.env.PROFESSIONAL_ID}"`,
     `hideTutorial="${process.env.HIDE_TUTORIAL}"`,
+    `report-schema='${process.env.REPORT_SCHEMA}'`,
   ],
 };
 
