@@ -38,8 +38,8 @@ export class DaaiModal {
       (device) => device.kind === "audioinput"
     );
     const audioDevices = rawAudioDevices.sort((a, b) => {
-      if (a.deviceId === 'default') return -1;
-      if (b.deviceId === 'default') return 1;
+      if (a.deviceId === "default") return -1;
+      if (b.deviceId === "default") return 1;
       return 0;
     });
     this.devices = audioDevices;
@@ -47,24 +47,22 @@ export class DaaiModal {
 
   setPreselectedMicrophone() {
     const defaultMicrophone = state.defaultMicrophone;
-    const selectedMicrophone = localStorage.getItem('selectedMicrophone');
-    const defaultSystemMicrophone = this.devices.find(
-      (device) => device.label.startsWith("Default")
+    const selectedMicrophone = localStorage.getItem("selectedMicrophone");
+    const defaultSystemMicrophone = this.devices.find((device) =>
+      device.label.startsWith("Default")
     );
     if (defaultMicrophone) {
       this.selectedMicrophone = defaultMicrophone;
-    }
-    else if (selectedMicrophone) {
-      this.selectedMicrophone = selectedMicrophone
-    }
-    else if (defaultSystemMicrophone) {
+    } else if (selectedMicrophone) {
+      this.selectedMicrophone = selectedMicrophone;
+    } else if (defaultSystemMicrophone) {
       this.selectedMicrophone = defaultSystemMicrophone.deviceId;
     }
   }
 
   setDefaultMicrophone(deviceId: string) {
     this.selectedMicrophone = deviceId;
-    localStorage.setItem('selectedMicrophone', deviceId);
+    localStorage.setItem("selectedMicrophone", deviceId);
     if (this.selectedMicrophone) {
       state.defaultMicrophone = this.selectedMicrophone;
       state.openModalConfig = false;
@@ -77,10 +75,12 @@ export class DaaiModal {
 
   render() {
     return (
-      <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm  z-[99999]">
+      <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm z-[9999]">
         <div class="w-96 px-5 pt-5 pb-8 rounded-md mt-4 bg-white">
           <div class="flex justify-between">
-            <span class="text-[12px] font-[600] modal-title" id="mic-title">{this.headerTitle}</span>
+            <span class="text-[12px] font-[600] modal-title" id="mic-title">
+              {this.headerTitle}
+            </span>
             <daai-button
               class="text-black font-medium text-sm mb-4"
               onClick={() => this.handleClick()}
@@ -92,7 +92,11 @@ export class DaaiModal {
             <ul class="space-y-2 pr-1">
               {this.devices.map((device) => (
                 <li
-                  class={`cursor-pointer text-[12px] font-[600] p-3 rounded-lg border transition ${this.selectedMicrophone === device.deviceId ? 'selected-modal-item' : 'modal-item'}`}
+                  class={`cursor-pointer text-[12px] font-[600] p-3 rounded-lg border transition ${
+                    this.selectedMicrophone === device.deviceId
+                      ? "selected-modal-item"
+                      : "modal-item"
+                  }`}
                   onClick={() => this.setDefaultMicrophone(device.deviceId)}
                 >
                   {device.label || "Microfone desconhecido"}
