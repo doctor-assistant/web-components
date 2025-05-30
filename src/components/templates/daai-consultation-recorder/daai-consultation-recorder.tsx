@@ -82,12 +82,6 @@ export class DaaiConsultationRecorder {
     const spec = await getSpecialty(this.mode);
     await saveSpecialties(spec);
   }
-  isUndefined = (item: any): item is undefined => typeof item === "undefined";
-
-  isNull = (item: any): item is null => item === null;
-
-  isNullish = (item: any): item is null | undefined =>
-    this.isNull(item) || this.isUndefined(item);
 
   render() {
     return (
@@ -126,7 +120,8 @@ export class DaaiConsultationRecorder {
                   maxRecordingTime: this.maxRecordingTime,
                 }}
                 hideTutorial={
-                  this.hideTutorial || !this.isNullish(this.videoElement)
+                  this.hideTutorial ||
+                  (this.videoElement && this.videoElement !== null)
                 }
                 mode={this.mode}
                 start={this.onStart}
