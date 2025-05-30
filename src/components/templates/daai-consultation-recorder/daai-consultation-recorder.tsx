@@ -1,13 +1,16 @@
 import { Component, h, Host, Prop, State } from "@stencil/core";
-import { retryChunkedConsultations, retryOldConsultations } from "../../../core/Recorder";
+import {
+  retryChunkedConsultations,
+  retryOldConsultations,
+} from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
+import { getReportSchema } from "../../../utils/json-schema";
 import {
   ConsultationReportSchema,
   ConsultationResponse,
 } from "../../entities/consultation.entity";
-import { getReportSchema } from "../../../utils/json-schema";
 
 @Component({
   tag: "daai-consultation-recorder",
@@ -58,7 +61,7 @@ export class DaaiConsultationRecorder {
 
     const result = getReportSchema(this.reportSchema);
     if (result.error) {
-      console.error('Invalid report schema', result.error);
+      console.error("Invalid report schema", result.error);
       state.status = "report-schema-error";
       return undefined;
     }

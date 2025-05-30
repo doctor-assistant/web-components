@@ -14,12 +14,13 @@ export class DaaiPopup {
   @Prop() professional: string;
   @Prop() metadata: Record<string, any>;
   @Prop() start?: (consultation: ConsultationResponse) => void;
+
   handleClose() {
     state.openTutorialPopup = false;
   }
   render() {
     return (
-      <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm">
+      <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm z-[9999]">
         <div class="flex items-center justify-center flex-col gap-4 w-96 p-4 rounded-md border-2 border-gray-200 bg-white shadow-md">
           {/* <daai-popup-icon id="popup-icon"></daai-popup-icon> */}
           <div id="popup-icon"></div>

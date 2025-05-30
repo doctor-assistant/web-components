@@ -18,6 +18,7 @@
 | `professional`    | `professional`   |             | `string`                                                                                          | `""`        |
 | `recordingConfig` | --               |             | `{ onWarningRecordingTime: () => void; maxRecordingTime: number; warningRecordingTime: number; }` | `undefined` |
 | `recordingTime`   | `recording-time` |             | `number`                                                                                          | `0`         |
+| `reportSchema`    | --               |             | `{ instructions: string; fewShots: string; schema: Record<string, unknown>; }`                    | `undefined` |
 | `specialty`       | `specialty`      |             | `any`                                                                                             | `undefined` |
 | `start`           | --               |             | `(consultation: ConsultationResponse) => void`                                                    | `undefined` |
 | `success`         | --               |             | `(consultation: ConsultationResponse) => void`                                                    | `undefined` |
