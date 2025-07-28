@@ -103,6 +103,8 @@ export const startRecording = async (
 
   state.status = "preparing";
 
+  const browser = getBrowserInfo() || "Chrome";
+
   try {
     const constraints = {
       audio: {
@@ -121,7 +123,12 @@ export const startRecording = async (
       if (videoElement) {
         videoElement.play()
         try {
-          videoElementStream = (videoElement as HTMLVideoElement & { captureStream?: () => MediaStream }).captureStream?.();
+          // if browser is firefox, use mozCaptureStream
+          if (browser === "Firefox") {
+            videoElementStream = (videoElement as HTMLVideoElement & { mozCaptureStream?: () => MediaStream }).mozCaptureStream?.();
+          } else {
+            videoElementStream = (videoElement as HTMLVideoElement & { captureStream?: () => MediaStream }).captureStream?.();
+          }
         } catch (error) {
           console.error('Erro ao capturar áudio do vídeo:', error);
           try {
@@ -160,7 +167,7 @@ export const startRecording = async (
       },
       body: JSON.stringify({
         professionalId: professional,
-        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component", ...devices } }
+        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component", ...devices }, telemedicine: isRemote }
       })
     });
 
@@ -195,6 +202,13 @@ export const startRecording = async (
         const videoGain = audioContext.createGain();
         videoGain.gain.value = 1.0;
         videoSource.connect(videoGain).connect(audioDestination);
+
+        if (browser === "Firefox") {
+          const videoPlaybackSource = audioContext.createMediaStreamSource(videoElementStream);
+          const videoPlaybackGain = audioContext.createGain();
+          videoPlaybackGain.gain.value = 1.0;
+          videoPlaybackSource.connect(videoPlaybackGain).connect(audioContext.destination);
+        }
       } else if (screenStream?.getAudioTracks().length > 0) {
         const systemSource = audioContext.createMediaStreamSource(screenStream);
         const systemGain = audioContext.createGain();
