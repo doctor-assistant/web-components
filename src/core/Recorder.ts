@@ -167,7 +167,7 @@ export const startRecording = async (
       },
       body: JSON.stringify({
         professionalId: professional,
-        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component", ...devices }, telemedicine: isRemote }
+        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component", ...devices, telemedicine: isRemote } }
       })
     });
 
