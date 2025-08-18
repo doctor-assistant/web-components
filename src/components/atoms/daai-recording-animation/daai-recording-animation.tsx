@@ -23,6 +23,7 @@ export class DaaiRecordingAnimation {
   private audioContext!: AudioContext;
   private currentStream: MediaStream | null = null;
   private animationFrameId: number | null = null;
+  private wakeLock: WakeLockSentinel | null = null;
 
   constructor() {
     this.audioContext = new window.AudioContext();
@@ -43,12 +44,47 @@ export class DaaiRecordingAnimation {
     if (this.audioContext) {
       this.audioContext.close();
     }
+
+    this.deactivateWakeLock();
   }
 
   @Watch("status")
   async componentDidLoad() {
     await this.initializeAudio();
     this.startAnimationRecording();
+
+    if (this.status === 'recording') {
+      await this.activateWakeLock();
+    } else {
+      await this.deactivateWakeLock();
+    }
+  }
+
+  private async activateWakeLock(): Promise<void> {
+    if (!('wakeLock' in navigator)) {
+      console.warn('Browser does not support wake lock');
+      return;
+    }
+
+    try {
+      this.wakeLock = await navigator.wakeLock.request('screen');
+      this.wakeLock.addEventListener('release', () => {
+        this.wakeLock = null;
+      });
+    } catch (err) {
+      console.warn('Error activating wake lock:', err);
+    }
+  }
+
+  private async deactivateWakeLock(): Promise<void> {
+    if (this.wakeLock) {
+      try {
+        await this.wakeLock.release();
+        this.wakeLock = null;
+      } catch (err) {
+        console.warn('Error deactivating wake lock:', err);
+      }
+    }
   }
 
   async initializeAudio() {
