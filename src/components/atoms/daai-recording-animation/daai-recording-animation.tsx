@@ -24,9 +24,33 @@ export class DaaiRecordingAnimation {
   private currentStream: MediaStream | null = null;
   private animationFrameId: number | null = null;
   private wakeLock: WakeLockSentinel | null = null;
+  private beforeUnloadHandler: (event: BeforeUnloadEvent) => void;
+
+  private criticalStatuses = ["recording", "paused", "resume"];
 
   constructor() {
     this.audioContext = new window.AudioContext();
+  }
+
+  private setupBeforeUnloadHandler() {
+    if (this.beforeUnloadHandler) {
+      return;
+    }
+
+    this.beforeUnloadHandler = (event: BeforeUnloadEvent) => {
+      if (this.criticalStatuses.includes(this.status)) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("beforeunload", this.beforeUnloadHandler);
+  }
+
+  private removeBeforeUnloadHandler() {
+    if (this.beforeUnloadHandler) {
+      window.removeEventListener("beforeunload", this.beforeUnloadHandler);
+      this.beforeUnloadHandler = null;
+    }
   }
 
   disconnectedCallback() {
@@ -46,6 +70,7 @@ export class DaaiRecordingAnimation {
     }
 
     this.deactivateWakeLock();
+    this.removeBeforeUnloadHandler();
   }
 
   @Watch("status")
@@ -53,14 +78,20 @@ export class DaaiRecordingAnimation {
     await this.initializeAudio();
     this.startAnimationRecording();
 
-    if (this.status === 'recording') {
+    if (this.criticalStatuses.includes(this.status)) {
       await this.activateWakeLock();
+      this.setupBeforeUnloadHandler();
     } else {
       await this.deactivateWakeLock();
+      this.removeBeforeUnloadHandler();
     }
   }
 
   private async activateWakeLock(): Promise<void> {
+    if (this.wakeLock) {
+      return;
+    }
+
     if (!('wakeLock' in navigator)) {
       console.warn('Browser does not support wake lock');
       return;
