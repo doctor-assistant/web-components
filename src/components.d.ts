@@ -44,10 +44,6 @@ export namespace Components {
   };
         "recordingTime": number;
         "reportSchema"?: ConsultationReportSchema;
-        /**
-          * @deprecated Use skipConsultationType, autoStart, autoFinishOnEvent, finishEventName Alias interno para compatibilidade temporária
-         */
-        "restrict"?: boolean;
         "skipConsultationType": boolean;
         "specialty": any;
         "start": (consultation: ConsultationResponse) => void;
@@ -79,13 +75,6 @@ export namespace Components {
         "onWarningRecordingTime": () => void;
         "professional": string;
         "reportSchema"?: string;
-        /**
-          * @deprecated Use skipConsultationType, autoStart, autoFinishOnEvent, finishEventName Alias interno para compatibilidade temporária
-         */
-        "restrict"?: boolean;
-        /**
-          * Não exibir escolha Presencial/Telemedicina (mostra apenas “Iniciar gravação”)
-         */
         "skipConsultationType": boolean;
         "specialty": string;
         "telemedicine": boolean;
@@ -489,10 +478,6 @@ declare namespace LocalJSX {
   };
         "recordingTime"?: number;
         "reportSchema"?: ConsultationReportSchema;
-        /**
-          * @deprecated Use skipConsultationType, autoStart, autoFinishOnEvent, finishEventName Alias interno para compatibilidade temporária
-         */
-        "restrict"?: boolean;
         "skipConsultationType"?: boolean;
         "specialty"?: any;
         "start"?: (consultation: ConsultationResponse) => void;
@@ -524,13 +509,6 @@ declare namespace LocalJSX {
         "onWarningRecordingTime"?: () => void;
         "professional"?: string;
         "reportSchema"?: string;
-        /**
-          * @deprecated Use skipConsultationType, autoStart, autoFinishOnEvent, finishEventName Alias interno para compatibilidade temporária
-         */
-        "restrict"?: boolean;
-        /**
-          * Não exibir escolha Presencial/Telemedicina (mostra apenas “Iniciar gravação”)
-         */
         "skipConsultationType"?: boolean;
         "specialty"?: string;
         "telemedicine"?: boolean;

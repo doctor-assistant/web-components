@@ -1,4 +1,4 @@
-import { Component, h, Host, Prop, State, Watch } from "@stencil/core";
+import { Component, h, Host, Prop, State } from "@stencil/core";
 import {
   retryChunkedConsultations,
   retryOldConsultations,
@@ -41,13 +41,6 @@ export class DaaiConsultationRecorder {
   @Prop() hideTutorial: boolean = false;
   @State() mode: string;
 
-  /**
-   * @deprecated Use skipConsultationType, autoStart, autoFinishOnEvent, finishEventName
-   * Alias interno para compatibilidade temporária
-   */
-  @Prop() restrict?: boolean;
-
-  /** Não exibir escolha Presencial/Telemedicina (mostra apenas “Iniciar gravação”) */
   @Prop() skipConsultationType: boolean = false;
   /** Iniciar automaticamente ao montar */
   @Prop() autoStart: boolean = false;
@@ -55,11 +48,6 @@ export class DaaiConsultationRecorder {
   @Prop() autoFinishOnEvent: boolean = false;
   /** Nome do evento do prontuário para auto-finalizar */
   @Prop() finishEventName?: string;
-  /** Helper para normalizar boolean vindo do HTML */
-  toBool(val: any): boolean {
-    if (val === '' || val === true || val === 1 || val === 'true') return true;
-    return false;
-  }
 
   handleRecordingTimeUpdated(event: CustomEvent) {
     this.recordingTime = event.detail;
@@ -118,13 +106,16 @@ export class DaaiConsultationRecorder {
     await retryOldConsultations(this.mode, this.apikey);
     await retryChunkedConsultations(this.mode, this.apikey);
 
-  // Compatibilidade temporária: restrict ativa skipConsultationType, autoStart e autoFinishOnEvent
-  const restrictActive = this.toBool(this.restrict);
-  const shouldAutoStart = this.autoStart || restrictActive;
-  const shouldAutoFinishOnEvent = this.autoFinishOnEvent || restrictActive;
-  const eventName = this.finishEventName;
 
-  if (shouldAutoStart) {
+    if (this.skipConsultationType) {
+      state.status = "initial";
+    }
+
+    const shouldAutoStart = this.autoStart;
+    const shouldAutoFinishOnEvent = this.autoFinishOnEvent;
+    const eventName = this.finishEventName;
+
+    if (shouldAutoStart) {
       startRecording({
         isRemote: this.telemedicine ?? !!state.telemedicine,
         mode: this.mode,
@@ -141,9 +132,8 @@ export class DaaiConsultationRecorder {
   }
 
   disconnectedCallback() {
-    const restrictActive = this.toBool(this.restrict);
     const eventName = this.finishEventName;
-    if ((this.autoFinishOnEvent || restrictActive) && eventName) {
+    if (this.autoFinishOnEvent && eventName) {
       window.removeEventListener(eventName, this.onExternalFinish);
     }
   }
@@ -187,7 +177,7 @@ export class DaaiConsultationRecorder {
                 }
                 mode={this.mode}
                 start={this.onStart}
-                skipConsultationType={this.skipConsultationType || this.toBool(this.restrict)}
+                skipConsultationType={this.skipConsultationType}
               ></daai-consultation-actions>
             </div>
           </div>

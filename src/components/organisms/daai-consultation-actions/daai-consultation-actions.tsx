@@ -47,16 +47,16 @@ export class DaaiConsultationActions {
   @Prop() hideTutorial: boolean = false;
 
 
-  /**
-   * @deprecated Use skipConsultationType, autoStart, autoFinishOnEvent, finishEventName
-   * Alias interno para compatibilidade temporária
-   */
-  @Prop() restrict?: boolean;
 
 
   @Prop() skipConsultationType: boolean = false;
-  /** Helper para normalizar boolean vindo do HTML */
-  toBool(val: any): boolean {
+
+  isTrue(val: any): boolean {
+    if (val === false || val === undefined || val === null) return false;
+    if (typeof val === 'string' && val.toLowerCase() === 'false') return false;
+    return Boolean(val);
+  }
+toBool(val: any): boolean {
     if (val === '' || val === true || val === 1 || val === 'true') return true;
     return false;
   }
@@ -66,6 +66,10 @@ export class DaaiConsultationActions {
   }
 
   async choosenMode() {
+
+  if (this.isTrue(this.skipConsultationType)) {
+      return;
+    }
     if (this.telemedicine) {
       state.status = "choosen";
     } else {
@@ -124,56 +128,68 @@ export class DaaiConsultationActions {
   private canStart = () => Boolean(this.professional && this.apikey);
 
   renderButtons() {
-    switch (state.status) {
-      case "initial": {
-  const skip = this.skipConsultationType || this.toBool(this.restrict);
-
-        if (skip) {
-          const canStartNow = this.canStart();
-          return (
-            <div class="flex items-center justify-center">
-              <div class="flex items-center justify-center gap-x-2">
-                {!state.defaultSpecialty && (
-                  <daai-button-with-icon
-                    title={this.title}
-                    id="specialty"
-                    onClick={this.choosenSpecialty}
-                    disabled={state.defaultSpecialty !== ""}
-                  >
-                    {state.specialtyTitle ? state.specialtyTitle : "Generalista"}
-                  </daai-button-with-icon>
-                )}
-                <daai-button-with-icon
-                  id={canStartNow ? "start-recording" : "start-recording-disabled"}
-                  disabled={!canStartNow}
-                  onClick={() => {
-                    if (!canStartNow) return;
-                    startRecording({
-                      isRemote: !!this.telemedicine,
-                      videoElement: this.telemedicine ? this.videoElement : undefined,
-                      mode: this.mode,
-                      apikey: this.apikey,
-                      professional: this.professional,
-                      metadata: this.metadata,
-                      start: this.start,
-                    });
-                  }}
-                >
-                  <div class="flex items-center justify-start gap-2">
-                    <daai-mic-icon></daai-mic-icon>
-                    <daai-text text="Iniciar Registro"></daai-text>
-                  </div>
-                </daai-button-with-icon>
-
-                <daai-button-with-icon id="button-menu" onClick={this.openConfigModal}>
-                  <daai-menu-icon />
-                </daai-button-with-icon>
+    if (this.skipConsultationType) {
+      const canStartNow = this.canStart();
+      return (
+        <div class="flex items-center justify-center">
+          <div class="flex items-center justify-center gap-x-2">
+            {!state.defaultSpecialty && (
+              <daai-button-with-icon
+                title={this.title}
+                id="specialty"
+                onClick={this.choosenSpecialty}
+                disabled={state.defaultSpecialty !== ""}
+              >
+                {state.specialtyTitle ? state.specialtyTitle : "Generalista"}
+              </daai-button-with-icon>
+            )}
+            <daai-button-with-icon
+              id={canStartNow ? "start-recording" : "start-recording-disabled"}
+              disabled={!canStartNow}
+              onClick={() => {
+                if (!canStartNow) return;
+                if (this.isTrue(this.skipConsultationType)) {
+                  startRecording({
+                    isRemote: !!this.telemedicine,
+                    videoElement: this.telemedicine ? this.videoElement : undefined,
+                    mode: this.mode,
+                    apikey: this.apikey,
+                    professional: this.professional,
+                    metadata: this.metadata,
+                    start: this.start,
+                  });
+                } else {
+                  this.telemedicine
+                    ? this.choosenMode()
+                    : startRecording({
+                        isRemote: false,
+                        mode: this.mode,
+                        apikey: this.apikey,
+                        professional: this.professional,
+                        metadata: this.metadata,
+                        start: this.start,
+                      });
+                }
+              }}
+            >
+              <div class="flex items-center justify-start gap-2">
+                <daai-mic-icon></daai-mic-icon>
+                <daai-text text="Iniciar Registro"></daai-text>
               </div>
-              {state.openMenu && <daai-config />}
-            </div>
-          );
-        }
+            </daai-button-with-icon>
 
+            <daai-button-with-icon id="button-menu" onClick={this.openConfigModal}>
+              <daai-menu-icon />
+            </daai-button-with-icon>
+          </div>
+          {state.openMenu && <daai-config />}
+        </div>
+      );
+    }
+
+    // Fluxo tradicional
+    switch (state.status) {
+      case "initial":
         return (
           <div class="flex items-center justify-center">
             <div class="flex items-center justify-center gap-x-2">
@@ -217,7 +233,7 @@ export class DaaiConsultationActions {
             {state.openMenu && <daai-config />}
           </div>
         );
-      }
+
 
       case "choosen":
         return (
