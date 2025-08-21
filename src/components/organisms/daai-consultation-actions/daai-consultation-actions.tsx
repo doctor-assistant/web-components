@@ -47,10 +47,19 @@ export class DaaiConsultationActions {
   @Prop() hideTutorial: boolean = false;
 
 
-  @Prop() restringe: boolean = false;
+  /**
+   * @deprecated Use skipConsultationType, autoStart, autoFinishOnEvent, finishEventName
+   * Alias interno para compatibilidade temporária
+   */
+  @Prop() restrict?: boolean;
 
 
   @Prop() skipConsultationType: boolean = false;
+  /** Helper para normalizar boolean vindo do HTML */
+  toBool(val: any): boolean {
+    if (val === '' || val === true || val === 1 || val === 'true') return true;
+    return false;
+  }
 
   newRecording() {
     state.status = "initial";
@@ -117,7 +126,7 @@ export class DaaiConsultationActions {
   renderButtons() {
     switch (state.status) {
       case "initial": {
-        const skip = this.skipConsultationType || this.restringe;
+  const skip = this.skipConsultationType || this.toBool(this.restrict);
 
         if (skip) {
           const canStartNow = this.canStart();

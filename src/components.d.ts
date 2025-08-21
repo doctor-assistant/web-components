@@ -44,7 +44,10 @@ export namespace Components {
   };
         "recordingTime": number;
         "reportSchema"?: ConsultationReportSchema;
-        "restringe": boolean;
+        /**
+          * @deprecated Use skipConsultationType, autoStart, autoFinishOnEvent, finishEventName Alias interno para compatibilidade temporária
+         */
+        "restrict"?: boolean;
         "skipConsultationType": boolean;
         "specialty": any;
         "start": (consultation: ConsultationResponse) => void;
@@ -63,9 +66,9 @@ export namespace Components {
          */
         "autoStart": boolean;
         /**
-          * Nome padrão do evento do prontuário para auto-finalizar
+          * Nome do evento do prontuário para auto-finalizar
          */
-        "finishEventName": string;
+        "finishEventName"?: string;
         "hideTutorial": boolean;
         "maxRecordingTime": number;
         "metadata": string;
@@ -77,13 +80,9 @@ export namespace Components {
         "professional": string;
         "reportSchema"?: string;
         /**
-          * Atalho B2B: ativa pular escolha + autoStart + autoFinishOnEvent
+          * @deprecated Use skipConsultationType, autoStart, autoFinishOnEvent, finishEventName Alias interno para compatibilidade temporária
          */
-        "restringe": boolean;
-        /**
-          * Evento específico para auto-finish quando em modo restringe
-         */
-        "restringeFinishEventName": string;
+        "restrict"?: boolean;
         /**
           * Não exibir escolha Presencial/Telemedicina (mostra apenas “Iniciar gravação”)
          */
@@ -490,7 +489,10 @@ declare namespace LocalJSX {
   };
         "recordingTime"?: number;
         "reportSchema"?: ConsultationReportSchema;
-        "restringe"?: boolean;
+        /**
+          * @deprecated Use skipConsultationType, autoStart, autoFinishOnEvent, finishEventName Alias interno para compatibilidade temporária
+         */
+        "restrict"?: boolean;
         "skipConsultationType"?: boolean;
         "specialty"?: any;
         "start"?: (consultation: ConsultationResponse) => void;
@@ -509,7 +511,7 @@ declare namespace LocalJSX {
          */
         "autoStart"?: boolean;
         /**
-          * Nome padrão do evento do prontuário para auto-finalizar
+          * Nome do evento do prontuário para auto-finalizar
          */
         "finishEventName"?: string;
         "hideTutorial"?: boolean;
@@ -523,13 +525,9 @@ declare namespace LocalJSX {
         "professional"?: string;
         "reportSchema"?: string;
         /**
-          * Atalho B2B: ativa pular escolha + autoStart + autoFinishOnEvent
+          * @deprecated Use skipConsultationType, autoStart, autoFinishOnEvent, finishEventName Alias interno para compatibilidade temporária
          */
-        "restringe"?: boolean;
-        /**
-          * Evento específico para auto-finish quando em modo restringe
-         */
-        "restringeFinishEventName"?: string;
+        "restrict"?: boolean;
         /**
           * Não exibir escolha Presencial/Telemedicina (mostra apenas “Iniciar gravação”)
          */
