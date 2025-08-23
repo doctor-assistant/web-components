@@ -128,7 +128,7 @@ toBool(val: any): boolean {
   private canStart = () => Boolean(this.professional && this.apikey);
 
   renderButtons() {
-    if (this.skipConsultationType) {
+  if (this.skipConsultationType && ["initial", "choosen"].includes(state.status)) {
       const canStartNow = this.canStart();
       return (
         <div class="flex items-center justify-center">
@@ -186,6 +186,7 @@ toBool(val: any): boolean {
         </div>
       );
     }
+    // Caso contrário, segue para o switch normalmente
 
     // Fluxo tradicional
     switch (state.status) {
