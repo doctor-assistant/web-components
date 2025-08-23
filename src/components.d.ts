@@ -37,13 +37,14 @@ export namespace Components {
         "metadata": Record<string, any>;
         "mode": string;
         "professional": string;
-        "recordingConfig": {
-    onWarningRecordingTime: () => void;
+        "recordingConfig"?: {
+    onWarningRecordingTime?: () => void;
     maxRecordingTime: number;
     warningRecordingTime: number;
   };
         "recordingTime": number;
         "reportSchema"?: ConsultationReportSchema;
+        "skipConsultationType": boolean;
         "specialty": any;
         "start": (consultation: ConsultationResponse) => void;
         "success": (consultation: ConsultationResponse) => void;
@@ -52,6 +53,18 @@ export namespace Components {
     }
     interface DaaiConsultationRecorder {
         "apikey": string;
+        /**
+          * Finalizar automaticamente ao receber evento global
+         */
+        "autoFinishOnEvent": boolean;
+        /**
+          * Iniciar automaticamente ao montar
+         */
+        "autoStart": boolean;
+        /**
+          * Nome do evento do prontuário para auto-finalizar
+         */
+        "finishEventName"?: string;
         "hideTutorial": boolean;
         "maxRecordingTime": number;
         "metadata": string;
@@ -62,6 +75,7 @@ export namespace Components {
         "onWarningRecordingTime": () => void;
         "professional": string;
         "reportSchema"?: string;
+        "skipConsultationType": boolean;
         "specialty": string;
         "telemedicine": boolean;
         "videoElement"?: HTMLVideoElement;
@@ -458,12 +472,13 @@ declare namespace LocalJSX {
         "mode"?: string;
         "professional"?: string;
         "recordingConfig"?: {
-    onWarningRecordingTime: () => void;
+    onWarningRecordingTime?: () => void;
     maxRecordingTime: number;
     warningRecordingTime: number;
   };
         "recordingTime"?: number;
         "reportSchema"?: ConsultationReportSchema;
+        "skipConsultationType"?: boolean;
         "specialty"?: any;
         "start"?: (consultation: ConsultationResponse) => void;
         "success"?: (consultation: ConsultationResponse) => void;
@@ -472,6 +487,18 @@ declare namespace LocalJSX {
     }
     interface DaaiConsultationRecorder {
         "apikey"?: string;
+        /**
+          * Finalizar automaticamente ao receber evento global
+         */
+        "autoFinishOnEvent"?: boolean;
+        /**
+          * Iniciar automaticamente ao montar
+         */
+        "autoStart"?: boolean;
+        /**
+          * Nome do evento do prontuário para auto-finalizar
+         */
+        "finishEventName"?: string;
         "hideTutorial"?: boolean;
         "maxRecordingTime"?: number;
         "metadata"?: string;
@@ -482,6 +509,7 @@ declare namespace LocalJSX {
         "onWarningRecordingTime"?: () => void;
         "professional"?: string;
         "reportSchema"?: string;
+        "skipConsultationType"?: boolean;
         "specialty"?: string;
         "telemedicine"?: boolean;
         "videoElement"?: HTMLVideoElement;
