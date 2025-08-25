@@ -38,18 +38,38 @@ export class DaaiConsultationActions {
   @State() stopAnimation: string = "";
 
   @Prop() recordingTime: number = 0;
-  @Prop() recordingConfig: {
-    onWarningRecordingTime: () => void;
+  @Prop() recordingConfig?: {
+    onWarningRecordingTime?: () => void;
     maxRecordingTime: number;
     warningRecordingTime: number;
   };
 
   @Prop() hideTutorial: boolean = false;
+
+
+
+
+  @Prop() skipConsultationType: boolean = false;
+
+  isTrue(val: any): boolean {
+    if (val === false || val === undefined || val === null) return false;
+    if (typeof val === 'string' && val.toLowerCase() === 'false') return false;
+    return Boolean(val);
+  }
+toBool(val: any): boolean {
+    if (val === '' || val === true || val === 1 || val === 'true') return true;
+    return false;
+  }
+
   newRecording() {
     state.status = "initial";
   }
 
   async choosenMode() {
+
+  if (this.isTrue(this.skipConsultationType)) {
+      return;
+    }
     if (this.telemedicine) {
       state.status = "choosen";
     } else {
@@ -62,15 +82,9 @@ export class DaaiConsultationActions {
   }
 
   async componentDidLoad() {
-    const specialtyByProfessionalId = await getSpecialtiesByProfessionalId(
-      this.professional
-    );
-    if (
-      specialtyByProfessionalId.mostRecentSpecialty &&
-      specialtyByProfessionalId.specialtiesAsStrings
-    ) {
-      state.specialtyTitle =
-        specialtyByProfessionalId.mostRecentSpecialty.title;
+    const specialtyByProfessionalId = await getSpecialtiesByProfessionalId(this.professional);
+    if (specialtyByProfessionalId.mostRecentSpecialty && specialtyByProfessionalId.specialtiesAsStrings) {
+      state.specialtyTitle = specialtyByProfessionalId.mostRecentSpecialty.title;
       state.chooseSpecialty = specialtyByProfessionalId.mostRecentSpecialty.id;
     }
 
@@ -82,14 +96,14 @@ export class DaaiConsultationActions {
   @Watch("recordingTime")
   handleRecordingTimeChange() {
     if (!this.recordingConfig) return;
-    const { maxRecordingTime, warningRecordingTime, onWarningRecordingTime } =
-      this.recordingConfig;
+    const { maxRecordingTime, warningRecordingTime, onWarningRecordingTime } = this.recordingConfig;
+
     const emitWarning =
-      maxRecordingTime - this.recordingTime == warningRecordingTime &&
-      onWarningRecordingTime;
+      maxRecordingTime - this.recordingTime === warningRecordingTime &&
+      typeof onWarningRecordingTime === "function";
 
     if (emitWarning) {
-      onWarningRecordingTime();
+      onWarningRecordingTime!();
     }
 
     if (this.recordingTime >= maxRecordingTime) {
@@ -107,15 +121,74 @@ export class DaaiConsultationActions {
   openConfigModal() {
     state.openMenu = true;
     state.isOpenMenuToCancelAnimation = true;
-    localStorage.setItem(
-      "isOpenMenuToCancelAnimation",
-      JSON.stringify(state.isOpenMenuToCancelAnimation)
-    );
+    localStorage.setItem("isOpenMenuToCancelAnimation", JSON.stringify(state.isOpenMenuToCancelAnimation));
   }
 
-  readyToUse = state.microphonePermission && this.professional && this.apikey;
+
+  private canStart = () => Boolean(this.professional && this.apikey);
 
   renderButtons() {
+  if (this.skipConsultationType && ["initial", "choosen"].includes(state.status)) {
+      const canStartNow = this.canStart();
+      return (
+        <div class="flex items-center justify-center">
+          <div class="flex items-center justify-center gap-x-2">
+            {!state.defaultSpecialty && (
+              <daai-button-with-icon
+                title={this.title}
+                id="specialty"
+                onClick={this.choosenSpecialty}
+                disabled={state.defaultSpecialty !== ""}
+              >
+                {state.specialtyTitle ? state.specialtyTitle : "Generalista"}
+              </daai-button-with-icon>
+            )}
+            <daai-button-with-icon
+              id={canStartNow ? "start-recording" : "start-recording-disabled"}
+              disabled={!canStartNow}
+              onClick={() => {
+                if (!canStartNow) return;
+                if (this.isTrue(this.skipConsultationType)) {
+                  startRecording({
+                    isRemote: !!this.telemedicine,
+                    videoElement: this.telemedicine ? this.videoElement : undefined,
+                    mode: this.mode,
+                    apikey: this.apikey,
+                    professional: this.professional,
+                    metadata: this.metadata,
+                    start: this.start,
+                  });
+                } else {
+                  this.telemedicine
+                    ? this.choosenMode()
+                    : startRecording({
+                        isRemote: false,
+                        mode: this.mode,
+                        apikey: this.apikey,
+                        professional: this.professional,
+                        metadata: this.metadata,
+                        start: this.start,
+                      });
+                }
+              }}
+            >
+              <div class="flex items-center justify-start gap-2">
+                <daai-mic-icon></daai-mic-icon>
+                <daai-text text="Iniciar Registro"></daai-text>
+              </div>
+            </daai-button-with-icon>
+
+            <daai-button-with-icon id="button-menu" onClick={this.openConfigModal}>
+              <daai-menu-icon />
+            </daai-button-with-icon>
+          </div>
+          {state.openMenu && <daai-config />}
+        </div>
+      );
+    }
+    // Caso contrário, segue para o switch normalmente
+
+    // Fluxo tradicional
     switch (state.status) {
       case "initial":
         return (
@@ -132,50 +205,37 @@ export class DaaiConsultationActions {
                 </daai-button-with-icon>
               )}
               <daai-button-with-icon
-                id={
-                  this.professional && this.apikey && state.microphonePermission
-                    ? "start-recording"
-                    : "start-recording-disabled"
-                }
+                id={this.canStart() ? "start-recording" : "start-recording-disabled"}
                 onClick={() => {
-                  if (
-                    this.professional &&
-                    this.apikey &&
-                    state.microphonePermission
-                  ) {
-                    this.telemedicine
-                      ? this.choosenMode()
-                      : startRecording({
-                          isRemote: false,
-                          mode: this.mode,
-                          apikey: this.apikey,
-                          professional: this.professional,
-                          metadata: this.metadata,
-                          start: this.start,
-                        });
-                  }
+                  if (!this.canStart()) return;
+                  this.telemedicine
+                    ? this.choosenMode()
+                    : startRecording({
+                        isRemote: false,
+                        mode: this.mode,
+                        apikey: this.apikey,
+                        professional: this.professional,
+                        metadata: this.metadata,
+                        start: this.start,
+                      });
                 }}
-                disabled={
-                  !state.microphonePermission ||
-                  !this.apikey ||
-                  !this.professional
-                }
+                disabled={!this.canStart()}
               >
                 <div class="flex items-center justify-start gap-2">
                   <daai-mic-icon></daai-mic-icon>
                   <daai-text text="Iniciar Registro"></daai-text>
                 </div>
               </daai-button-with-icon>
-              <daai-button-with-icon
-                id="button-menu"
-                onClick={this.openConfigModal}
-              >
+
+              <daai-button-with-icon id="button-menu" onClick={this.openConfigModal}>
                 <daai-menu-icon />
               </daai-button-with-icon>
             </div>
             {state.openMenu && <daai-config />}
           </div>
         );
+
+
       case "choosen":
         return (
           <div class="flex items-center justify-center gap-2">
@@ -194,6 +254,7 @@ export class DaaiConsultationActions {
             >
               <div class="flex items-center justify-center p-2">Presencial</div>
             </daai-button-with-icon>
+
             <daai-button-with-icon
               id="choose-telemedicine-consultation"
               onClick={() =>
@@ -212,24 +273,21 @@ export class DaaiConsultationActions {
             >
               Telemedicina
             </daai-button-with-icon>
-            <daai-button-with-icon
-              id="button-resume"
-              onClick={() => this.newRecording()}
-            >
+
+            <daai-button-with-icon id="button-resume" onClick={() => this.newRecording()}>
               <daai-resume-recording-icon />
             </daai-button-with-icon>
           </div>
         );
+
       case "recording":
       case "resume":
         return (
           <div class="flex items-center justify-center gap-2">
-            <daai-button-with-icon
-              id="pause-recording"
-              onClick={() => pauseRecording()}
-            >
+            <daai-button-with-icon id="pause-recording" onClick={() => pauseRecording()}>
               <daai-pause-icon />
             </daai-button-with-icon>
+
             <daai-button-with-icon
               id="button-finish"
               onClick={() =>
@@ -248,24 +306,21 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
+
       case "paused":
         return (
-          <div
-            class="flex items-center justify-center gap-2
-          "
-          >
+          <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon id="pause-recording-disabled" disabled>
               <daai-pause-icon />
             </daai-button-with-icon>
-            <daai-button-with-icon
-              id="start-recording"
-              onClick={() => resumeRecording()}
-            >
+
+            <daai-button-with-icon id="start-recording" onClick={() => resumeRecording()}>
               <div class="flex items-start justify-start gap-2">
                 <daai-mic-icon></daai-mic-icon>
                 <daai-text text="Retomar"></daai-text>
               </div>
             </daai-button-with-icon>
+
             <daai-button-with-icon
               id="button-finish"
               onClick={() =>
@@ -283,17 +338,16 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
+
       case "upload":
         return (
           <div class="flex items-center justify-center gap-2">
-            <daai-button-with-icon
-              id="new-recording"
-              onClick={() => this.newRecording()}
-            >
+            <daai-button-with-icon id="new-recording" onClick={() => this.newRecording()}>
               Novo Registro
             </daai-button-with-icon>
           </div>
         );
+
       case "error":
         return (
           <div class="flex items-center justify-center gap-2">
@@ -315,6 +369,7 @@ export class DaaiConsultationActions {
             </daai-button-with-icon>
           </div>
         );
+
       default:
         return null;
     }
