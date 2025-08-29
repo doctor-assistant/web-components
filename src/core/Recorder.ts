@@ -435,10 +435,17 @@ export const finishRecording = async ({
 
   // Wait for all chunks to upload
   const waitForChunks = async () => {
-    await new Promise(resolve => setTimeout(resolve, 300));
+    // Wait for 300ms to avoid race conditions
+    const browser = getBrowserInfo();
+    const os = getOSInfo();
+    const isApple = os === "iOS" || os === "MacOS";
+    const isSafari = browser === "Safari";
+    const shouldWait = isApple || isSafari;
+
+    await new Promise(resolve => setTimeout(resolve, shouldWait ? 600 : 300));
     let failedChunks = await getFailedChunksBydId(currentConsultation?.id);
     while (failedChunks.length !== 0 || pendingFirstUploads.size !== 0) {
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, shouldWait ? 600 : 300));
       failedChunks = await getFailedChunksBydId(currentConsultation?.id);
     }
   };
