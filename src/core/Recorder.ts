@@ -777,6 +777,25 @@ export const retryOldConsultations = async (mode: string, apiKey: string) => {
   }
 };
 
+export const getConsultationById = async (consultationId: string, mode: string, apiKey: string) => {
+  const url =
+    mode === "dev"
+      ? "https://apim.doctorassistant.ai/api/sandbox/consultations"
+      : "https://apim.doctorassistant.ai/api/production/consultations";
+
+  const response = await fetch(`${url}/${consultationId}`, {
+    method: 'GET',
+    headers: {
+      'x-daai-api-key': apiKey,
+    },
+  });
+
+  if (response.ok) {
+    return await response.json();
+  }
+  return null;
+}
+
 export const retryChunkedConsultations = async (mode: string, apiKey: string) => {
   const allFailedChunks = await getFailedChunks();
   const chunksByConsultation = allFailedChunks.reduce((acc, chunk) => {
@@ -787,6 +806,13 @@ export const retryChunkedConsultations = async (mode: string, apiKey: string) =>
 
   for (const consultationId in chunksByConsultation) {
     try {
+      // check if consultation is already processed
+      const consultation = await getConsultationById(consultationId, mode, apiKey);
+      if (!consultation || consultation?.recording?.duration !== undefined) {
+        console.log(`Consulta ${consultationId} já foi processada`);
+        continue;
+      }
+      // upload chunks
       const chunks = chunksByConsultation[consultationId];
       for (const chunk of chunks) {
         await uploadChunk(chunk, mode, apiKey);
