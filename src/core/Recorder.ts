@@ -177,7 +177,6 @@ export const startRecording = async (
       state.status = "initial";
       return;
     }
-    state.status = "recording";
     const consultation: ConsultationResponse = await response.json();
 
     if (typeof start === "function") {
@@ -328,6 +327,7 @@ export const startRecording = async (
     mediaRecorder = new MediaRecorder(composedStream);
     setupMediaRecorder(mode, apikey);
     mediaRecorder.start();
+  state.status = "recording";
   } catch (error) {
     console.error('Error starting recording:', error);
     state.status = "initial";
