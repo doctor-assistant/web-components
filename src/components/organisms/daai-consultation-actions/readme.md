@@ -7,23 +7,24 @@
 
 ## Properties
 
-| Property          | Attribute        | Description | Type                                                                                              | Default     |
-| ----------------- | ---------------- | ----------- | ------------------------------------------------------------------------------------------------- | ----------- |
-| `apikey`          | `apikey`         |             | `any`                                                                                             | `""`        |
-| `error`           | `error`          |             | `any`                                                                                             | `undefined` |
-| `event`           | `event`          |             | `any`                                                                                             | `undefined` |
-| `hideTutorial`    | `hide-tutorial`  |             | `boolean`                                                                                         | `false`     |
-| `metadata`        | --               |             | `{ [x: string]: any; }`                                                                           | `undefined` |
-| `mode`            | `mode`           |             | `string`                                                                                          | `undefined` |
-| `professional`    | `professional`   |             | `string`                                                                                          | `""`        |
-| `recordingConfig` | --               |             | `{ onWarningRecordingTime: () => void; maxRecordingTime: number; warningRecordingTime: number; }` | `undefined` |
-| `recordingTime`   | `recording-time` |             | `number`                                                                                          | `0`         |
-| `reportSchema`    | --               |             | `{ instructions: string; fewShots: string; schema: Record<string, unknown>; }`                    | `undefined` |
-| `specialty`       | `specialty`      |             | `any`                                                                                             | `undefined` |
-| `start`           | --               |             | `(consultation: ConsultationResponse) => void`                                                    | `undefined` |
-| `success`         | --               |             | `(consultation: ConsultationResponse) => void`                                                    | `undefined` |
-| `telemedicine`    | `telemedicine`   |             | `boolean`                                                                                         | `undefined` |
-| `videoElement`    | --               |             | `HTMLVideoElement`                                                                                | `undefined` |
+| Property               | Attribute                | Description | Type                                                                                               | Default     |
+| ---------------------- | ------------------------ | ----------- | -------------------------------------------------------------------------------------------------- | ----------- |
+| `apikey`               | `apikey`                 |             | `any`                                                                                              | `""`        |
+| `error`                | `error`                  |             | `any`                                                                                              | `undefined` |
+| `event`                | `event`                  |             | `any`                                                                                              | `undefined` |
+| `hideTutorial`         | `hide-tutorial`          |             | `boolean`                                                                                          | `false`     |
+| `metadata`             | --                       |             | `{ [x: string]: any; }`                                                                            | `undefined` |
+| `mode`                 | `mode`                   |             | `string`                                                                                           | `undefined` |
+| `professional`         | `professional`           |             | `string`                                                                                           | `""`        |
+| `recordingConfig`      | --                       |             | `{ onWarningRecordingTime?: () => void; maxRecordingTime: number; warningRecordingTime: number; }` | `undefined` |
+| `recordingTime`        | `recording-time`         |             | `number`                                                                                           | `0`         |
+| `reportSchema`         | --                       |             | `{ instructions: string; fewShots: string; schema: Record<string, unknown>; }`                     | `undefined` |
+| `skipConsultationType` | `skip-consultation-type` |             | `boolean`                                                                                          | `false`     |
+| `specialty`            | `specialty`              |             | `any`                                                                                              | `undefined` |
+| `start`                | --                       |             | `(consultation: ConsultationResponse) => void`                                                     | `undefined` |
+| `success`              | --                       |             | `(consultation: ConsultationResponse) => void`                                                     | `undefined` |
+| `telemedicine`         | `telemedicine`           |             | `boolean`                                                                                          | `undefined` |
+| `videoElement`         | --                       |             | `HTMLVideoElement`                                                                                 | `undefined` |
 
 
 ## Dependencies

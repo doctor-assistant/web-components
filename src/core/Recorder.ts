@@ -397,6 +397,7 @@ type FinishRecordingProps = {
   specialty: string,
   onEvent: (event: any) => void,
   reportSchema?: ConsultationReportSchema,
+  metadata?: any,
 }
 
 export const finishRecording = async ({
@@ -407,6 +408,7 @@ export const finishRecording = async ({
   onEvent: event,
   specialty,
   reportSchema: rawReportSchema,
+  metadata: _metadata,
 }: FinishRecordingProps) => {
   state.status = "finished";
 

@@ -13,3 +13,29 @@ export type ConsultationReportSchema = {
   fewShots: string;
   schema: Record<string, unknown>;
 };
+
+export interface PatientData {
+  externalId: string;
+  name: string;
+  document?: string;
+  email: string;
+}
+
+export interface MemedPaciente {
+  idExterno: string;
+  nome: string;
+  telefone: string;
+  email?: string;
+  documento?: string;
+  dataNascimento?: string;
+  sexo?: string;
+  endereco?: {
+    logradouro?: string;
+    numero?: string;
+    complemento?: string;
+    bairro?: string;
+    cidade?: string;
+    estado?: string;
+    cep?: string;
+  };
+}

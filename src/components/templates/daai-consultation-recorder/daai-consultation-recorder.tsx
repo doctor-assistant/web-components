@@ -8,10 +8,12 @@ import {
 import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
-import { getReportSchema } from "../../../utils/json-schema";
+import { getReportSchema, getPatientData, validateMemedPaciente } from "../../../utils/json-schema";
 import {
   ConsultationReportSchema,
   ConsultationResponse,
+  PatientData,
+  MemedPaciente,
 } from "../../entities/consultation.entity";
 
 @Component({
@@ -29,6 +31,10 @@ export class DaaiConsultationRecorder {
   @Prop() apikey: string;
   @Prop() specialty: string = state.chooseSpecialty;
   @Prop() metadata: string;
+  @Prop() patient?: string;
+  @Prop() memedPatient?: MemedPaciente;
+  @Prop() memedToken?: string;
+  @Prop() enableMemed?: boolean;
   @Prop() reportSchema?: string;
   @Prop() telemedicine: boolean;
   @Prop() videoElement?: HTMLVideoElement;
@@ -60,10 +66,53 @@ export class DaaiConsultationRecorder {
 
   get metadataObject() {
     try {
-      return JSON.parse(this.metadata);
-    } catch {
+      const metadata = this.metadata ? JSON.parse(this.metadata) : {};
+      const patientData = this.patientObject;
+
+      // Inclui dados do paciente no metadata se disponível
+      if (patientData) {
+        return {
+          ...metadata,
+          daai: {
+            ...metadata.daai,
+            patient: patientData
+          }
+        };
+      }
+
+      return metadata;
+    } catch (error) {
+      console.error("Error in metadataObject:", error);
       return {};
     }
+  }
+
+  get patientObject(): PatientData | undefined {
+    if (!this.patient) {
+      return undefined;
+    }
+
+    const result = getPatientData(this.patient);
+    if (result.error) {
+      console.error("Invalid patient data", result.error);
+      state.status = "patient-data-error";
+      return undefined;
+    }
+    return result.success;
+  }
+
+  get memedPatientObject(): MemedPaciente | undefined {
+    if (!this.memedPatient) {
+      return undefined;
+    }
+
+    const result = validateMemedPaciente(this.memedPatient);
+    if (result.error) {
+      console.error("Invalid Memed patient data", result.error);
+      state.status = "patient-data-error";
+      return undefined;
+    }
+    return result.success;
   }
 
   get reportSchemaObject(): ConsultationReportSchema | undefined {
@@ -82,6 +131,11 @@ export class DaaiConsultationRecorder {
     const specialty =
       this.specialty || state.defaultSpecialty || state.chooseSpecialty || "generic";
 
+    // Integração com SDK da Memed
+    if (this.enableMemed && this.memedPatientObject && this.memedToken) {
+      this.setMemedPaciente();
+    }
+
     finishRecording({
       mode: this.mode,
       apikey: this.apikey,
@@ -90,7 +144,35 @@ export class DaaiConsultationRecorder {
       onEvent: this.onEvent,
       specialty,
       reportSchema: this.reportSchemaObject,
+      metadata: this.metadataObject,
     });
+  };
+
+  private setMemedPaciente = () => {
+    if (!this.memedPatientObject || !this.memedToken) {
+      return;
+    }
+
+    try {
+      // Verifica se o SDK da Memed está disponível
+      if (typeof window !== 'undefined' && (window as any).Memed) {
+        const memed = (window as any).Memed;
+
+        // Configura o token se necessário
+        if (memed.setToken) {
+          memed.setToken(this.memedToken);
+        }
+
+        // Define os dados do paciente
+        if (memed.setPaciente) {
+          memed.setPaciente(this.memedPatientObject);
+        }
+      } else {
+        console.warn('SDK da Memed não encontrado. Certifique-se de que o script foi carregado.');
+      }
+    } catch (error) {
+      console.error('Erro ao configurar paciente no SDK da Memed:', error);
+    }
   };
 
   async componentWillLoad() {

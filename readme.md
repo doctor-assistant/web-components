@@ -86,6 +86,9 @@ warningRecordingTime = 30; // Exemplo: Aviso 30 segundos antes do fim da gravaç
 
 // A propriedade "reportSchema" não é obrigatória. Define a estrtura de retorno do relatório da consulta.
 reportSchema = "Estrutura do relatório customizado"
+
+// A propriedade "patient" não é obrigatória. Serve para capturar dados do paciente que serão utilizados na geração da receita.
+patient = "Dados do paciente em formato JSON";
 ```
 
 ### Formato metadata
@@ -123,6 +126,102 @@ reportSchema = "Estrutura do relatório customizado"
   </daai-consultation-recorder>
 </body>
 ```
+
+### Formato do patient
+```html
+// ⚠️ Esse deve ser o formato do patient
+<body>
+  <daai-consultation-recorder
+    apiKey="YOUR_API_KEY"
+    professional="YOUR_PROFESSIONAL_ID"
+    patient='{"externalId": "12345", "name": "João Silva", "email": "joao@example.com", "document": "12345678901"}'
+  >
+  </daai-consultation-recorder>
+</body>
+```
+
+### Integração com SDK da Memed
+```html
+// Integração com Memed para prescrição digital
+<body>
+  <daai-consultation-recorder
+    apiKey="YOUR_API_KEY"
+    professional="YOUR_PROFESSIONAL_ID"
+    enableMemed="true"
+    memedToken="YOUR_MEMED_TOKEN"
+    memedPatient='{"idExterno": "12345", "nome": "João Silva", "telefone": "11999999999", "email": "joao@example.com"}'
+  >
+  </daai-consultation-recorder>
+</body>
+```
+
+### Uso em Vue.js
+```vue
+<template>
+  <daai-consultation-recorder
+    :apikey="apiKey"
+    :professional="professionalId"
+    :enableMemed="true"
+    :memedToken="memedToken"
+    :memedPatient="patientData"
+    @onSuccess="handleSuccess"
+    @onError="handleError"
+  />
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      apiKey: 'YOUR_API_KEY',
+      professionalId: 'YOUR_PROFESSIONAL_ID',
+      memedToken: 'YOUR_MEMED_TOKEN',
+      patientData: {
+        idExterno: '12345',
+        nome: 'João Silva',
+        telefone: '11999999999',
+        email: 'joao@example.com'
+      }
+    }
+  },
+  methods: {
+    handleSuccess(consultation) {
+      console.log('Consulta finalizada:', consultation);
+    },
+    handleError(error) {
+      console.error('Erro na consulta:', error);
+    }
+  }
+}
+</script>
+```
+
+**Campos obrigatórios do patient:**
+- `externalId`: Identificador único do paciente (string)
+- `name`: Nome completo do paciente (string)
+- `email`: Email do paciente (string, formato válido)
+
+**Campos opcionais do patient:**
+- `document`: Documento do paciente (string, opcional)
+
+**Campos obrigatórios do memedPatient:**
+- `idExterno`: Identificador único do paciente (string)
+- `nome`: Nome completo do paciente (string)
+- `telefone`: Telefone do paciente (string)
+
+**Campos opcionais do memedPatient:**
+- `email`: Email do paciente (string, formato válido)
+- `documento`: Documento do paciente (string)
+- `dataNascimento`: Data de nascimento (string)
+- `sexo`: Sexo do paciente (string)
+- `endereco`: Objeto com dados de endereço
+  - `logradouro`: Nome da rua/avenida (string)
+  - `numero`: Número do endereço (string)
+  - `complemento`: Complemento do endereço (string)
+  - `bairro`: Bairro (string)
+  - `cidade`: Cidade (string)
+  - `estado`: Estado (string)
+  - `cep`: CEP (string)
 
 ## Customização
 

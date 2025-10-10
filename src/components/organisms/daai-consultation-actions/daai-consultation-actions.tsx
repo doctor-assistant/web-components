@@ -114,6 +114,7 @@ toBool(val: any): boolean {
         error: this.error,
         specialty: this.specialty,
         onEvent: this.event,
+        metadata: this.metadata,
       });
     }
   }
@@ -299,6 +300,7 @@ toBool(val: any): boolean {
                   specialty: this.specialty,
                   onEvent: this.event,
                   reportSchema: this.reportSchema,
+                  metadata: this.metadata,
                 })
               }
             >
@@ -331,6 +333,7 @@ toBool(val: any): boolean {
                   error: this.error,
                   specialty: this.specialty,
                   onEvent: this.event,
+                  metadata: this.metadata,
                 })
               }
             >

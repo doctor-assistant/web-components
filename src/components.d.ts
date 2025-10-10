@@ -5,8 +5,8 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ConsultationReportSchema, ConsultationResponse } from "./components/entities/consultation.entity";
-export { ConsultationReportSchema, ConsultationResponse } from "./components/entities/consultation.entity";
+import { ConsultationReportSchema, ConsultationResponse, MemedPaciente } from "./components/entities/consultation.entity";
+export { ConsultationReportSchema, ConsultationResponse, MemedPaciente } from "./components/entities/consultation.entity";
 export namespace Components {
     interface DaaiButton {
         "disabled": boolean;
@@ -61,18 +61,22 @@ export namespace Components {
           * Iniciar automaticamente ao montar
          */
         "autoStart": boolean;
+        "enableMemed"?: boolean;
         /**
           * Nome do evento do prontuário para auto-finalizar
          */
         "finishEventName"?: string;
         "hideTutorial": boolean;
         "maxRecordingTime": number;
+        "memedPatient"?: MemedPaciente;
+        "memedToken"?: string;
         "metadata": string;
         "onError": (err: Error) => void;
         "onEvent": (response: Response) => void;
         "onStart": (consultation: ConsultationResponse) => void;
         "onSuccess": (consultation: ConsultationResponse) => void;
         "onWarningRecordingTime": () => void;
+        "patient"?: string;
         "professional": string;
         "reportSchema"?: string;
         "skipConsultationType": boolean;
@@ -495,18 +499,22 @@ declare namespace LocalJSX {
           * Iniciar automaticamente ao montar
          */
         "autoStart"?: boolean;
+        "enableMemed"?: boolean;
         /**
           * Nome do evento do prontuário para auto-finalizar
          */
         "finishEventName"?: string;
         "hideTutorial"?: boolean;
         "maxRecordingTime"?: number;
+        "memedPatient"?: MemedPaciente;
+        "memedToken"?: string;
         "metadata"?: string;
         "onError"?: (err: Error) => void;
         "onEvent"?: (response: Response) => void;
         "onStart"?: (consultation: ConsultationResponse) => void;
         "onSuccess"?: (consultation: ConsultationResponse) => void;
         "onWarningRecordingTime"?: () => void;
+        "patient"?: string;
         "professional"?: string;
         "reportSchema"?: string;
         "skipConsultationType"?: boolean;
