@@ -9,10 +9,37 @@
 7. [Eventos](#eventos)
 8. [Limite de tempo de registro](#limite-de-tempo-de-registro)
 9. [Exemplos de integração em diferentes stacks](#exemplos-de-integração-em-diferentes-stacks)
+10. [📘 Integração com Prescrição Digital Memed](#integração-com-prescrição-digital-memed)
 
 ## Introdução
 
 O Daai Components é uma biblioteca de componentes web especializados para sistemas de saúde, incluindo o Consultation Recorder para gravação de consultas médicas. Desenvolvido para facilitar a integração em sistemas de saúde, clínicas e plataformas médicas, oferecendo componentes reutilizáveis e personalizáveis.
+
+### 🧪 Testar Localmente
+
+Para testar o componente e a integração com Memed localmente:
+
+```bash
+# Clone o repositório
+git clone https://github.com/doctor-assistant/web-components.git
+cd web-components
+
+# Instale as dependências
+npm install
+
+# Inicie o servidor de desenvolvimento
+npm start
+```
+
+Acesse **http://localhost:3333** para ver:
+- ✅ Componente em funcionamento
+- ✅ Testes interativos da integração Memed
+- ✅ Console de logs em tempo real
+- ✅ Validação de dados
+
+📖 **[Guia de Testes Completo](./docs/QUICK-START.md)**
+
+---
 
 ### daai-consultation-recorder
 
@@ -195,6 +222,102 @@ export default {
 }
 </script>
 ```
+
+## 📘 Integração com Prescrição Digital Memed
+
+O componente inclui integração completa com o SDK da Memed para prescrição digital. Oferecemos suporte para **dois tipos de integração**:
+
+### 1. **Prescrição Tradicional** (`plataforma.prescricao`)
+Interface completa onde o médico seleciona medicamentos manualmente.
+
+### 2. **Voice Prescription** (`platform.voice-prescription`)
+Prescrição baseada em voz/IA com medicamentos pré-definidos.
+
+---
+
+### 🚀 Quick Start - Prescrição Tradicional
+
+```typescript
+import { bootstrapPrescription } from '@doctorassistant/daai-component';
+
+const paciente = {
+  idExterno: '12345',
+  nome: 'José da Silva',
+  cpf: '99999999999',
+  telefone: '11999999999'
+};
+
+// Executa todo o fluxo automaticamente
+await bootstrapPrescription(token, paciente);
+```
+
+---
+
+### 🎤 Quick Start - Voice Prescription
+
+```typescript
+import { bootstrapMemed } from '@doctorassistant/daai-component';
+
+const paciente = {
+  idExterno: '12345',
+  nome: 'João Silva',
+  telefone: '11999999999'
+};
+
+const medicamentos = [
+  {
+    medication: 'Dipirona 500mg',
+    dosageInstruction: 'Tomar 1 comprimido a cada 6 horas por 3 dias'
+  }
+];
+
+// Executa todo o fluxo automaticamente
+await bootstrapMemed(token, paciente, medicamentos);
+```
+
+---
+
+### 📚 Métodos Disponíveis
+
+```typescript
+import { 
+  // Prescrição Tradicional
+  bootstrapPrescription,
+  showPrescription,
+  hidePrescription,
+  
+  // Voice Prescription
+  bootstrapMemed,
+  viewVoicePrescription,
+  
+  // Métodos Comuns
+  initializeMemed,
+  setPaciente,
+  setMedications,
+  isMemedAvailable,
+  
+  // Tipos
+  type MemedPaciente,
+  type MemedMedicationItem,
+  type MemedModuleType
+} from '@doctorassistant/daai-component';
+```
+
+---
+
+### 📖 Documentação Completa
+
+Para guia completo de integração, exemplos detalhados, troubleshooting e referências da API, consulte:
+
+**[📘 Documentação Completa da Integração Memed](./docs/MEMED-INTEGRATION.md)**
+
+Inclui:
+- ✅ Configurações de ambiente (homologação e produção)
+- ✅ Guia passo a passo de implementação
+- ✅ Exemplos para React, Vue, Angular
+- ✅ Referência completa de campos
+- ✅ Troubleshooting e solução de problemas comuns
+- ✅ Integração com backend (obtenção de tokens)
 
 **Campos obrigatórios do patient:**
 - `externalId`: Identificador único do paciente (string)

@@ -9,4 +9,22 @@
  */
 
 export { format } from './utils/utils';
+export {
+  loadMemedScript,
+  waitForModuleInitialization,
+  initializeMemed,
+  setPaciente,
+  setMedications,
+  showPrescription,
+  hidePrescription,
+  viewVoicePrescription,
+  bootstrapPrescription,
+  bootstrapMemed,
+  isMemedAvailable,
+  resetMemedState,
+  type MemedPaciente,
+  type MemedMedicationItem,
+  type MemedCommandResponse,
+  type MemedModuleType
+} from './utils/memed';
 export type * from './components.d.ts';

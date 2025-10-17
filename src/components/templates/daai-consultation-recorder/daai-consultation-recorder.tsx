@@ -9,6 +9,7 @@ import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
 import { getReportSchema, getPatientData, validateMemedPaciente } from "../../../utils/json-schema";
+import { bootstrapMemed, MemedPaciente as MemedPacienteUtil, MemedMedicationItem } from "../../../utils/memed";
 import {
   ConsultationReportSchema,
   ConsultationResponse,
@@ -127,13 +128,13 @@ export class DaaiConsultationRecorder {
     return result.success;
   }
 
-  private onExternalFinish = () => {
+  private onExternalFinish = async () => {
     const specialty =
       this.specialty || state.defaultSpecialty || state.chooseSpecialty || "generic";
 
     // Integração com SDK da Memed
     if (this.enableMemed && this.memedPatientObject && this.memedToken) {
-      this.setMemedPaciente();
+      await this.setMemedPaciente();
     }
 
     finishRecording({
@@ -148,30 +149,36 @@ export class DaaiConsultationRecorder {
     });
   };
 
-  private setMemedPaciente = () => {
+  private setMemedPaciente = async () => {
     if (!this.memedPatientObject || !this.memedToken) {
       return;
     }
 
     try {
-      // Verifica se o SDK da Memed está disponível
-      if (typeof window !== 'undefined' && (window as any).Memed) {
-        const memed = (window as any).Memed;
+      // Converte o paciente para o formato do utilitário Memed
+      const memedPaciente: MemedPacienteUtil = {
+        idExterno: this.memedPatientObject.idExterno,
+        nome: this.memedPatientObject.nome,
+        telefone: this.memedPatientObject.telefone,
+        email: this.memedPatientObject.email,
+        cpf: this.memedPatientObject.documento,
+        data_nascimento: this.memedPatientObject.dataNascimento,
+        endereco: this.memedPatientObject.endereco?.logradouro,
+        cidade: this.memedPatientObject.endereco?.cidade,
+        peso: undefined, // Pode ser adicionado se necessário
+        altura: undefined, // Pode ser adicionado se necessário
+        withoutCpf: !this.memedPatientObject.documento
+      };
 
-        // Configura o token se necessário
-        if (memed.setToken) {
-          memed.setToken(this.memedToken);
-        }
+      // Array vazio de medicamentos - pode ser expandido no futuro
+      const medicamentos: MemedMedicationItem[] = [];
 
-        // Define os dados do paciente
-        if (memed.setPaciente) {
-          memed.setPaciente(this.memedPatientObject);
-        }
-      } else {
-        console.warn('SDK da Memed não encontrado. Certifique-se de que o script foi carregado.');
-      }
+      // Executa o bootstrap completo da Memed
+      await bootstrapMemed(this.memedToken, memedPaciente, medicamentos);
+
+      console.log('SDK da Memed configurado com sucesso');
     } catch (error) {
-      console.error('Erro ao configurar paciente no SDK da Memed:', error);
+      console.error('Erro ao configurar SDK da Memed:', error);
     }
   };
 
