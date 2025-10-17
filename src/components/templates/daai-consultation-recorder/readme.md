@@ -19,6 +19,7 @@
 | `memedPatient`           | --                       |                                                    | `MemedPaciente`                                | `undefined`             |
 | `memedToken`             | `memed-token`            |                                                    | `string`                                       | `undefined`             |
 | `metadata`               | `metadata`               |                                                    | `string`                                       | `undefined`             |
+| `onCompleted`            | --                       |                                                    | `(consultation: ConsultationResponse) => void` | `undefined`             |
 | `onError`                | --                       |                                                    | `(err: Error) => void`                         | `undefined`             |
 | `onEvent`                | --                       |                                                    | `(response: Response) => void`                 | `undefined`             |
 | `onStart`                | --                       |                                                    | `(consultation: ConsultationResponse) => void` | `undefined`             |

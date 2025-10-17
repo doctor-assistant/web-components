@@ -194,6 +194,66 @@ export const setPaciente = async (paciente: MemedPaciente): Promise<MemedCommand
 };
 
 /**
+ * Extrai medicamentos do objeto de report da consulta
+ * Parse seguro com tratamento de erros e fallback
+ *
+ * Estrutura esperada: report.consultation.prescription.medications[]
+ * ou report.prescription.medications[]
+ *
+ * @param report Objeto do report da consulta
+ * @returns Array de medicamentos parseados ou array vazio em caso de erro
+ */
+export const parseMedicationsFromReport = (report?: Record<string, any>): MemedMedicationItem[] => {
+  try {
+    if (!report || typeof report !== 'object') {
+      return [];
+    }
+
+    // Tenta diferentes caminhos possíveis para medicamentos
+    let medications: any[] = [];
+
+    // Caminho 1: report.consultation.prescription.medications
+    if (report.consultation?.prescription?.medications) {
+      medications = report.consultation.prescription.medications;
+    }
+    // Caminho 2: report.prescription.medications
+    else if (report.prescription?.medications) {
+      medications = report.prescription.medications;
+    }
+    // Caminho 3: report.medications
+    else if (report.medications) {
+      medications = report.medications;
+    }
+
+    if (!Array.isArray(medications)) {
+      return [];
+    }
+
+    // Converte cada medicamento para o formato esperado
+    return medications
+      .filter(med => med && typeof med === 'object')
+      .map(med => ({
+        medication: String(med.medication || med.name || med.medicacao || '').trim(),
+        dosageInstruction: med.dosageInstruction
+          ? String(med.dosageInstruction).trim()
+          : (med.dosage
+              ? String(med.dosage).trim()
+              : (med.posologia
+                  ? String(med.posologia).trim()
+                  : (med.dosagem
+                      ? String(med.dosagem).trim()
+                      : undefined))),
+      }))
+      .filter(med => med.medication.length > 0); // Remove medicamentos sem nome
+
+  } catch (error) {
+    // Log sem dados sensíveis
+    console.warn('Erro ao extrair medicamentos do report (parsing sem PHI)');
+    return [];
+  }
+};
+
+/**
  * Define os medicamentos no SDK da Memed
  * @param items Array de medicamentos
  * @returns Promise com resposta do comando

@@ -71,6 +71,7 @@ export namespace Components {
         "memedPatient"?: MemedPaciente;
         "memedToken"?: string;
         "metadata": string;
+        "onCompleted"?: (consultation: ConsultationResponse) => void;
         "onError": (err: Error) => void;
         "onEvent": (response: Response) => void;
         "onStart": (consultation: ConsultationResponse) => void;
@@ -509,6 +510,7 @@ declare namespace LocalJSX {
         "memedPatient"?: MemedPaciente;
         "memedToken"?: string;
         "metadata"?: string;
+        "onCompleted"?: (consultation: ConsultationResponse) => void;
         "onError"?: (err: Error) => void;
         "onEvent"?: (response: Response) => void;
         "onStart"?: (consultation: ConsultationResponse) => void;

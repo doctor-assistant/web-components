@@ -7,6 +7,7 @@ import {
   bootstrapMemed,
   isMemedAvailable,
   resetMemedState,
+  parseMedicationsFromReport,
   MemedPaciente,
   MemedMedicationItem
 } from './memed';
@@ -256,5 +257,218 @@ describe('Memed Utils', () => {
       resetMemedState();
       expect(isMemedAvailable()).toBe(false);
     });
+  });
+
+  describe('parseMedicationsFromReport', () => {
+
+    it('deve retornar array vazio quando report é undefined', () => {
+      const result = parseMedicationsFromReport(undefined);
+      expect(result).toEqual([]);
+    });
+
+    it('deve retornar array vazio quando report é null', () => {
+      const result = parseMedicationsFromReport(null);
+      expect(result).toEqual([]);
+    });
+
+    it('deve retornar array vazio quando report não é um objeto', () => {
+      const result = parseMedicationsFromReport('invalid' as any);
+      expect(result).toEqual([]);
+    });
+
+    it('deve extrair medicamentos de report.consultation.prescription.medications', () => {
+      const report = {
+        consultation: {
+          prescription: {
+            medications: [
+              { medication: 'Dipirona', dosageInstruction: '500mg a cada 8 horas' },
+              { medication: 'Paracetamol', dosage: '1000mg' }
+            ]
+          }
+        }
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result.length).toBe(2);
+      expect(result[0]).toEqual({
+        medication: 'Dipirona',
+        dosageInstruction: '500mg a cada 8 horas'
+      });
+      expect(result[1]).toEqual({
+        medication: 'Paracetamol',
+        dosageInstruction: '1000mg'
+      });
+    });
+
+    it('deve extrair medicamentos de report.prescription.medications', () => {
+      const report = {
+        prescription: {
+          medications: [
+            { medication: 'Ibuprofeno', dosageInstruction: '200mg' }
+          ]
+        }
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result.length).toBe(1);
+      expect(result[0].medication).toBe('Ibuprofeno');
+    });
+
+    it('deve extrair medicamentos de report.medications', () => {
+      const report = {
+        medications: [
+          { medication: 'Amoxicilina', dosageInstruction: '500mg' }
+        ]
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result.length).toBe(1);
+      expect(result[0].medication).toBe('Amoxicilina');
+    });
+
+    it('deve usar campo "name" como fallback para "medication"', () => {
+      const report = {
+        medications: [
+          { name: 'Aspirina', dosageInstruction: '100mg' }
+        ]
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result[0].medication).toBe('Aspirina');
+    });
+
+    it('deve usar campo "medicacao" como fallback para "medication"', () => {
+      const report = {
+        medications: [
+          { medicacao: 'Omeprazol', posologia: '20mg' }
+        ]
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result[0].medication).toBe('Omeprazol');
+    });
+
+    it('deve usar campos de dosagem alternativos', () => {
+      const report = {
+        medications: [
+          {
+            medication: 'Med1',
+            dosagem: 'dose1'
+          },
+          {
+            medication: 'Med2',
+            posologia: 'dose2'
+          },
+          {
+            medication: 'Med3',
+            dosage: 'dose3'
+          }
+        ]
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result[0].dosageInstruction).toBe('dose1');
+      expect(result[1].dosageInstruction).toBe('dose2');
+      expect(result[2].dosageInstruction).toBe('dose3');
+    });
+
+    it('deve filtrar medicamentos sem nome', () => {
+      const report = {
+        medications: [
+          { medication: 'Válido' },
+          { medication: '' },
+          { dosageInstruction: '500mg' }, // sem medication
+          { medication: '   ' } // whitespace apenas
+        ]
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result.length).toBe(1);
+      expect(result[0].medication).toBe('Válido');
+    });
+
+    it('deve remover whitespace do nome do medicamento', () => {
+      const report = {
+        medications: [
+          { medication: '  Dipirona  ' }
+        ]
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result[0].medication).toBe('Dipirona');
+    });
+
+    it('deve filtrar elementos não-objeto no array', () => {
+      const report = {
+        medications: [
+          { medication: 'Válido' },
+          null,
+          undefined,
+          'string'
+        ]
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result.length).toBe(1);
+      expect(result[0].medication).toBe('Válido');
+    });
+
+    it('deve retornar array vazio se medications não é array', () => {
+      const report = {
+        medications: 'not-an-array'
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result).toEqual([]);
+    });
+
+    it('deve retornar array vazio em caso de erro não esperado', () => {
+      // Cria um objeto com getter que lança erro
+      const report = {};
+      Object.defineProperty(report, 'consultation', {
+        get() {
+          throw new Error('Erro intencional');
+        }
+      });
+
+      const result = parseMedicationsFromReport(report);
+      expect(result).toEqual([]);
+    });
+
+    it('deve priorizar report.consultation.prescription.medications', () => {
+      const report = {
+        consultation: {
+          prescription: {
+            medications: [
+              { medication: 'De consultation' }
+            ]
+          }
+        },
+        prescription: {
+          medications: [
+            { medication: 'De prescription' }
+          ]
+        },
+        medications: [
+          { medication: 'De root' }
+        ]
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result[0].medication).toBe('De consultation');
+    });
+
+    it('deve converter números em strings', () => {
+      const report = {
+        medications: [
+          { medication: 123 as any, dosageInstruction: 456 as any }
+        ]
+      };
+
+      const result = parseMedicationsFromReport(report);
+      expect(result[0].medication).toBe('123');
+      expect(result[0].dosageInstruction).toBe('456');
+    });
+
   });
 });

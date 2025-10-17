@@ -9,7 +9,7 @@ import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
 import { getReportSchema, getPatientData, validateMemedPaciente } from "../../../utils/json-schema";
-import { bootstrapMemed, MemedPaciente as MemedPacienteUtil, MemedMedicationItem } from "../../../utils/memed";
+import { bootstrapMemed, parseMedicationsFromReport, MemedPaciente as MemedPacienteUtil, MemedMedicationItem } from "../../../utils/memed";
 import {
   ConsultationReportSchema,
   ConsultationResponse,
@@ -28,6 +28,7 @@ export class DaaiConsultationRecorder {
   @Prop() onEvent: (response: Response) => void;
   @Prop() onWarningRecordingTime: () => void;
   @Prop() onStart: (consultation: ConsultationResponse) => void;
+  @Prop() onCompleted?: (consultation: ConsultationResponse) => void;
 
   @Prop() apikey: string;
   @Prop() specialty: string = state.chooseSpecialty;
@@ -137,10 +138,27 @@ export class DaaiConsultationRecorder {
       await this.setMemedPaciente();
     }
 
+    // Wrapper do callback success para chamar onCompleted
+    const successWithCallback = (consultation: ConsultationResponse) => {
+      // Chama o callback onCompleted se fornecido
+      if (typeof this.onCompleted === 'function') {
+        try {
+          this.onCompleted(consultation);
+        } catch (error) {
+          console.error('Erro ao executar callback onCompleted:', error);
+        }
+      }
+
+      // Chama o callback onSuccess original
+      if (typeof this.onSuccess === 'function') {
+        this.onSuccess(consultation);
+      }
+    };
+
     finishRecording({
       mode: this.mode,
       apikey: this.apikey,
-      success: this.onSuccess,
+      success: successWithCallback,
       error: this.onError,
       onEvent: this.onEvent,
       specialty,
@@ -170,8 +188,10 @@ export class DaaiConsultationRecorder {
         withoutCpf: !this.memedPatientObject.documento
       };
 
-      // Array vazio de medicamentos - pode ser expandido no futuro
-      const medicamentos: MemedMedicationItem[] = [];
+      // Extrai medicamentos do report da consulta com parsing seguro
+      const medicamentos: MemedMedicationItem[] = this.reportSchemaObject?.schema
+        ? parseMedicationsFromReport(this.reportSchemaObject.schema as Record<string, any>)
+        : [];
 
       // Executa o bootstrap completo da Memed
       await bootstrapMemed(this.memedToken, memedPaciente, medicamentos);
