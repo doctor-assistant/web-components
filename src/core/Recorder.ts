@@ -1,5 +1,5 @@
 import { version } from '../../package.json';
-import { ConsultationReportSchema, ConsultationResponse } from '../components/entities/consultation.entity';
+import { ConsultationReportSchema, ConsultationResponse, ConsultationPrescriptionData } from '../components/entities/consultation.entity';
 
 import state from "../store";
 import { getBrowserInfo, getOSInfo, isMobile } from '../utils/device';
@@ -34,6 +34,7 @@ interface ChunkData {
   timestamp: number;
   specialty: string;
   reportSchema?: ConsultationReportSchema;
+  prescriptionData?: ConsultationPrescriptionData;
 }
 
 let mediaRecorder: MediaRecorder | null = null;
@@ -314,6 +315,7 @@ export const startRecording = async (
             timestamp: Date.now(),
             specialty: state.chooseSpecialty || 'generic',
             reportSchema: state.reportSchema,
+            prescriptionData: state.prescriptionData,
           };
           pendingFirstUploads.add(currentChunkIndex);
           const uploaded = await uploadChunk(chunk, mode, apikey);
@@ -397,6 +399,7 @@ type FinishRecordingProps = {
   specialty: string,
   onEvent: (event: any) => void,
   reportSchema?: ConsultationReportSchema,
+  prescriptionData?: Record<string, any>,
 }
 
 export const finishRecording = async ({
@@ -407,6 +410,7 @@ export const finishRecording = async ({
   onEvent: event,
   specialty,
   reportSchema: rawReportSchema,
+  prescriptionData: rawPrescriptionData,
 }: FinishRecordingProps) => {
   state.status = "finished";
 
@@ -471,6 +475,12 @@ export const finishRecording = async ({
       schema: reportSchemaObject.schema,
     } : undefined;
 
+    const prescriptionDataObject = state.prescriptionData || rawPrescriptionData;
+    const prescriptionData = prescriptionDataObject ? {
+      provider: prescriptionDataObject.provider,
+      externalReference: prescriptionDataObject.externalReference,
+    } : undefined;
+
     // Finalize consultation
     const baseUrl = mode === "dev"
       ? "https://apim.doctorassistant.ai/api/sandbox"
@@ -485,7 +495,7 @@ export const finishRecording = async ({
         'x-daai-api-key': apikey,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ specialty, reportSchema })
+      body: JSON.stringify({ specialty, reportSchema, prescriptionData })
     });
 
     const jsonResponse = await response.json();
@@ -515,9 +525,10 @@ type FinishRecordingRequestProps = {
   recordingId: string,
   specialty: string,
   reportSchema?: ConsultationReportSchema,
+  prescriptionData?: ConsultationPrescriptionData,
 }
 
-export const finishRecordingRequest = async ({ mode, apikey, consultationId, recordingId, specialty, reportSchema: rawReportSchema }: FinishRecordingRequestProps) => {
+export const finishRecordingRequest = async ({ mode, apikey, consultationId, recordingId, specialty, reportSchema: rawReportSchema, prescriptionData: rawPrescriptionData }: FinishRecordingRequestProps) => {
   const storedChunks = await getFailedChunksBydId(consultationId);
   if (storedChunks.length > 0) {
     return;
@@ -527,6 +538,11 @@ export const finishRecordingRequest = async ({ mode, apikey, consultationId, rec
     instructions: rawReportSchema.instructions,
     fewShots: JSON.stringify(rawReportSchema.fewShots),
     schema: rawReportSchema.schema,
+  } : undefined;
+
+  const prescriptionData = rawPrescriptionData ? {
+    provider: rawPrescriptionData.provider,
+    externalReference: rawPrescriptionData.externalReference,
   } : undefined;
 
   const baseUrl = mode === "dev"
@@ -541,7 +557,7 @@ export const finishRecordingRequest = async ({ mode, apikey, consultationId, rec
       'x-daai-api-key': apikey,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ specialty, reportSchema })
+    body: JSON.stringify({ specialty, reportSchema, prescriptionData })
   });
 }
 
@@ -824,6 +840,7 @@ export const retryChunkedConsultations = async (mode: string, apiKey: string) =>
         recordingId: chunks[0].recordingId,
         specialty: chunks[0].specialty,
         reportSchema: chunks[0].reportSchema,
+        prescriptionData: chunks[0].prescriptionData,
       });
     } catch (error) {
       console.error(`Erro ao processar chunks da consulta ${consultationId}:`, error);

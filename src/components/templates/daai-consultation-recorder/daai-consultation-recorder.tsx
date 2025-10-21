@@ -30,6 +30,7 @@ export class DaaiConsultationRecorder {
   @Prop() specialty: string = state.chooseSpecialty;
   @Prop() metadata: string;
   @Prop() reportSchema?: string;
+  @Prop() prescriptionData?: string;
   @Prop() telemedicine: boolean;
   @Prop() videoElement?: HTMLVideoElement;
   @Prop() professional: string;
@@ -63,6 +64,27 @@ export class DaaiConsultationRecorder {
       return JSON.parse(this.metadata);
     } catch {
       return {};
+    }
+  }
+
+  get prescriptionDataObject() {
+    try {
+      const prescriptionData = JSON.parse(this.prescriptionData);
+      // Validate prescription data
+      // Validate provider
+      const allowedProviders = ["MEVO", "MEMED"];
+      if (!allowedProviders.includes(prescriptionData.provider)) {
+        throw new Error(`Invalid provider: ${prescriptionData.provider}`);
+      }
+      // Validate externalReference
+      if (!prescriptionData.externalReference) {
+        throw new Error(`Invalid external reference: ${prescriptionData.externalReference}`);
+      }
+      return prescriptionData;
+    } catch (error) {
+      state.status = "prescription-data-error";
+      console.error("Invalid prescription data", error);
+      return undefined;
     }
   }
 
@@ -159,6 +181,7 @@ export class DaaiConsultationRecorder {
                 apikey={this.apikey}
                 specialty={state.defaultSpecialty || state.chooseSpecialty}
                 metadata={this.metadataObject}
+                prescriptionData={this.prescriptionDataObject}
                 reportSchema={this.reportSchemaObject}
                 success={this.onSuccess}
                 error={this.onError}

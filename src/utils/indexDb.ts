@@ -1,6 +1,6 @@
 import Dexie from "dexie";
 import state from "../store";
-import { ConsultationReportSchema } from "../components/entities/consultation.entity";
+import { ConsultationReportSchema, ConsultationPrescriptionData } from "../components/entities/consultation.entity";
 interface Specialty {
   id: string;
   title: string;
@@ -15,7 +15,8 @@ interface Consultation {
   professionalId: string;
   specialty: string;
   audioBlob: any;
-  metadata: any
+  metadata: any;
+  prescriptionData?: any;
 }
 class SpecialtiesDB extends Dexie {
   specialties: Dexie.Table<Specialty, string>;
@@ -137,6 +138,7 @@ interface ChunkUpload {
   timestamp: number;
   specialty: string;
   reportSchema?: ConsultationReportSchema;
+  prescriptionData?: ConsultationPrescriptionData;
 }
 
 class ChunkUploadDB extends Dexie {
@@ -145,7 +147,7 @@ class ChunkUploadDB extends Dexie {
   constructor() {
     super("chunkUploadDb");
     this.version(1).stores({
-      chunks: "++id,consultationId,recordingId,chunk,duration,index,retryCount,timestamp,specialty,reportSchema"
+      chunks: "++id,consultationId,recordingId,chunk,duration,index,retryCount,timestamp,specialty,reportSchema,prescriptionData"
     });
     this.chunks = this.table("chunks");
   }
@@ -159,7 +161,7 @@ class ConsusltationDb extends Dexie {
   constructor() {
     super("consultationDb");
     this.version(1).stores({
-      consultations: "++id,professionalId,specialty,audio,metadata",
+      consultations: "++id,professionalId,specialty,audio,metadata,prescriptionData",
     });
     this.consultations = this.table("consultations");
   }
@@ -167,7 +169,7 @@ class ConsusltationDb extends Dexie {
 
 const consultationDb = new ConsusltationDb();
 
-export async function saveConsultation(professionalId: string, audioBlob: any, specialty: string, metadata: any) {
+export async function saveConsultation(professionalId: string, audioBlob: any, specialty: string, metadata: any, prescriptionData?: ConsultationPrescriptionData) {
   try {
     await consultationDb.transaction(
       "rw",
@@ -178,6 +180,7 @@ export async function saveConsultation(professionalId: string, audioBlob: any, s
           audioBlob,
           specialty,
           metadata,
+          prescriptionData,
         });
       }
     );
