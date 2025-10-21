@@ -20,6 +20,7 @@ const { state, onChange } = createStore({
   defaultSpecialty: "",
   isProcessingChunk: false,
   reportSchema: undefined,
+  prescriptionData: undefined,
 });
 
 export default state;
