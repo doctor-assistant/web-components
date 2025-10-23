@@ -81,6 +81,7 @@ export type StartRecordingProps = {
   videoElement?: HTMLVideoElement,
   professional?: string,
   metadata: Record<string, any>,
+  referenciaExterna?: string,
   start?: (consultation: ConsultationResponse) => void
 
 }
@@ -92,6 +93,7 @@ export const startRecording = async (
     apikey,
     professional,
     metadata,
+    referenciaExterna,
     start
   }: StartRecordingProps
 ) => {
@@ -100,6 +102,7 @@ export const startRecording = async (
     state.status = "initial";
     return;
   }
+
 
   state.status = "preparing";
 
@@ -159,16 +162,21 @@ export const startRecording = async (
     const baseUrl = mode === "dev"
       ? "https://apim.doctorassistant.ai/api/sandbox"
       : "https://apim.doctorassistant.ai/api/production";
+
+    const payload = {
+      professionalId: professional,
+      referenciaExterna: referenciaExterna,
+      metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component", ...devices, telemedicine: isRemote } }
+    };
+
+
     const response = await fetch(baseUrl + API_ENDPOINTS.CONSULTATION_INIT, {
       method: 'POST',
       headers: {
         'x-daai-api-key': apikey,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        professionalId: professional,
-        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component", ...devices, telemedicine: isRemote } }
-      })
+      body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
