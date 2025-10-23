@@ -43,6 +43,7 @@ export namespace Components {
     warningRecordingTime: number;
   };
         "recordingTime": number;
+        "referenciaExterna"?: string;
         "reportSchema"?: ConsultationReportSchema;
         "skipConsultationType": boolean;
         "specialty": any;
@@ -74,6 +75,7 @@ export namespace Components {
         "onSuccess": (consultation: ConsultationResponse) => void;
         "onWarningRecordingTime": () => void;
         "professional": string;
+        "referenciaExterna"?: string;
         "reportSchema"?: string;
         "skipConsultationType": boolean;
         "specialty": string;
@@ -477,6 +479,7 @@ declare namespace LocalJSX {
     warningRecordingTime: number;
   };
         "recordingTime"?: number;
+        "referenciaExterna"?: string;
         "reportSchema"?: ConsultationReportSchema;
         "skipConsultationType"?: boolean;
         "specialty"?: any;
@@ -508,6 +511,7 @@ declare namespace LocalJSX {
         "onSuccess"?: (consultation: ConsultationResponse) => void;
         "onWarningRecordingTime"?: () => void;
         "professional"?: string;
+        "referenciaExterna"?: string;
         "reportSchema"?: string;
         "skipConsultationType"?: boolean;
         "specialty"?: string;

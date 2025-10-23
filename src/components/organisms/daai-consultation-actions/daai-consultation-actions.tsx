@@ -1,4 +1,4 @@
-import { Component, h, Prop, State, Watch } from "@stencil/core";
+import { Component, h, Prop, State, Watch, Element } from "@stencil/core";
 import {
   finishRecording,
   pauseRecording,
@@ -20,11 +20,14 @@ import {
   shadow: false,
 })
 export class DaaiConsultationActions {
+  @Element() el: HTMLElement;
+
   @Prop() apikey: any = "";
   @Prop() specialty: any;
   @Prop() telemedicine: boolean;
   @Prop() videoElement?: HTMLVideoElement;
   @Prop() professional: string = "";
+  @Prop() referenciaExterna?: string;
 
   @Prop() success: (consultation: ConsultationResponse) => void;
   @Prop() error: any;
@@ -149,6 +152,13 @@ toBool(val: any): boolean {
               onClick={() => {
                 if (!canStartNow) return;
                 if (this.isTrue(this.skipConsultationType)) {
+                  // Forçar leitura do DOM se necessário
+                  let referenciaExterna = this.referenciaExterna;
+                  if (!referenciaExterna) {
+                    const parentElement = this.el?.closest('daai-consultation-recorder');
+                    referenciaExterna = parentElement?.getAttribute('referenciaexterna') || parentElement?.getAttribute('referenciaExterna') || undefined;
+                  }
+
                   startRecording({
                     isRemote: !!this.telemedicine,
                     videoElement: this.telemedicine ? this.videoElement : undefined,
@@ -156,6 +166,7 @@ toBool(val: any): boolean {
                     apikey: this.apikey,
                     professional: this.professional,
                     metadata: this.metadata,
+                    referenciaExterna: referenciaExterna,
                     start: this.start,
                   });
                 } else {
@@ -167,6 +178,7 @@ toBool(val: any): boolean {
                         apikey: this.apikey,
                         professional: this.professional,
                         metadata: this.metadata,
+                        referenciaExterna: this.referenciaExterna,
                         start: this.start,
                       });
                 }
@@ -216,6 +228,7 @@ toBool(val: any): boolean {
                         apikey: this.apikey,
                         professional: this.professional,
                         metadata: this.metadata,
+                        referenciaExterna: this.referenciaExterna,
                         start: this.start,
                       });
                 }}
@@ -241,35 +254,53 @@ toBool(val: any): boolean {
           <div class="flex items-center justify-center gap-2">
             <daai-button-with-icon
               id="choose-local-consultation"
-              onClick={() =>
+              onClick={() => {
+                // Forçar leitura do DOM se necessário
+                let referenciaExterna = this.referenciaExterna;
+                if (!referenciaExterna) {
+                  const parentElement = this.el?.closest('daai-consultation-recorder');
+                  referenciaExterna = parentElement?.getAttribute('referenciaexterna') || parentElement?.getAttribute('referenciaExterna') || undefined;
+                }
+
                 startRecording({
                   isRemote: false,
                   mode: this.mode,
                   apikey: this.apikey,
                   professional: this.professional,
                   metadata: this.metadata,
+                  referenciaExterna: referenciaExterna,
                   start: this.start,
-                })
-              }
+                });
+              }}
             >
               <div class="flex items-center justify-center p-2">Presencial</div>
             </daai-button-with-icon>
 
             <daai-button-with-icon
               id="choose-telemedicine-consultation"
-              onClick={() =>
-                state.isChecked || this.hideTutorial
-                  ? startRecording({
-                      isRemote: true,
-                      videoElement: this.videoElement,
-                      mode: this.mode,
-                      apikey: this.apikey,
-                      professional: this.professional,
-                      metadata: this.metadata,
-                      start: this.start,
-                    })
-                  : StartTutorial()
-              }
+              onClick={() => {
+                if (state.isChecked || this.hideTutorial) {
+                  // Forçar leitura do DOM se necessário
+                  let referenciaExterna = this.referenciaExterna;
+                  if (!referenciaExterna) {
+                    const parentElement = this.el?.closest('daai-consultation-recorder');
+                    referenciaExterna = parentElement?.getAttribute('referenciaexterna') || parentElement?.getAttribute('referenciaExterna') || undefined;
+                  }
+
+                  startRecording({
+                    isRemote: true,
+                    videoElement: this.videoElement,
+                    mode: this.mode,
+                    apikey: this.apikey,
+                    professional: this.professional,
+                    metadata: this.metadata,
+                    referenciaExterna: referenciaExterna,
+                    start: this.start,
+                  });
+                } else {
+                  StartTutorial();
+                }
+              }}
             >
               Telemedicina
             </daai-button-with-icon>

@@ -1,4 +1,4 @@
-import { Component, h, Host, Prop, State } from "@stencil/core";
+import { Component, h, Host, Prop, State, Element } from "@stencil/core";
 import {
   retryChunkedConsultations,
   retryOldConsultations,
@@ -20,6 +20,8 @@ import {
   shadow: true,
 })
 export class DaaiConsultationRecorder {
+  @Element() el: HTMLElement;
+
   @Prop() onSuccess: (consultation: ConsultationResponse) => void;
   @Prop() onError: (err: Error) => void;
   @Prop() onEvent: (response: Response) => void;
@@ -33,7 +35,9 @@ export class DaaiConsultationRecorder {
   @Prop() telemedicine: boolean;
   @Prop() videoElement?: HTMLVideoElement;
   @Prop() professional: string;
+  @Prop() referenciaExterna?: string;
   @State() recordingTime: number = 0;
+
 
   @Prop() warningRecordingTime: number = 0;
   @Prop() maxRecordingTime: number = Infinity;
@@ -78,6 +82,18 @@ export class DaaiConsultationRecorder {
     return result.success;
   }
 
+  private getReferenciaExterna(): string | undefined {
+    // Primeiro tenta a propriedade
+    if (this.referenciaExterna) {
+      return this.referenciaExterna;
+    }
+
+    // Se não tiver, lê do DOM
+    const domElement = this.el;
+    const attrValue = domElement?.getAttribute('referenciaexterna') || domElement?.getAttribute('referenciaExterna');
+    return attrValue || undefined;
+  }
+
   private onExternalFinish = () => {
     const specialty =
       this.specialty || state.defaultSpecialty || state.chooseSpecialty || "generic";
@@ -100,6 +116,15 @@ export class DaaiConsultationRecorder {
   }
 
   async componentDidLoad() {
+    // Forçar leitura do atributo DOM se a propriedade estiver undefined
+    if (!this.referenciaExterna) {
+      const domElement = this.el;
+      const attrValue = domElement.getAttribute('referenciaexterna') || domElement.getAttribute('referenciaExterna');
+      if (attrValue) {
+        this.referenciaExterna = attrValue;
+      }
+    }
+
     if (this.specialty) {
       state.defaultSpecialty = this.specialty;
     }
@@ -116,12 +141,14 @@ export class DaaiConsultationRecorder {
     const eventName = this.finishEventName;
 
     if (shouldAutoStart) {
+      const referenciaExterna = this.getReferenciaExterna();
       startRecording({
         isRemote: this.telemedicine ?? !!state.telemedicine,
         mode: this.mode,
         apikey: this.apikey,
         professional: this.professional,
         metadata: this.metadataObject,
+        referenciaExterna: referenciaExterna,
         start: this.onStart,
       });
     }
@@ -166,6 +193,7 @@ export class DaaiConsultationRecorder {
                 videoElement={this.videoElement}
                 event={this.onEvent}
                 professional={this.professional}
+                referenciaExterna={this.referenciaExterna}
                 recordingTime={this.recordingTime}
                 recordingConfig={{
                   onWarningRecordingTime: this.onWarningRecordingTime,

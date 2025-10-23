@@ -7,23 +7,28 @@
 
 ## Properties
 
-| Property                 | Attribute                | Description | Type                                           | Default                 |
-| ------------------------ | ------------------------ | ----------- | ---------------------------------------------- | ----------------------- |
-| `apikey`                 | `apikey`                 |             | `string`                                       | `undefined`             |
-| `hideTutorial`           | `hide-tutorial`          |             | `boolean`                                      | `false`                 |
-| `maxRecordingTime`       | `max-recording-time`     |             | `number`                                       | `Infinity`              |
-| `metadata`               | `metadata`               |             | `string`                                       | `undefined`             |
-| `onError`                | --                       |             | `(err: Error) => void`                         | `undefined`             |
-| `onEvent`                | --                       |             | `(response: Response) => void`                 | `undefined`             |
-| `onStart`                | --                       |             | `(consultation: ConsultationResponse) => void` | `undefined`             |
-| `onSuccess`              | --                       |             | `(consultation: ConsultationResponse) => void` | `undefined`             |
-| `onWarningRecordingTime` | --                       |             | `() => void`                                   | `undefined`             |
-| `professional`           | `professional`           |             | `string`                                       | `undefined`             |
-| `reportSchema`           | `report-schema`          |             | `string`                                       | `undefined`             |
-| `specialty`              | `specialty`              |             | `string`                                       | `state.chooseSpecialty` |
-| `telemedicine`           | `telemedicine`           |             | `boolean`                                      | `undefined`             |
-| `videoElement`           | --                       |             | `HTMLVideoElement`                             | `undefined`             |
-| `warningRecordingTime`   | `warning-recording-time` |             | `number`                                       | `0`                     |
+| Property                 | Attribute                | Description                                        | Type                                           | Default                 |
+| ------------------------ | ------------------------ | -------------------------------------------------- | ---------------------------------------------- | ----------------------- |
+| `apikey`                 | `apikey`                 |                                                    | `string`                                       | `undefined`             |
+| `autoFinishOnEvent`      | `auto-finish-on-event`   | Finalizar automaticamente ao receber evento global | `boolean`                                      | `false`                 |
+| `autoStart`              | `auto-start`             | Iniciar automaticamente ao montar                  | `boolean`                                      | `false`                 |
+| `finishEventName`        | `finish-event-name`      | Nome do evento do prontuário para auto-finalizar   | `string`                                       | `undefined`             |
+| `hideTutorial`           | `hide-tutorial`          |                                                    | `boolean`                                      | `false`                 |
+| `maxRecordingTime`       | `max-recording-time`     |                                                    | `number`                                       | `Infinity`              |
+| `metadata`               | `metadata`               |                                                    | `string`                                       | `undefined`             |
+| `onError`                | --                       |                                                    | `(err: Error) => void`                         | `undefined`             |
+| `onEvent`                | --                       |                                                    | `(response: Response) => void`                 | `undefined`             |
+| `onStart`                | --                       |                                                    | `(consultation: ConsultationResponse) => void` | `undefined`             |
+| `onSuccess`              | --                       |                                                    | `(consultation: ConsultationResponse) => void` | `undefined`             |
+| `onWarningRecordingTime` | --                       |                                                    | `() => void`                                   | `undefined`             |
+| `professional`           | `professional`           |                                                    | `string`                                       | `undefined`             |
+| `referenciaExterna`      | `referencia-externa`     |                                                    | `string`                                       | `undefined`             |
+| `reportSchema`           | `report-schema`          |                                                    | `string`                                       | `undefined`             |
+| `skipConsultationType`   | `skip-consultation-type` |                                                    | `boolean`                                      | `false`                 |
+| `specialty`              | `specialty`              |                                                    | `string`                                       | `state.chooseSpecialty` |
+| `telemedicine`           | `telemedicine`           |                                                    | `boolean`                                      | `undefined`             |
+| `videoElement`           | --                       |                                                    | `HTMLVideoElement`                             | `undefined`             |
+| `warningRecordingTime`   | `warning-recording-time` |                                                    | `number`                                       | `0`                     |
 
 
 ## Dependencies
