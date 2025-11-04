@@ -29,6 +29,7 @@ export class DaaiConsultationActions {
   @Prop() success: (consultation: ConsultationResponse) => void;
   @Prop() error: any;
   @Prop() metadata: Record<string, any>;
+  @Prop() prescriptionData: Record<string, any>;
   @Prop() reportSchema?: ConsultationReportSchema;
   @Prop() event: any;
   @Prop() mode: string;
@@ -56,7 +57,7 @@ export class DaaiConsultationActions {
     if (typeof val === 'string' && val.toLowerCase() === 'false') return false;
     return Boolean(val);
   }
-toBool(val: any): boolean {
+  toBool(val: any): boolean {
     if (val === '' || val === true || val === 1 || val === 'true') return true;
     return false;
   }
@@ -67,7 +68,7 @@ toBool(val: any): boolean {
 
   async choosenMode() {
 
-  if (this.isTrue(this.skipConsultationType)) {
+    if (this.isTrue(this.skipConsultationType)) {
       return;
     }
     if (this.telemedicine) {
@@ -128,7 +129,7 @@ toBool(val: any): boolean {
   private canStart = () => Boolean(this.professional && this.apikey);
 
   renderButtons() {
-  if (this.skipConsultationType && ["initial", "choosen"].includes(state.status)) {
+    if (this.skipConsultationType && ["initial", "choosen"].includes(state.status)) {
       const canStartNow = this.canStart();
       return (
         <div class="flex items-center justify-center">
@@ -162,13 +163,13 @@ toBool(val: any): boolean {
                   this.telemedicine
                     ? this.choosenMode()
                     : startRecording({
-                        isRemote: false,
-                        mode: this.mode,
-                        apikey: this.apikey,
-                        professional: this.professional,
-                        metadata: this.metadata,
-                        start: this.start,
-                      });
+                      isRemote: false,
+                      mode: this.mode,
+                      apikey: this.apikey,
+                      professional: this.professional,
+                      metadata: this.metadata,
+                      start: this.start,
+                    });
                 }
               }}
             >
@@ -211,13 +212,13 @@ toBool(val: any): boolean {
                   this.telemedicine
                     ? this.choosenMode()
                     : startRecording({
-                        isRemote: false,
-                        mode: this.mode,
-                        apikey: this.apikey,
-                        professional: this.professional,
-                        metadata: this.metadata,
-                        start: this.start,
-                      });
+                      isRemote: false,
+                      mode: this.mode,
+                      apikey: this.apikey,
+                      professional: this.professional,
+                      metadata: this.metadata,
+                      start: this.start,
+                    });
                 }}
                 disabled={!this.canStart()}
               >
@@ -260,14 +261,14 @@ toBool(val: any): boolean {
               onClick={() =>
                 state.isChecked || this.hideTutorial
                   ? startRecording({
-                      isRemote: true,
-                      videoElement: this.videoElement,
-                      mode: this.mode,
-                      apikey: this.apikey,
-                      professional: this.professional,
-                      metadata: this.metadata,
-                      start: this.start,
-                    })
+                    isRemote: true,
+                    videoElement: this.videoElement,
+                    mode: this.mode,
+                    apikey: this.apikey,
+                    professional: this.professional,
+                    metadata: this.metadata,
+                    start: this.start,
+                  })
                   : StartTutorial()
               }
             >
@@ -298,6 +299,7 @@ toBool(val: any): boolean {
                   error: this.error,
                   specialty: this.specialty,
                   onEvent: this.event,
+                  prescriptionData: this.prescriptionData,
                   reportSchema: this.reportSchema,
                 })
               }

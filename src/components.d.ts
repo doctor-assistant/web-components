@@ -36,6 +36,7 @@ export namespace Components {
         "hideTutorial": boolean;
         "metadata": Record<string, any>;
         "mode": string;
+        "prescriptionData": Record<string, any>;
         "professional": string;
         "recordingConfig"?: {
     onWarningRecordingTime?: () => void;
@@ -73,6 +74,7 @@ export namespace Components {
         "onStart": (consultation: ConsultationResponse) => void;
         "onSuccess": (consultation: ConsultationResponse) => void;
         "onWarningRecordingTime": () => void;
+        "prescriptionData"?: string;
         "professional": string;
         "reportSchema"?: string;
         "skipConsultationType": boolean;
@@ -470,6 +472,7 @@ declare namespace LocalJSX {
         "hideTutorial"?: boolean;
         "metadata"?: Record<string, any>;
         "mode"?: string;
+        "prescriptionData"?: Record<string, any>;
         "professional"?: string;
         "recordingConfig"?: {
     onWarningRecordingTime?: () => void;
@@ -507,6 +510,7 @@ declare namespace LocalJSX {
         "onStart"?: (consultation: ConsultationResponse) => void;
         "onSuccess"?: (consultation: ConsultationResponse) => void;
         "onWarningRecordingTime"?: () => void;
+        "prescriptionData"?: string;
         "professional"?: string;
         "reportSchema"?: string;
         "skipConsultationType"?: boolean;

@@ -13,3 +13,9 @@ export type ConsultationReportSchema = {
   fewShots: string;
   schema: Record<string, unknown>;
 };
+
+
+export type ConsultationPrescriptionData = {
+  provider: 'MEVO' | 'MEMED';
+  externalReference: string;
+};

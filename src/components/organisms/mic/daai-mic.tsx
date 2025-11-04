@@ -114,6 +114,10 @@ export class DaaiMic {
             <div>
               <daai-text text="Erro ao validar o esquema de relatório" id="error-text" />
             </div>
+          ) : state.status === "prescription-data-error" ? (
+            <div>
+              <daai-text text="Erro ao validar os dados de prescrição" id="error-text" />
+            </div>
           ) : (
             <div class="flex items-center justify-center">
               <daai-text

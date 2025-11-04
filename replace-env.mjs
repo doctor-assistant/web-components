@@ -14,6 +14,7 @@ const options = {
     /professional=".*?"/g,
     /hideTutorial=".*?"/g,
     /report-schema=".*?"/g,
+    /prescription-data=".*?"/g,
   ],
   to: [
     //Props
@@ -24,6 +25,7 @@ const options = {
     `professional="${process.env.PROFESSIONAL_ID}"`,
     `hideTutorial="${process.env.HIDE_TUTORIAL}"`,
     `report-schema='${process.env.REPORT_SCHEMA}'`,
+    `prescription-data='${process.env.PRESCRIPTION_DATA}'`,
   ],
 };
 
