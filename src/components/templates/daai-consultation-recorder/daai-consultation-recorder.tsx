@@ -69,6 +69,7 @@ export class DaaiConsultationRecorder {
 
   get prescriptionDataObject() {
     try {
+      if (!this.prescriptionData) return undefined;
       const prescriptionData = JSON.parse(this.prescriptionData);
       // Validate prescription data
       // Validate provider
