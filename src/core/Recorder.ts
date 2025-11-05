@@ -168,7 +168,7 @@ export const startRecording = async (
       },
       body: JSON.stringify({
         professionalId: professional,
-        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component", ...devices, telemedicine: isRemote } }
+        metadata: { ...metadata, daai: { version, origin: "consultation-recorder-component", ...devices, telemedicine: isRemote, specialty: state.chooseSpecialty } }
       })
     });
 
@@ -329,7 +329,7 @@ export const startRecording = async (
     mediaRecorder = new MediaRecorder(composedStream);
     setupMediaRecorder(mode, apikey);
     mediaRecorder.start();
-  state.status = "recording";
+    state.status = "recording";
   } catch (error) {
     console.error('Error starting recording:', error);
     state.status = "initial";
