@@ -13,6 +13,7 @@ import {
   ConsultationReportSchema,
   ConsultationResponse,
 } from "../../entities/consultation.entity";
+import { validatePrescriptionData } from "../../../utils/prescriptionValidator";
 
 @Component({
   tag: "daai-consultation-recorder",
@@ -71,16 +72,7 @@ export class DaaiConsultationRecorder {
     try {
       if (!this.prescriptionData) return undefined;
       const prescriptionData = JSON.parse(this.prescriptionData);
-      // Validate prescription data
-      // Validate provider
-      const allowedProviders = ["MEVO", "MEMED"];
-      if (!allowedProviders.includes(prescriptionData.provider)) {
-        throw new Error(`Invalid provider: ${prescriptionData.provider}`);
-      }
-      // Validate externalReference
-      if (!prescriptionData.externalReference) {
-        throw new Error(`Invalid external reference: ${prescriptionData.externalReference}`);
-      }
+      validatePrescriptionData(prescriptionData);
       return prescriptionData;
     } catch (error) {
       state.status = "prescription-data-error";
