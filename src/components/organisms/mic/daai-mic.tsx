@@ -118,6 +118,10 @@ export class DaaiMic {
             <div>
               <daai-text text="Erro ao validar os dados de prescrição" id="error-text" />
             </div>
+          ) : state.status === "memed-integration-processing" ? (
+            <div>
+              <daai-text text="Aguarde enquanto integramos sua consulta com a Memed..." id="initial-text" />
+            </div>
           ) : (
             <div class="flex items-center justify-center">
               <daai-text
