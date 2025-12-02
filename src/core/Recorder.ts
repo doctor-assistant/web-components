@@ -1,5 +1,5 @@
 import { version } from '../../package.json';
-import { ConsultationReportSchema, ConsultationResponse, ConsultationPrescriptionData, ConsultationPrescriptionDataMEVO, ConsultationPrescriptionDataMEMED } from '../components/entities/consultation.entity';
+import { ConsultationReportSchema, ConsultationResponse, ConsultationPrescriptionData, ConsultationPrescriptionDataMEVO } from '../components/entities/consultation.entity';
 
 import state from "../store";
 import { getBrowserInfo, getOSInfo, isMobile } from '../utils/device';
