@@ -14,8 +14,23 @@ export type ConsultationReportSchema = {
   schema: Record<string, unknown>;
 };
 
+export type ConsultationPrescriptionProvider = 'MEVO' | 'MEMED';
 
-export type ConsultationPrescriptionData = {
-  provider: 'MEVO' | 'MEMED';
+export type ConsultationPrescriptionDataMEVO = {
   externalReference: string;
 };
+
+export type ConsultationPrescriptionDataMEMED = {
+  patient: {
+    externalId: string;
+    name: string;
+    email: string;
+    phone: string;
+    document?: string;
+  }
+  token: string;
+};
+
+export type ConsultationPrescriptionData = {
+  provider: ConsultationPrescriptionProvider;
+} & (ConsultationPrescriptionDataMEVO | ConsultationPrescriptionDataMEMED);

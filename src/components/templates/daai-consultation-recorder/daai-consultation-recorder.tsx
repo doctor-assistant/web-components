@@ -4,15 +4,19 @@ import {
   retryOldConsultations,
   startRecording,
   finishRecording,
+  getConsultationById,
 } from "../../../core/Recorder";
 import state from "../../../store";
 import { getSpecialty } from "../../../utils/Specialty";
 import { saveSpecialties } from "../../../utils/indexDb";
 import { getReportSchema } from "../../../utils/json-schema";
 import {
+  ConsultationPrescriptionDataMEMED,
   ConsultationReportSchema,
   ConsultationResponse,
 } from "../../entities/consultation.entity";
+import { validatePrescriptionData } from "../../../utils/prescriptionValidator";
+import { initializeMemedIntegration, loadMemedScript } from "./memed.processor";
 
 @Component({
   tag: "daai-consultation-recorder",
@@ -71,16 +75,7 @@ export class DaaiConsultationRecorder {
     try {
       if (!this.prescriptionData) return undefined;
       const prescriptionData = JSON.parse(this.prescriptionData);
-      // Validate prescription data
-      // Validate provider
-      const allowedProviders = ["MEVO", "MEMED"];
-      if (!allowedProviders.includes(prescriptionData.provider)) {
-        throw new Error(`Invalid provider: ${prescriptionData.provider}`);
-      }
-      // Validate externalReference
-      if (!prescriptionData.externalReference) {
-        throw new Error(`Invalid external reference: ${prescriptionData.externalReference}`);
-      }
+      validatePrescriptionData(prescriptionData);
       return prescriptionData;
     } catch (error) {
       state.status = "prescription-data-error";
@@ -110,7 +105,7 @@ export class DaaiConsultationRecorder {
       apikey: this.apikey,
       success: this.onSuccess,
       error: this.onError,
-      onEvent: this.onEvent,
+      onEvent: this.onEventInterceptor,
       specialty,
       reportSchema: this.reportSchemaObject,
     });
@@ -161,6 +156,29 @@ export class DaaiConsultationRecorder {
     }
   }
 
+  onEventInterceptor = async (event: { event: string, consultationId: string }) => {
+    // User event
+    if (typeof this.onEvent === 'function') {
+      this.onEvent(event as unknown as Response);
+    }
+
+    // Memed event
+    if (this.prescriptionDataObject?.provider === 'MEMED' && event.event === 'consultation.completed') {
+      // Step 1: Get consultation
+      state.status = 'memed-integration-processing';
+      const prescriptionData = this.prescriptionDataObject as ConsultationPrescriptionDataMEMED;
+      const consultation = await getConsultationById(event.consultationId, this.mode, this.apikey) as ConsultationResponse;
+      const medicalPrescription = consultation.report?.medicalPrescription;
+      if (medicalPrescription) {
+        // Step 2: Load MEMED script (only once)
+        await loadMemedScript(prescriptionData.token);
+        // Step 3: Wait for MEMED to initialize and send data
+        await initializeMemedIntegration(consultation, this.prescriptionDataObject as ConsultationPrescriptionDataMEMED);
+        state.status = 'upload';
+      }
+    }
+  }
+
   render() {
     return (
       <Host>
@@ -188,7 +206,7 @@ export class DaaiConsultationRecorder {
                 error={this.onError}
                 telemedicine={this.telemedicine}
                 videoElement={this.videoElement}
-                event={this.onEvent}
+                event={this.onEventInterceptor}
                 professional={this.professional}
                 recordingTime={this.recordingTime}
                 recordingConfig={{

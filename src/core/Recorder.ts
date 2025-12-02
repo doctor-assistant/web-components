@@ -1,5 +1,5 @@
 import { version } from '../../package.json';
-import { ConsultationReportSchema, ConsultationResponse, ConsultationPrescriptionData } from '../components/entities/consultation.entity';
+import { ConsultationReportSchema, ConsultationResponse, ConsultationPrescriptionData, ConsultationPrescriptionDataMEVO, ConsultationPrescriptionDataMEMED } from '../components/entities/consultation.entity';
 
 import state from "../store";
 import { getBrowserInfo, getOSInfo, isMobile } from '../utils/device';
@@ -476,10 +476,20 @@ export const finishRecording = async ({
     } : undefined;
 
     const prescriptionDataObject = state.prescriptionData || rawPrescriptionData;
-    const prescriptionData = prescriptionDataObject ? {
-      provider: prescriptionDataObject.provider,
-      externalReference: prescriptionDataObject.externalReference,
-    } : undefined;
+    let prescriptionData: ConsultationPrescriptionData | undefined;
+    if (prescriptionDataObject && prescriptionDataObject.provider === 'MEVO') {
+      prescriptionData = {
+        provider: 'MEVO',
+        externalReference: prescriptionDataObject.externalReference,
+      }
+    }
+    // TODO: Add MEMED prescription data in the future
+    // else if (prescriptionDataObject && prescriptionDataObject.provider === 'MEMED') {
+    //   prescriptionData = {
+    //     provider: 'MEMED',
+    //     patient: prescriptionDataObject.patient,
+    //   }
+    // }
 
     // Finalize consultation
     const baseUrl = mode === "dev"
@@ -506,7 +516,10 @@ export const finishRecording = async ({
     }
     if (typeof event === "function") {
       const sseUrl = `${baseUrl}/consultations/${consultationId}/events`;
-      let eventSourceManager = new EventSourceManager(apikey, sseUrl, event);
+      const eventWithId = (payload: { event: string }) => {
+        event({ ...payload, consultationId: consultationId });
+      }
+      let eventSourceManager = new EventSourceManager(apikey, sseUrl, eventWithId);
       eventSourceManager.connect();
     }
   } catch (err) {
@@ -540,10 +553,24 @@ export const finishRecordingRequest = async ({ mode, apikey, consultationId, rec
     schema: rawReportSchema.schema,
   } : undefined;
 
-  const prescriptionData = rawPrescriptionData ? {
-    provider: rawPrescriptionData.provider,
-    externalReference: rawPrescriptionData.externalReference,
-  } : undefined;
+  // validate prescription data
+  let prescriptionData: ConsultationPrescriptionData | undefined;
+
+  if (rawPrescriptionData && rawPrescriptionData?.provider === 'MEVO') {
+    const data = rawPrescriptionData as ConsultationPrescriptionDataMEVO;
+    prescriptionData = {
+      provider: 'MEVO',
+      externalReference: data.externalReference,
+    }
+  }
+  // TODO: Add MEMED prescription data in the future
+  // else if (rawPrescriptionData && rawPrescriptionData?.provider === 'MEMED') {
+  //   const data = rawPrescriptionData as ConsultationPrescriptionDataMEMED;
+  //   prescriptionData = {
+  //     provider: 'MEMED',
+  //     patient: data.patient,
+  //   }
+  // }
 
   const baseUrl = mode === "dev"
     ? "https://apim.doctorassistant.ai/api/sandbox"
