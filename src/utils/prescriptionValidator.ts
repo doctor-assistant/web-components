@@ -28,8 +28,11 @@ const memedPrescriptionValidator = (prescriptionData: ConsultationPrescriptionDa
   if (!prescriptionData.patient.email) {
     throw new Error('Invalid patient email');
   }
-  if (!prescriptionData.patient.document) {
-    throw new Error('Invalid patient document');
+  if (!prescriptionData.patient.phone) {
+    throw new Error('Invalid patient phone');
+  }
+  if (!prescriptionData.token) {
+    throw new Error('Invalid MEMED token');
   }
 }
 
