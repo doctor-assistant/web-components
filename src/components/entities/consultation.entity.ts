@@ -25,8 +25,10 @@ export type ConsultationPrescriptionDataMEMED = {
     externalId: string;
     name: string;
     email: string;
+    phone: string;
     document?: string;
   }
+  token: string;
 };
 
 export type ConsultationPrescriptionData = {
