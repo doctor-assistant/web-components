@@ -1,5 +1,6 @@
 import { Component, Event, EventEmitter, h, State } from "@stencil/core";
 import state, { onChange } from "../../../store";
+import { getOSInfo, isMobile } from "../../../utils/device";
 
 @Component({
   tag: "daai-mic",
@@ -57,11 +58,27 @@ export class DaaiMic {
       if (storedMicrophone && storedMicrophoneIsAvailable) {
         state.defaultMicrophone = storedMicrophone;
       } else {
-        state.defaultMicrophone = devices.some(
-          (device) => device.deviceId === "default"
-        )
-          ? "default"
-          : devices[0].deviceId;
+        // if device is mobile and apple
+        const isMobileDevice = isMobile();
+        const os = getOSInfo();
+        const isApple = ["iOS", "MacOS"].includes(os);
+        const isMobileAndApple = isMobileDevice && isApple;
+        if (isMobileAndApple) {
+          const microphones = devices.filter(
+            (device) => device.kind === "audioinput"
+          );
+          if (microphones.length > 0) {
+            state.defaultMicrophone = microphones[0].deviceId || "";
+          } else {
+            state.defaultMicrophone = "";
+          }
+        } else {
+          state.defaultMicrophone = devices.some(
+            (device) => device.deviceId === "default"
+          )
+            ? "default"
+            : devices[0].deviceId;
+        }
       }
 
       // Always stop the temporary stream immediately after getting permissions and device list
