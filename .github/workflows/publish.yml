@@ -45,5 +45,12 @@ jobs:
             echo "TAG=alpha" >> $GITHUB_ENV
           fi
 
+      - name: Verify npm authentication
+        run: |
+          echo "Verifying npm authentication..."
+          npm whoami || echo "Authentication check failed"
+          echo "Registry: $(npm config get registry)"
+          echo "Scope registry: $(npm config get @doctorassistant:registry || echo 'not set')"
+
       - name: Publish to npm
         run: npm publish --provenance --access public --tag ${{ env.TAG }}

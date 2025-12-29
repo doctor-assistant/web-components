@@ -31,6 +31,10 @@
     "dist/",
     "loader/"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "build": "stencil build",
     "start": "node replace-env.mjs && stencil build --dev --watch --serve",
