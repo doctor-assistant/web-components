@@ -22,6 +22,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           always-auth: true
 
+      - name: Update npm to latest version
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: npm install
 
@@ -48,9 +51,15 @@ jobs:
       - name: Verify npm authentication
         run: |
           echo "Verifying npm authentication..."
-          npm whoami || echo "Authentication check failed"
+          echo "npm version: $(npm --version)"
           echo "Registry: $(npm config get registry)"
           echo "Scope registry: $(npm config get @doctorassistant:registry || echo 'not set')"
+          echo "Checking .npmrc in home directory:"
+          cat ~/.npmrc 2>/dev/null || echo "No .npmrc in home directory"
+          echo "Checking project .npmrc:"
+          cat .npmrc 2>/dev/null || echo "No .npmrc in project"
+          echo "Attempting npm whoami..."
+          npm whoami || echo "Authentication check failed - this is expected if Trusted Publisher is not configured"
 
       - name: Publish to npm
         run: npm publish --provenance --access public --tag ${{ env.TAG }}
