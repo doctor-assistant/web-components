@@ -110,7 +110,7 @@ export const startRecording = async (
     const constraints = {
       audio: {
         deviceId: state.defaultMicrophone
-          ? { exact: state.defaultMicrophone }
+          ? { ideal: state.defaultMicrophone }
           : undefined,
       },
     };
