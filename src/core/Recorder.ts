@@ -5,10 +5,11 @@ import state from "../store";
 import { getBrowserInfo, getOSInfo, isMobile } from '../utils/device';
 import { deleteChunk, deleteConsultationById, getConsultation, getConsultationsByProfessional, getFailedChunks, getFailedChunksBydId, saveChunk, saveConsultation } from '../utils/indexDb';
 import { EventSourceManager } from "../utils/sse";
+import { chunkLimits } from "../utils/chunk-limits";
+import { classifyUploadStatus } from "../utils/upload-outcome";
 
+// Chunk durations live in utils/chunk-limits (the first chunk is shorter).
 const CHUNK_CONFIG = {
-  MIN_DURATION: 270, // seconds
-  MAX_DURATION: 300, // seconds
   SILENCE_THRESHOLD: -50, // dB
   SILENCE_DURATION: 0.5, // seconds of silence needed for chunk split
   RETRY_INTERVAL: 10000, // milliseconds
@@ -260,13 +261,16 @@ export const startRecording = async (
 
       const currentTime = audioContext.currentTime;
       const chunkDuration = currentTime - chunkStartTime;
+      // currentChunkIndex only advances at the split, so the chunk being
+      // recorded right now is the next index (-1 + 1 = 0 for the first one).
+      const limits = chunkLimits(currentChunkIndex + 1);
 
       if (db <= CHUNK_CONFIG.SILENCE_THRESHOLD) {
         if (!silenceStart) silenceStart = currentTime;
         const silenceDuration = currentTime - silenceStart;
 
         if (silenceDuration >= CHUNK_CONFIG.SILENCE_DURATION &&
-          chunkDuration >= CHUNK_CONFIG.MIN_DURATION) {
+          chunkDuration >= limits.min) {
           // Stop current recording and start new one
           const oldMediaRecorder = mediaRecorder;
           const newChunkStartTime = audioContext.currentTime;
@@ -284,7 +288,7 @@ export const startRecording = async (
       }
 
       // Force split if max duration reached
-      if (chunkDuration >= CHUNK_CONFIG.MAX_DURATION) {
+      if (chunkDuration >= limits.max) {
         const oldMediaRecorder = mediaRecorder;
         const newChunkStartTime = audioContext.currentTime;
         mediaRecorder = new MediaRecorder(composedStream);
@@ -593,8 +597,15 @@ export const uploadChunk = async (chunk: ChunkData, mode: string, apiKey: string
       body: formData
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to upload chunk');
+    const outcome = classifyUploadStatus(response.status);
+    if (outcome === 'retry') {
+      throw new Error(`Failed to upload chunk (status ${response.status})`);
+    }
+    if (outcome === 'drop') {
+      // The server refused this file (e.g. 422 for a WebM with no audio).
+      // Resending it can never succeed, and keeping it in IndexedDB would
+      // block the finish forever: drop it and let the recording go on.
+      console.warn(`Chunk ${chunk.index} refused with status ${response.status}; dropping it.`);
     }
 
     await deleteChunk(chunk.id);
