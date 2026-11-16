@@ -2,7 +2,7 @@ import { chunkLimits } from './chunk-limits';
 
 describe('chunkLimits', () => {
   it('o primeiro chunk da gravação é curto, para o áudio sair cedo do navegador', () => {
-    expect(chunkLimits(0)).toEqual({ min: 50, max: 60 });
+    expect(chunkLimits(0)).toEqual({ min: 25, max: 30 });
   });
 
   it('os chunks seguintes mantêm 270 a 300 s', () => {
